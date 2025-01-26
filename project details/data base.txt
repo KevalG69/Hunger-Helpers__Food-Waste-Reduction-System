@@ -1,0 +1,105 @@
+title Hunger Helpers Database
+users [icon : user]{
+  _id "string (Primary Key)"
+  verified "boolean (Is the user verified?)"
+  nickName "string (Optional)"
+  firstName "string"
+  lastName "string"
+  age "number (Optional for individuals)"
+  email "string (Unique email address)"
+  mobile "string (Unique mobile number)"
+  state "string"
+  city "string",
+  locality "string (Specific location)"
+  role "string (Options: 'Donor', 'NGO', 'Volunteer')"
+  profilePhoto "image (Path to profile photo)"
+  password "string (Encrypted password)"
+  createdAt "Date (User creation timestamp)"
+  updatedAt "Date (Last update timestamp)"
+  contribution_Info "ObjectId (References Contribution_Info)"
+  donations "[ObjectId] (Array of Donation_Box references)"
+  notifications "[ObjectId] (Array of Notification references)"
+}
+
+
+ contribution_Info [icon : list]{
+  _id: "string (Primary Key)"
+  user_id: "ObjectId (References Users._id)"
+  score: "number (Contribution points)"
+  badge: "[string] (Array of earned badges)"
+  donation_Count: "number (Number of donations made)"
+  delivery_Count: "number (Number of deliveries completed)"
+  last_contribution: "Date (Last contribution date)"
+
+}
+
+Donation_Box [icon : Box]{
+  _id: "string (Primary Key)",
+  user_id: "ObjectId (References Users._id)",
+  volunteer_id: "ObjectId (References Users._id, if assigned)",
+  status: "string (Options: 'Pending', 'Accepted', 'Completed', 'Cancelled')",
+  food_image: "image (Path to food photo)",
+  food_Name: "string",
+  food_Type: "string (Options: 'Veg', 'Non-Veg')",
+  food_quantity: "string (Readable quantity: e.g., '5kg, 10 meals')",
+  food_CookedAt: "Date (Food preparation timestamp)",
+  food_ExpireAt: "Date (Food expiration timestamp)",
+  pickup_location: "string (Detailed address)",
+  location: 
+    lat: "number (Latitude)",
+    lng: "number (Longitude)"
+  
+  pickup_time: "Date",
+  createdAt: "Date (Donation creation timestamp)",
+  updatedAt: "Date (Last update timestamp)"
+}
+
+
+Donation_Data [icon : data]{
+  _id: "string (Primary Key)",
+  date: "Date (For time-based analytics)",
+  total_meals_served: "number",
+  total_donors: "number",
+  total_volunteers: "number",
+  total_food_wasted: "number"
+}
+
+
+Notification [icon : bell]{
+  _id: "string (Primary Key)",
+  user_id: "ObjectId (References Users._id)",
+  type: "string (Options: 'Donation Update', 'Reminder', 'Achievement')",
+  message: "string (Notification content)",
+  read_status: "boolean (Has the notification been read?)",
+  createdAt: "Date (Notification creation timestamp)"
+}
+
+Activity_logs [icon : activity]{
+  _id: "string (Primary Key)",
+  user_id: "ObjectId (References Users._id)",
+  activity_type: "string (e.g., 'Donation Created', 'Profile Updated', 'Pickup Scheduled')",
+  timestamp: "Date (When the action occurred)",
+  metadata: "Object (Additional data, e.g., {donation_id: '123'})"
+}
+
+Chat [icon : chat] {
+  _id: "string (Primary Key)",
+  sender_id: "ObjectId (References Users._id)",
+  receiver_id: "ObjectId (References Users._id)",
+  message: "string",
+  timestamp: "Date (When the message was sent)",
+  status: "string (Options: 'Sent', 'Delivered', 'Read')"
+}
+
+users._id  < Donation_Box._id
+users._id - contribution_Info._id
+users._id <> Chat._id
+users._id - Notification._id
+Activity_logs._id <users._id
+       
+
+
+
+
+
+   

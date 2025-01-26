@@ -1,0 +1,28 @@
+1.Sign up page -
+2.Login page -
+3.forgot password page -
+
+-restaurant/household roles
+
+1.Home page- default 
+2.About us - contact us - default 
+3.profile page- default
+4.Media/announcements page
+5.Donation Box page
+6.Expired/Donated page
+
+-admin/role
+-manage users page
+-manage donation page
+-logs
+
+-manager/role
+-users permission page
+-manage donation page
+-logs
+
+
+1.settings
+2.
+
+

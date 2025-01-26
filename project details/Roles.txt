@@ -1,0 +1,21 @@
+	top-Admin
+	
+	NGO=>NGO'People manager,=>Teachers,volunteers 
+	Donators=>Restaurant'manager/Restaurant => houseHolds
+
+Admin - permission and pages
+
+--NGO'Peoples
+
+NGOmanager- permissions and pages
+
+Teachers-permission and pages
+
+volunteers - permission and pages
+
+
+--Donators
+
+Restaurant-permission and pages
+
+households -permission and pages
