@@ -1,4 +1,11 @@
 title Hunger Helpers Database
+1.users
+2.contribution_Info
+3.Donation_Box
+4.Donation_Data
+5.Activity_logs
+6.Notification
+7.Chat
 users [icon : user]{
   _id "string (Primary Key)"
   verified "boolean (Is the user verified?)"
