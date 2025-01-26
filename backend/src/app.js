@@ -1,7 +1,7 @@
 //External Modules
 const express = require("express")
 const cors = require("cors")
-require("dotenv").config();
+const dotenv = require("dotenv").config();
 
 //Core Modules
 
@@ -19,7 +19,12 @@ app.use(cors());
 //connecting to database
 dataBaseConnect();
 
+//requests
+app.use("/",(req,res,next)=>{
+    console.log(`Request Url = "${req.url}",Request Method = "${req.method}",Request body = "${req.body}"`)
+})
 
+const PORT = process.env.PORT;
 //listening requests
 app.listen(PORT,()=>{
     console.log(`Server Running on http://localhost:${PORT}`)
