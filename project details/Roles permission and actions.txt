@@ -1,0 +1,165 @@
+-Admin
+	
+	NGO=>NGO'People manager,=>Teachers,volunteers 
+	Donators=>Restaurant'manager/Restaurant => houseHolds
+
+
+Admin - permission and pages
+
+--NGO'Peoples
+
+manager- permissions and pages
+
+
+Teachers-permission and pages
+
+
+volunteers - permission and pages
+
+
+--Donators
+
+
+Restaurant-permission and pages
+
+households -permission and pages
+
+Manager User Flow
+1. Dashboard Navigation
+User Management:
+
+Login → Navigate to "User Management" → View Users → Verify Users → Approve/Reject Verification → Assign/Remove Roles → Save Changes.
+Create Donation Point: Navigate to "Create Donation Point" → Enter Location & Details → Save Point.
+Monitoring:
+
+Navigate to "Activity Logs" → View Logs → Filter by Activity (e.g., Donations, Volunteers) → Drill Down to Details → Export Logs.
+Navigate to "NGO Donations" → View Ongoing Donations → Monitor Status (e.g., Claimed/Unclaimed/Delivered) → Take Action if Necessary (Notify, Reassign).
+Reporting:
+
+Navigate to "Flagged Reports" → View Details of Reports (Donations or Users) → Take Action (Resolve/Remove/Delete) → Save Resolution Status.
+
+
+Detailed Breakdown
+User Management
+Task: Verify Users
+
+Step 1: Login → Dashboard.
+Step 2: Click on "User Management."
+Step 3: View Pending Verifications.
+Step 4: Select a User → Review Details.
+Step 5: Approve or Reject Verification → Save Decision.
+Task: Assign/Remove Roles
+
+Step 1: Navigate to "User Management."
+Step 2: Select User → Click "Edit Roles."
+Step 3: Choose Role (Teacher, Volunteer, Donator) → Assign or Remove.
+Step 4: Save Changes.
+Task: Create Donation Point
+
+Step 1: Navigate to "Donation Points" Section.
+Step 2: Click "Add New Point."
+Step 3: Enter Details (e.g., Location, Contact, Collection Hours).
+Step 4: Save Point.
+Monitoring
+Task: View Activity Logs
+
+Step 1: Login → Dashboard.
+Step 2: Navigate to "Activity Logs."
+Step 3: Filter Logs (e.g., Donations, Volunteers).
+Step 4: Drill Down into Details (View Specific Donation/Volunteer).
+Step 5: Export Logs (Optional).
+Task: Oversee NGO-Related Donations
+
+Step 1: Navigate to "NGO Donations."
+Step 2: View List of Donations (Ongoing, Claimed, Delivered).
+Step 3: Take Action (Reassign Volunteers, Notify Donators, Mark as Urgent).
+Step 4: Save Changes.
+Reporting
+Task: View Flagged Reports
+Step 1: Navigate to "Reports" Section.
+Step 2: View List of Flagged Reports.
+Step 3: Click on Report → View Details (User or Donation).
+Step 4: Take Action (Resolve/Delete Report) → Save Resolution.
+--------------------------------------------------------------------------------------------------------------------------------
+1. Volunteers Navigation
+Donation Workflow
+
+View Available Donations → Filter Donations → Accept Donation → Mark as Claimed → Deliver Donation → Mark as Delivered → Notify Donator.
+Report Donation Issues → Select Issue Type → Submit Report.
+Check-In Feature
+
+Navigate to "Recent Check-Ins" → Upload Image → Add Caption → Submit Post.
+Gamification (Points & Badges)
+
+Earn Contribution Points → Track Progress → Unlock Badges.
+View Achievements → Claim Rewards.
+Volunteer Chat (Helping Section)
+
+Open Chat Section → View Nearby Volunteers → Request Help for Delivery → Coordinate Pickup.
+2. Detailed Flow Breakdown
+A. Login & Access
+Register/Login
+
+User enters credentials.
+If first-time login, set up profile.
+Navigate to Dashboard.
+Forgot Password
+
+Enter registered email.
+Receive reset link.
+Create new password → Login.
+B. Donation Workflow
+
+View Available Donations
+Navigate to "Donations" section.
+View List of Donations (Food Type, Quantity, Pickup Location).
+Apply Filters (Location, Urgency, Expiry).
+Select a Donation → View Details.
+Accept/Claim Donation
+
+Click "Claim Donation."
+Confirmation Prompt.
+Mark as "Claimed."
+
+Deliver Donation
+Navigate to "My Claimed Donations."
+Click "Start Delivery."
+Complete Delivery → Upload Proof (Photo/Notes).
+Mark as "Delivered."
+Notify Donator & Manager.
+
+Report Issues
+Select "Report Issue" on a Donation.
+Choose Issue Type (e.g., Spoiled Food, No Pickup Available).
+Provide Details → Submit Report.
+Admin/Manager Reviews & Resolves.
+
+C. Check-In Feature
+Upload Photos for Check-Ins
+Navigate to "Recent Check-Ins."
+Click "Upload Photo."
+Add Caption & Delivery Details.
+Submit Post → Visible to Community.
+
+D. Gamification System (Points & Badges)
+Earn Contribution Points
+Completing Deliveries = +X Points.
+Uploading Check-Ins = +X Points.
+Reporting Issues (Verified) = +X Points.
+Claim Badges & Achievements
+
+Reach Milestone (e.g., 10 Deliveries).
+Unlock Badge (e.g., "Helping Hand").
+Display Badges on Profile.
+E. Volunteer Chat (Helping Section)
+Request Help for Delivery
+
+Navigate to "Helping Section."
+View Nearby Volunteers.
+Send Request: "Need Help with Delivery at [Location]."
+Coordinate Pickup
+
+Chat with Volunteer.
+Share Pickup Details.
+Assign Alternate Volunteer if Needed.
+----------------------------------------------------------------------------------------------------------

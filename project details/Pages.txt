@@ -1,28 +1,42 @@
-1.Sign up page -
-2.Login page -
-3.forgot password page -
+1.Registration page - all roles
+	step1 page
+	step2 page
+2.Login page - all roles
+3.forgot password page - all roles
+	with email
+	with mobile
+4.Home page - all roles
+5.About us page - all roles
+	contact-us page
+	faq page
+6.join party - all roles
+7.profile page - Donators,volunteeers,teacher,Ngo
+	-history of donation 
+	-history of drives
+	-privacy policy
+	-terms & conditions
+	-become volunteers
+	-become donor
+8.donation page - Donators, volunteers,teacher,ngo
+	donation-box
 
--restaurant/household roles
+9.feed page - roles
+	-uploads
+	-recent drives
+	-check in 
+	-annoucement
 
-1.Home page- default 
-2.About us - contact us - default 
-3.profile page- default
-4.Media/announcements page
-5.Donation Box page
-6.Expired/Donated page
+10.check in page - volunteers,ngo
 
--admin/role
--manage users page
--manage donation page
--logs
+11.notification page-roles
+12.chat page-roles
 
--manager/role
--users permission page
--manage donation page
--logs
+13.admin panel-admin
+	-users mangment dashboard
+	-activity logs
 
+14.manager panel-admin,manager
+	-users managment dashboard
+	-activity logs
 
-1.settings
-2.
-
-
+15.acitves and available

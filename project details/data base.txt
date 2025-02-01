@@ -1,11 +1,4 @@
 title Hunger Helpers Database
-1.users
-2.contribution_Info
-3.Donation_Box
-4.Donation_Data
-5.Activity_logs
-6.Notification
-7.Chat
 users [icon : user]{
   _id "string (Primary Key)"
   verified "boolean (Is the user verified?)"
@@ -21,21 +14,31 @@ users [icon : user]{
   role "string (Options: 'Donor', 'NGO', 'Volunteer')"
   profilePhoto "image (Path to profile photo)"
   password "string (Encrypted password)"
-  createdAt "Date (User creation timestamp)"
-  updatedAt "Date (Last update timestamp)"
-  contribution_Info "ObjectId (References Contribution_Info)"
-  donations "[ObjectId] (Array of Donation_Box references)"
-  notifications "[ObjectId] (Array of Notification references)"
+ availability_status: "string (Options: 'Available', 'Busy', 'Inactive')",
+  "createdAt": "Date (User creation timestamp)",
+  "updatedAt": "Date (Last update timestamp)",
+  "check_ins: "[ObjectId] (References Check_In._id)"
+  "contribution_Info": "ObjectId (References Contribution_Info)",
+  "donations": "[ObjectId] (Array of Donation_Box references)",
+  "assigned_donations":"[ObjectId] (Array of Volunteer_Donations references)"
+  "notifications": "[ObjectId] (Array of Notification references)",
+  "helpRequests": "[ObjectId] (Array of Volunteer_Help references)",
+  "chatThreads": "[ObjectId] (Array of Chat references)"
+  "activity_logs": "[ObjectId] (Array of activity logs)
+  "Reports":"[ObjectId] ( Array of Reports)"
 }
 
 
+
  contribution_Info [icon : list]{
-  _id: "string (Primary Key)"
+  _id: "string (Primary Key)" 
   user_id: "ObjectId (References Users._id)"
-  score: "number (Contribution points)"
-  badge: "[string] (Array of earned badges)"
+  rating: "number (Contribution points)"
+  badges: "[string] (Array of earned badges)"
+ "donationPoints": "number (Points earned from donations/volunteering)",
+ volunteer_points: "number (Total points earned by a volunteer)"
   donation_Count: "number (Number of donations made)"
-  delivery_Count: "number (Number of deliveries completed)"
+  completed_deliveries: "number (Total deliveries completed by volunteer)"
   last_contribution: "Date (Last contribution date)"
 
 }
@@ -44,7 +47,10 @@ Donation_Box [icon : Box]{
   _id: "string (Primary Key)",
   user_id: "ObjectId (References Users._id)",
   volunteer_id: "ObjectId (References Users._id, if assigned)",
-  status: "string (Options: 'Pending', 'Accepted', 'Completed', 'Cancelled')",
+  assistingVolunteers:"[ObjectId Reference Users._id,if assigned)"  
+  ngo_id:" ObjectId (References Users._id, Assigned NGO, Nullable)",
+   donation_point_id: "ObjectId (References Donation_Points._id, Nullable)",
+  status: "string (Options: 'Pending', 'Accepted', 'Completed', 'Cancelled','Claimed',Delivered)",
   food_image: "image (Path to food photo)",
   food_Name: "string",
   food_Type: "string (Options: 'Veg', 'Non-Veg')",
@@ -54,13 +60,54 @@ Donation_Box [icon : Box]{
   pickup_location: "string (Detailed address)",
   location: 
     lat: "number (Latitude)",
-    lng: "number (Longitude)"
+    lng: "number (Longitude)" 
   
   pickup_time: "Date",
+  delivery_time:"Date",
   createdAt: "Date (Donation creation timestamp)",
   updatedAt: "Date (Last update timestamp)"
+ "helpRequests": "[ObjectId] (Array of Volunteer_Help references)"
+ "Reports":"[ObjectId](Arrayof volunteer_Help references)"
 }
 
+Volunteer_Donations [icon : checklist] {
+  _id: "string (Primary Key)",
+  volunteer_id: "ObjectId (References Users._id)",
+  donation_id: "ObjectId (References Donation_Box._id)",
+  status: "string (Options: 'Accepted', 'Picked Up', 'Delivered', 'Cancelled')",
+  timestamp: "Date (Time of status update)"
+}
+
+
+Volunteer_Help [icon:data]{
+
+  "_id": "string (Primary Key)",
+  "volunteer_id": "ObjectId (References users._id, requesting volunteer)",
+  "donation_id": "ObjectId (References Donation_Box._id, donation needing help)",
+  "status": "string (Options: 'Open', 'In Progress', 'Resolved', 'Cancelled')",
+  "description": "string (Details about the help needed)",
+  "requestedAt": "Date (Help request creation timestamp)",
+  "resolvedAt": "Date (If resolved, timestamp)",
+  "assistingVolunteers": "[ObjectId] (Array of assisting volunteers' users._id)"
+
+
+
+}
+
+Donation_Point [icon : location_pin] {
+  _id: "string (Primary Key)",
+  manager_id: "ObjectId (References Users._id, only managers)",
+  name: "string (Donation Point Name)",
+  description: "string (Details about the location)",
+  location: {
+    lat: "number",
+    lng: "number"
+  },
+  address: "string (Full address of donation point)",
+  active: "boolean (true = active, false = inactive)",
+  createdAt: "Date",
+  updatedAt: "Date"
+}
 
 Donation_Data [icon : data]{
   _id: "string (Primary Key)",
@@ -69,6 +116,24 @@ Donation_Data [icon : data]{
   total_donors: "number",
   total_volunteers: "number",
   total_food_wasted: "number"
+}
+
+Analytics_Data [icon : chart] {
+  _id: "ObjectId (Primary Key)",
+  date: "Date (Aggregation date)",
+  region: "string (State, City, or Locality for regional trends)",
+  total_meals_donated: "number (Total meals donated in this period)",
+  total_food_wasted: "number (Total food wasted in this period)",
+  total_donors: "number (Active donors in this period)",
+  total_volunteers: "number (Active volunteers in this period)",
+  total_ngos: "number (Active NGOs in this period)",
+  active_users: "number (Unique users who logged in during this period)",
+  donation_success_rate: "number (Percentage of completed vs. canceled donations)",
+  avg_donation_time: "number (Average time from listing to pickup in hours)",
+  top_donors: "[ObjectId] (Array of top donor user IDs for this period)",
+  top_volunteers: "[ObjectId] (Array of top volunteer user IDs)",
+  createdAt: "Date (Record creation timestamp)",
+  updatedAt: "Date (Last update timestamp)"
 }
 
 
@@ -91,12 +156,49 @@ Activity_logs [icon : activity]{
 
 Chat [icon : chat] {
   _id: "string (Primary Key)",
+"thread_id": "string (Chat thread ID)",
   sender_id: "ObjectId (References Users._id)",
   receiver_id: "ObjectId (References Users._id)",
   message: "string",
   timestamp: "Date (When the message was sent)",
   status: "string (Options: 'Sent', 'Delivered', 'Read')"
 }
+
+rolePermissions:{
+  "type": "Map",
+  "of": "Boolean",
+  "default": {
+    "canCreateDonation": false,
+    "canClaimDonation": false,
+    "canDeleteDonation": false,
+    "canManageUsers": false,
+    "canViewAnalytics": false,
+    "canRequestHelp": false,
+    "canAssignVolunteers": false
+  }
+}
+
+
+Reports{
+{
+  "_id": ObjectId,
+  "reporterId": ObjectId,  // User who reported (Volunteer, NGO, etc.)
+  "reportedUserId": ObjectId, // User being reported (Donator, Volunteer, etc.)
+  "reportedDonationId": ObjectId, // (Optional) If the report is about a donation
+  "reportType": "fake_donation" | "harassment" | "spam" | "other",
+  "description": "Detailed reason for the report",
+  "evidence": [ "image1.jpg", "screenshot.png" ], // Array of evidence files
+  "status": "pending" | "reviewed" | "resolved",
+  "adminAction": {
+    "actionTaken": "warning" | "ban" | "no_action",
+    "reason": "Violation of rules",
+    "adminId": ObjectId, // Admin who handled it
+    "timestamp": ISODate()
+  },
+  "createdAt": ISODate(),
+  "updatedAt": ISODate()
+}
+
 
 users._id  < Donation_Box._id
 users._id - contribution_Info._id

@@ -21,6 +21,17 @@ const userSchema = new mongoose.Schema({
   donations: [{ type: mongoose.Schema.Types.ObjectId, ref: "DonationBox" }],
   notifications: [{ type: mongoose.Schema.Types.ObjectId, ref: "Notification" }],
 });
+rolePermissions: {
+  type: Map,
+  of: Boolean,
+  default: {
+    canCreateDonation: false,
+    canClaimDonation: false,
+    canDeleteDonation: false,
+    canManageUsers: false,
+    canViewAnalytics: false
+  }
+}
 
 // CONTRIBUTION INFO SCHEMA
 const contributionInfoSchema = new mongoose.Schema({

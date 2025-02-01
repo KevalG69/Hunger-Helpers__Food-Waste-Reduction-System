@@ -1,0 +1,19 @@
+1. Open Application → Login
+   - Enter Username & Password → Submit
+     - Success → Admin Dashboard
+     - Failure → Retry or Forgot Password
+       - Forgot Password Flow: Enter Email → Reset Link → Reset Password → Login
+
+2. Dashboard Navigation:
+   - User Management:
+     - View Users → Add/Edit/Delete/Ban Users → Assign Roles → Save Changes.
+   - Content Management:
+     - Select Editable Section → Edit Content → Save Changes.
+   - System Monitoring:
+     - View Activity Logs → Filter → Drill Down → Export Report.
+     - View Flagged Reports → Take Action (Resolve/Delete).
+   - Donation Management:
+     - View Donations → Edit/Delete Donations → Save Changes.
+   - Platform Settings:
+     - Update Email Settings → Save Changes.
+     - Update Notification Preferences → Save Changes.
