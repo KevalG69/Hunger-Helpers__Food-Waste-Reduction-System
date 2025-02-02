@@ -1,0 +1,61 @@
+1. Authentication APIs
+POST /api/auth/register → Register a new user (Donor, NGO, Volunteer)
+POST /api/auth/login → User login
+POST /api/auth/logout → User logout
+POST /api/auth/refresh-token → Refresh authentication token
+POST /api/auth/forgot-password → Send password reset link
+POST /api/auth/reset-password → Reset user password
+
+2. User Management APIs
+GET /api/users/ → Get all users (Admin only)
+GET /api/users/:id → Get user by ID
+PUT /api/users/:id → Update user profile
+DELETE /api/users/:id → Delete user account (Admin)
+GET /api/users/:id/activity-logs → Get user activity logs
+GET /api/users/:id/contributions → Get user contribution details
+GET /api/users/:id/donations → Get user's donations
+
+3. Donation APIs
+POST /api/donations/ → Create a new donation
+GET /api/donations/ → Get all donations
+GET /api/donations/:id → Get donation by ID
+PUT /api/donations/:id → Update donation details
+DELETE /api/donations/:id → Delete a donation
+POST /api/donations/:id/claim → Claim a donation (NGO/Volunteer)
+
+4. Volunteer APIs
+GET /api/volunteers/ → Get all volunteers
+GET /api/volunteers/:id → Get volunteer details
+POST /api/volunteers/:id/assign → Assign a donation to a volunteer
+GET /api/volunteers/:id/assigned-donations → Get assigned donations for a volunteer
+
+5. Help Request APIs
+POST /api/help-requests/ → Create a new help request
+GET /api/help-requests/ → Get all help requests
+GET /api/help-requests/:id → Get help request details
+PUT /api/help-requests/:id → Update help request
+DELETE /api/help-requests/:id → Cancel a help request
+
+6. Notification APIs
+GET /api/notifications/ → Get all notifications for the user
+PUT /api/notifications/:id/read → Mark notification as read
+DELETE /api/notifications/:id → Delete a notification
+
+7. Chat APIs
+POST /api/chats/ → Start a new chat thread
+GET /api/chats/:thread_id → Get chat messages for a thread
+POST /api/chats/:thread_id/messages → Send a message in a chat
+DELETE /api/chats/:thread_id/messages/:id → Delete a message
+
+8. Analytics & Reports APIs
+GET /api/analytics/ → Get overall system analytics
+GET /api/analytics/donations → Get donation analytics
+GET /api/analytics/volunteers → Get volunteer analytics
+GET /api/analytics/leaderboard → Get leaderboard rankings
+POST /api/reports/ → Submit a report (e.g., fake donation, abuse)
+GET /api/reports/ → Get all reports (Admin)
+PUT /api/reports/:id/status → Update report status
+
+9. Leaderboard APIs
+GET /api/leaderboard/ → Get global leaderboard
+GET /api/leaderboard/:region → Get leaderboard for a specific region

@@ -24,6 +24,9 @@ Restaurant-permission and pages
 
 households -permission and pages
 
+Banned
+Restricted
+
 1. Open Application → Login
    - Enter Username & Password → Submit
      - Success → Admin Dashboard
