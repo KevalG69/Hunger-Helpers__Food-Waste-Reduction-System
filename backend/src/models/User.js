@@ -29,9 +29,38 @@ const userSchema = new mongoose.Schema({
     createdAt:{ type: Date, default: Date.now},
     updatedAt:{ type: Date, default: Date.now},
     
+    avaibility_status:{ type: String, enum:['Available','Busy','Inactive'], default:"Available" },
+
     contribution_Info:{ type: mongoose.Schema.Types.ObjectId, ref: "Contribution_Info"},
-    donations:[{ type: mongoose.Schema.Types.ObjectId, ref: "Donation_Box"}],
-    notifications:[{ type: mongoose.Schema.Types.ObjectId, ref: "Notifications"}]
+    // donations:[{ type: mongoose.Schema.Types.ObjectId, ref: "Donation_Box"}],
+    // assigned_donations: [{ type: mongoose.Schema.Types.ObjectId, ref: "Volunteer_Donations" }],
+    notifications: [{ type: mongoose.Schema.Types.ObjectId, ref: "Notification" }],
+    helpRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: "Volunteer_Help" }],
+    chatThreads: [{ type: mongoose.Schema.Types.ObjectId, ref: "Chat" }],
+    // activity_logs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Activity_Logs" }],
+    reports: [{ type: mongoose.Schema.Types.ObjectId, ref: "Reports" }],
 });
+
+//creating virtual references for DONATIONS
+userSchema.virtual("donations",{
+    ref:"Donations",
+    localField:"_id",
+    foreignField:"user_id"
+})
+
+//creating virtual references for assigned_donations
+userSchema.virtual("assigned_donations",{
+    ref:"Assigned_Donations",
+    localField:"_id",
+    foreignField:"user_id"
+})
+
+userSchema.virtual("ctivity_logs",{
+    ref:"Activity_logs",
+    localField:"_id",
+    foreignField:"user_id"
+})
+
+
 
 module.exports = mongoose.model('User',userSchema);
