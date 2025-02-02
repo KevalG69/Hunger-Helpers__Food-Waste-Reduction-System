@@ -58,6 +58,7 @@ const RegisterStep2Validator = (req,res,next)=>{
     next();
 }
 
+//login details validators
 const loginValidator = (req,res,next)=>{
 
     const loginWith = req.body.loginWith;

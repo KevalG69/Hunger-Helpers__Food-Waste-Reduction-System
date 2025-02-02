@@ -24,30 +24,6 @@ Restaurant-permission and pages
 
 households -permission and pages
 
-Banned
-Restricted
-
-1. Open Application → Login
-   - Enter Username & Password → Submit
-     - Success → Admin Dashboard
-     - Failure → Retry or Forgot Password
-       - Forgot Password Flow: Enter Email → Reset Link → Reset Password → Login
-
-2. Dashboard Navigation:
-   - User Management:
-     - View Users → Add/Edit/Delete/Ban Users → Assign Roles → Save Changes.
-   - Content Management:
-     - Select Editable Section → Edit Content → Save Changes.
-   - System Monitoring:
-     - View Activity Logs → Filter → Drill Down → Export Report.
-     - View Flagged Reports → Take Action (Resolve/Delete).
-   - Donation Management:
-     - View Donations → Edit/Delete Donations → Save Changes.
-   - Platform Settings:
-     - Update Email Settings → Save Changes.
-     - Update Notification Preferences → Save Changes.
-
-
 Manager User Flow
 1. Dashboard Navigation
 User Management:
@@ -188,6 +164,7 @@ Share Pickup Details.
 Assign Alternate Volunteer if Needed.
 ----------------------------------------------------------------------------------------------------------
 Donor / Restaurant Manager / Household User Flow
+
 1. User Registration & Authentication
 Start → User opens the app/website
 Sign Up / Log In
@@ -198,14 +175,19 @@ Account Created Successfully
 Existing user? → Log In
 Enter credentials → Authenticate
 Redirect to Dashboard
+
 2. Dashboard & Main Actions
+
 View Dashboard (Statistics, past donations, impact tracking)
 Options:
+
 Create a New Donation ✅
 Manage Past Donations 📦
 Track Ongoing Donations 🚚
 View Leaderboard / Contribution Points 🏆
+
 3. Create a New Donation
+
 Start Donation Process
 Enter details:
 Food Name, Type (Veg/Non-Veg), Quantity
@@ -216,6 +198,7 @@ Upload Food Image (Optional)
 Submit Donation Request
 Status: Pending ⏳
 Awaiting verification by system / NGO
+
 4. Donation Matching & Volunteer Assignment
 NGO / Volunteer Views Donation
 If accepted → Assign Volunteer for Pickup
