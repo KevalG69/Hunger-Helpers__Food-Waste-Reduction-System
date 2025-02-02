@@ -24,6 +24,27 @@ Restaurant-permission and pages
 
 households -permission and pages
 
+1. Open Application → Login
+   - Enter Username & Password → Submit
+     - Success → Admin Dashboard
+     - Failure → Retry or Forgot Password
+       - Forgot Password Flow: Enter Email → Reset Link → Reset Password → Login
+
+2. Dashboard Navigation:
+   - User Management:
+     - View Users → Add/Edit/Delete/Ban Users → Assign Roles → Save Changes.
+   - Content Management:
+     - Select Editable Section → Edit Content → Save Changes.
+   - System Monitoring:
+     - View Activity Logs → Filter → Drill Down → Export Report.
+     - View Flagged Reports → Take Action (Resolve/Delete).
+   - Donation Management:
+     - View Donations → Edit/Delete Donations → Save Changes.
+   - Platform Settings:
+     - Update Email Settings → Save Changes.
+     - Update Notification Preferences → Save Changes.
+
+
 Manager User Flow
 1. Dashboard Navigation
 User Management:
@@ -163,3 +184,58 @@ Chat with Volunteer.
 Share Pickup Details.
 Assign Alternate Volunteer if Needed.
 ----------------------------------------------------------------------------------------------------------
+Donor / Restaurant Manager / Household User Flow
+1. User Registration & Authentication
+Start → User opens the app/website
+Sign Up / Log In
+New user? → Register Account
+Fill in: Name, Email, Mobile, Location, Role (Restaurant, Household), Password
+Verify Email / Mobile (OTP)
+Account Created Successfully
+Existing user? → Log In
+Enter credentials → Authenticate
+Redirect to Dashboard
+2. Dashboard & Main Actions
+View Dashboard (Statistics, past donations, impact tracking)
+Options:
+Create a New Donation ✅
+Manage Past Donations 📦
+Track Ongoing Donations 🚚
+View Leaderboard / Contribution Points 🏆
+3. Create a New Donation
+Start Donation Process
+Enter details:
+Food Name, Type (Veg/Non-Veg), Quantity
+Prepared At, Expiry Date
+Pickup Address (Auto-fill from profile / Enter manually)
+Preferred Pickup Time
+Upload Food Image (Optional)
+Submit Donation Request
+Status: Pending ⏳
+Awaiting verification by system / NGO
+4. Donation Matching & Volunteer Assignment
+NGO / Volunteer Views Donation
+If accepted → Assign Volunteer for Pickup
+If rejected → Notify Donor & Ask for Corrections
+Donor receives Real-Time Notifications 📲
+"Your donation has been accepted!"
+"Volunteer [Name] will pick up your donation at [Time]"
+5. Donation Pickup Process
+Volunteer arrives at location
+Donor Confirms Pickup ✅
+Status Updates:
+Picked Up → In Transit 🚚
+Delivered → Completed 🎉
+6. Post-Donation Actions
+Donor receives:
+Impact Report (Meals Served, Carbon Savings, etc.) 📊
+Leaderboard Update & Contribution Points 🏆
+Option to Rate Volunteer ⭐
+7. Additional Features
+View Past Donations
+Track Impact & Analytics
+Edit Profile & Notification Preferences
+Leaderboard & Gamification
+End of Flow
+Loop Back to Dashboard → Start New Donation 🚀
+

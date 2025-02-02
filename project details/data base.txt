@@ -136,6 +136,26 @@ Analytics_Data [icon : chart] {
   updatedAt: "Date (Last update timestamp)"
 }
 
+Leaderboard [icon : trophy] {
+  _id: "ObjectId (Primary Key)",
+  date: "Date (Aggregation date, can be daily, weekly, or monthly)",
+  ranking_type: "string (Options: 'Top Donors', 'Top Volunteers', 'Top NGOs')",
+  rankings: [
+    {
+      user_id: "ObjectId (References Users._id)",
+      rank: "number (Position in leaderboard)",
+      name: "string (User's name for display)",
+      profilePhoto: "string (Path to profile photo)",
+      contribution_points: "number (Total points for this ranking)",
+      donation_count: "number (Total donations made, if applicable)",
+      deliveries_completed: "number (Total deliveries made, if applicable)",
+      badges: "[string] (Array of earned badges)"
+    }
+  ],
+  createdAt: "Date (Record creation timestamp)",
+  updatedAt: "Date (Last update timestamp)"
+}
+     
 
 Notification [icon : bell]{
   _id: "string (Primary Key)",
