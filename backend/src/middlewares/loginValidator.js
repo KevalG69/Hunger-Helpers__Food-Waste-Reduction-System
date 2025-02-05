@@ -1,18 +1,15 @@
 //Modules
 const joi = require("joi");
-const { login } = require("../controllers/AuthController");
+
 
 //Models
 
 
-// nickName:joi.string().min(4).max(10),
-// firstName:joi.string().min(3).max(20).required(),
-// lastName:joi.string().min(3).max(15).required(),
 const RegisterStep1Validator = (req,res,next)=>{
     //creating schema
     const schema = joi.object({        
         email:joi.string().email().required(),
-        mobile:joi.string.min(10).required(),
+        mobile:joi.string().min(10).required(),
         password:joi.string().min(8).required()
     })
 
@@ -31,13 +28,13 @@ const RegisterStep1Validator = (req,res,next)=>{
     }
 
     //if there is no error than move it to next
+    console.log("Step 1 clear")
     next();
 }
 
 const RegisterStep2Validator = (req,res,next)=>{
     //creating schema
     const schema = joi.object({        
-        nickName:joi.string().min(4).max(10),
         firstName:joi.string().min(3).max(20).required(),
         lastName:joi.string().min(3).max(15).required(),
         state:joi.string().required(),
@@ -55,29 +52,36 @@ const RegisterStep2Validator = (req,res,next)=>{
                     error
                 })
     }
+    
+    console.log("Step 2 clear")
     next();
 }
 
 //login details validators
 const loginValidator = (req,res,next)=>{
 
-    const loginWith = req.body.loginWith;
-    if(loginWith=='mobile')
+    const {loginWith} = req.body;
+    console.log(loginWith)
+    let schema;
+    if(loginWith=="Mobile")
     {
-        const schema = joi.object({
-            mobile:joi.string.min(10).required(),
+        schema = joi.object({
+            loginWith:joi.string(),
+            mobile:joi.string().min(10).required(),
             password:joi.string().min(8).required()
-        })
+        });
+        console.log("created")
     }
     else
     {
-        const schema = joi.object({
+        schema = joi.object({
+            loginWith:joi.string(),
             email:joi.string().email().required(),
             password:joi.string().min(8).required()
-        })
+        });
     }
 
-    const {error} = schema.validate(req.body)
+    const {error} = schema.validate(req.body);
 
     if(error)
     {

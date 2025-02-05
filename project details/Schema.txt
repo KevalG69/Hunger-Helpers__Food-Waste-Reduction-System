@@ -1,54 +1,93 @@
 const mongoose = require("mongoose");
 
 // USERS SCHEMA
+const mongoose = require("mongoose");
+
 const userSchema = new mongoose.Schema({
   verified: { type: Boolean, default: false },
-  nickName: { type: String },
+  nickName: { type: String, optional: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
-  age: { type: Number },
+  age: { type: Number, optional: true },
   email: { type: String, required: true, unique: true },
   mobile: { type: String, required: true, unique: true },
   state: { type: String, required: true },
   city: { type: String, required: true },
   locality: { type: String, required: true },
   role: { type: String, enum: ["Donor", "NGO", "Volunteer"], required: true },
-  profilePhoto: { type: String },
+  profilePhoto: { type: String, optional: true },
   password: { type: String, required: true },
+  availability_status: { type: String, enum: ["Available", "Busy", "Inactive"], default: "Available" },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
-  contribution_Info: { type: mongoose.Schema.Types.ObjectId, ref: "ContributionInfo" },
-  donations: [{ type: mongoose.Schema.Types.ObjectId, ref: "DonationBox" }],
+  check_ins: [{ type: mongoose.Schema.Types.ObjectId, ref: "Check_In" }],
+  contribution_Info: { type: mongoose.Schema.Types.ObjectId, ref: "Contribution_Info" },
+  donations: [{ type: mongoose.Schema.Types.ObjectId, ref: "Donation_Box" }],
+  assigned_donations: [{ type: mongoose.Schema.Types.ObjectId, ref: "Volunteer_Donations" }],
   notifications: [{ type: mongoose.Schema.Types.ObjectId, ref: "Notification" }],
+  helpRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: "Volunteer_Help" }],
+  chatThreads: [{ type: mongoose.Schema.Types.ObjectId, ref: "Chat" }],
+  activity_logs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Activity_Logs" }],
+  reports: [{ type: mongoose.Schema.Types.ObjectId, ref: "Reports" }],
 });
+
+
 rolePermissions: {
   type: Map,
   of: Boolean,
-  default: {
+  default:{
+    //user
     canCreateDonation: false,
     canClaimDonation: false,
     canDeleteDonation: false,
+    canEditDonation:false,
+    canReport:false,
+    //admin
     canManageUsers: false,
-    canViewAnalytics: false
+    canManageContent:false,
+    canMakeManager:false,
+    canManageDonation:false,
+    canMonitorSystem:false,
+    canChangePlatformSetting:false,
+
+    //manager
+    canCreateDonationPoint:false,
+    
+    //user
+    canViewAnalytics: false,
+    canViewDonations:false,
+    canTrackDonation:false,
+    canTrackDonationPoint:false,
+    canRequestHelp: false,
+    canAssignVolunteers: false,
   }
 }
 
 // CONTRIBUTION INFO SCHEMA
 const contributionInfoSchema = new mongoose.Schema({
   user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  score: { type: Number, default: 0 },
-  badge: [{ type: String }],
+  rating: { type: Number, default: 0 },
+  badges: [{ type: String }],
+  donationPoints: { type: Number, default: 0 },
+  volunteer_points: { type: Number, default: 0 },
   donation_Count: { type: Number, default: 0 },
-  delivery_Count: { type: Number, default: 0 },
+  completed_deliveries: { type: Number, default: 0 },
   last_contribution: { type: Date },
 });
+
+const Contribution_Info = mongoose.model("Contribution_Info", contributionInfoSchema);
+module.exports = Contribution_Info;
+
 
 // DONATION BOX SCHEMA
 const donationBoxSchema = new mongoose.Schema({
   user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  volunteer_id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  status: { type: String, enum: ["Pending", "Accepted", "Completed", "Cancelled"], required: true },
-  food_image: { type: String },
+  volunteer_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", optional: true },
+  assistingVolunteers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  ngo_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", optional: true },
+  donation_point_id: { type: mongoose.Schema.Types.ObjectId, ref: "Donation_Point", optional: true },
+  status: { type: String, enum: ["Pending", "Accepted", "Completed", "Cancelled", "Claimed", "Delivered"], default: "Pending" },
+  food_image: { type: String, optional: true },
   food_Name: { type: String, required: true },
   food_Type: { type: String, enum: ["Veg", "Non-Veg"], required: true },
   food_quantity: { type: String, required: true },
@@ -59,66 +98,172 @@ const donationBoxSchema = new mongoose.Schema({
     lat: { type: Number, required: true },
     lng: { type: Number, required: true },
   },
-  pickup_time: { type: Date, required: true },
+  pickup_time: { type: Date },
+  delivery_time: { type: Date },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+  helpRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: "Volunteer_Help" }],
+  reports: [{ type: mongoose.Schema.Types.ObjectId, ref: "Reports" }],
+});
+
+//VOLUNTEER DONATIONS
+const volunteerDonationsSchema = new mongoose.Schema({
+  volunteer_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  donation_id: { type: mongoose.Schema.Types.ObjectId, ref: "Donation_Box", required: true },
+  status: { type: String, enum: ["Accepted", "Picked Up", "Delivered", "Cancelled"], required: true },
+  timestamp: { type: Date, default: Date.now },
+});
+
+const Volunteer_Donations = mongoose.model("Volunteer_Donations", volunteerDonationsSchema);
+module.exports = Volunteer_Donations;
+
+//VOLUNTEER HELP
+
+const volunteerHelpSchema = new mongoose.Schema({
+  volunteer_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  donation_id: { type: mongoose.Schema.Types.ObjectId, ref: "Donation_Box", required: true },
+  status: { type: String, enum: ["Open", "In Progress", "Resolved", "Cancelled"], default: "Open" },
+  description: { type: String, required: true },
+  requestedAt: { type: Date, default: Date.now },
+  resolvedAt: { type: Date, optional: true },
+  assistingVolunteers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+});
+
+const Volunteer_Help = mongoose.model("Volunteer_Help", volunteerHelpSchema);
+module.exports = Volunteer_Help;
+
+//DONATION POINT
+
+const donationPointSchema = new mongoose.Schema({
+  manager_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  name: { type: String, required: true },
+  description: { type: String, required: true },
+  location: {
+    lat: { type: Number, required: true },
+    lng: { type: Number, required: true },
+  },
+  address: { type: String, required: true },
+  active: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
 
-// EXPORT MODELS
-const User = mongoose.model("User", userSchema);
-const ContributionInfo = mongoose.model("ContributionInfo", contributionInfoSchema);
-const DonationBox = mongoose.model("DonationBox", donationBoxSchema);
+// DONATION DATA
 
-module.exports = { User, ContributionInfo, DonationBox };
+const donationDataSchema = new mongoose.Schema({
+  date: { type: Date, required: true },
+  total_meals_served: { type: Number, default: 0 },
+  total_donors: { type: Number, default: 0 },
+  total_volunteers: { type: Number, default: 0 },
+  total_food_wasted: { type: Number, default: 0 },
+});
 
+//ANALYTICS DATA
+
+const analyticsDataSchema = new mongoose.Schema({
+  date: { type: Date, required: true },
+  region: { type: String, required: true },
+  total_meals_donated: { type: Number, default: 0 },
+  total_food_wasted: { type: Number, default: 0 },
+  total_donors: { type: Number, default: 0 },
+  total_volunteers: { type: Number, default: 0 },
+  total_ngos: { type: Number, default: 0 },
+  active_users: { type: Number, default: 0 },
+  donation_success_rate: { type: Number, default: 0 },
+  avg_donation_time: { type: Number, default: 0 },
+  top_donors: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  top_volunteers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+});
+
+const Analytics_Data = mongoose.model("Analytics_Data", analyticsDataSchema);
+module.exports = Analytics_Data;
+
+
+//LEADERBOARD
+
+const leaderboardSchema = new mongoose.Schema({
+  date: { type: Date, required: true },
+  ranking_type: { type: String, enum: ["Top Donors", "Top Volunteers", "Top NGOs"], required: true },
+  rankings: [
+    {
+      user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+      rank: { type: Number, required: true },
+      name: { type: String, required: true },
+      profilePhoto: { type: String, optional: true },
+      contribution_points: { type: Number, default: 0 },
+      donation_count: { type: Number, default: 0 },
+      deliveries_completed: { type: Number, default: 0 },
+      badges: [{ type: String }],
+    },
+  ],
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+});
+
+const Leaderboard = mongoose.model("Leaderboard", leaderboardSchema);
+module.exports = Leaderboard;
+
+//NOTIFICATIONS
 
 const notificationSchema = new mongoose.Schema({
-  user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // Reference to User
-  type: {
-    type: String,
-    enum: ["Donation Update", "Reminder", "Achievement"], // Notification types
-    required: true,
-  },
+  user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  type: { type: String, enum: ["Donation Update", "Reminder", "Achievement"], required: true },
   message: { type: String, required: true },
-  read_status: { type: Boolean, default: false }, // Notification read status
+  read_status: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
 });
 
-// Model
 const Notification = mongoose.model("Notification", notificationSchema);
+module.exports = Notification;
 
-const donationDataSchema = new mongoose.Schema({
-  date: { type: Date, required: true }, // Date of the donation
-  total_meals_served: { type: Number, required: true }, // Analytics data
-  total_donors: { type: Number, required: true },
-  total_volunteers: { type: Number, required: true },
-  total_food_wasted: { type: Number, required: true },
+
+//ACTIVITY LOGS
+
+const activityLogsSchema = new mongoose.Schema({
+  user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  activity_type: { type: String, required: true },
+  timestamp: { type: Date, default: Date.now },
+  metadata: { type: Object, optional: true },
 });
 
-// Model
-const DonationData = mongoose.model("DonationData", donationDataSchema);
+const Activity_Logs = mongoose.model("Activity_Logs", activityLogsSchema);
+module.exports = Activity_Logs;
 
-const activityLogSchema = new mongoose.Schema({
-  user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // Reference to User
-  activity_type: { type: String, required: true }, // e.g., 'Donation Created', 'Profile Updated'
-  timestamp: { type: Date, default: Date.now }, // Time of the activity
-  metadata: { type: Object }, // Additional information about the activity
-});
 
-// Model
-const ActivityLog = mongoose.model("ActivityLog", activityLogSchema);
-
+//CHAT 
 const chatSchema = new mongoose.Schema({
-  sender_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // Sender reference
-  receiver_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // Receiver reference
-  message: { type: String, required: true }, // Chat message content
-  timestamp: { type: Date, default: Date.now }, // When the message was sent
-  status: {
-    type: String,
-    enum: ["Sent", "Delivered", "Read"], // Status of the message
-    default: "Sent",
-  },
+  thread_id: { type: String, required: true },
+  sender_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  receiver_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  message: { type: String, required: true },
+  timestamp: { type: Date, default: Date.now },
+  status: { type: String, enum: ["Sent", "Delivered", "Read"], default: "Sent" },
 });
 
-// Model
 const Chat = mongoose.model("Chat", chatSchema);
+module.exports = Chat;
+
+//REPORTS
+
+const reportsSchema = new mongoose.Schema({
+  reporterId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  reportedUserId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  reportedDonationId: { type: mongoose.Schema.Types.ObjectId, ref: "Donation_Box", optional: true },
+  reportType: { type: String, enum: ["fake_donation", "harassment", "spam", "other"], required: true },
+  description: { type: String, required: true },
+  evidence: [{ type: String }],
+  status: { type: String, enum: ["pending", "reviewed", "resolved"], default: "pending" },
+  adminAction: {
+    actionTaken: { type: String, enum: ["warning", "ban", "no_action"], optional: true },
+    reason: { type: String, optional: true },
+    adminId: { type: mongoose.Schema.Types.ObjectId, ref: "User", optional: true },
+    timestamp: { type: Date, optional: true },
+  },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+});
+
+const Reports = mongoose.model("Reports", reportsSchema);
+module.exports = Reports;
