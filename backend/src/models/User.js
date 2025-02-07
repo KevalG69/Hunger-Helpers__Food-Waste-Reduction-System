@@ -22,8 +22,8 @@ const userSchema = new mongoose.Schema({
     city: { type: String, required: true },
     locality: { type: String },
 
-    email: { type: String, unique: true, required: true },
-    mobile: { type: String, unique: true, required: true },
+    email: { type: String, unique: true },
+    mobile: { type: String, unique: true },
 
     profilePhoto: { type: String },
     password: { type: String, required: true },

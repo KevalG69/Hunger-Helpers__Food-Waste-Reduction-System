@@ -4,7 +4,10 @@ const jwt = require("jsonwebtoken");
 
 //model 
 const UserModel = require("../models/User.js");
+const OtpModel = require("../models/Otp.js");
 
+//middlewares
+const {sendEmailOtp,sendMobileOtp} = require("../middlewares/sendOtp.js");
 
 const register = async (req, res) => {
 
@@ -68,6 +71,120 @@ const register = async (req, res) => {
         console.error(error);
 
     }
+}
+
+const sendVerificationCode = async (req, res) => {
+
+    try
+    {
+        const {registerWith,identifier,CC} = req.body;
+        
+        //sending verification code
+        const otp = Math.floor(100000 + Math.random() * 900000);//generating otp
+
+        let successSentOtp = false;
+
+        //checking login method for otp
+        if (registerWith == "Mobile") {
+            successSentOtp = await sendMobileOtp(CC, identifier, otp);
+        }
+        else {
+            successSentOtp = await sendEmailOtp(identifier, otp);
+        }
+
+        if (!successSentOtp) {
+            return res.status(500)
+                .json({
+                    message: "Error While Sending Code",
+                    success: false
+                })
+        }
+
+        //if code sent Successfully
+        res.status(200)
+            .json({
+                message:"verification code Sent Successfully",
+                success:true
+            })
+    }
+    catch(error)
+    {
+        res.status(500)
+            .json({
+                message:"Internal Server Error At Sending verification code",
+                success:false,
+                error:error
+            })
+    }
+
+}
+
+//verification of user email/mobile
+const codeVerification = async (req,res)=>
+{
+    
+     try//try and catch block to handle run time error
+        {
+            //extracting data from request body
+            const { identifier, EnteredOtp} = req.body;
+    
+            //checking if code for requested email/mobile exist in Otp table
+            const otpModel = await OtpModel.findOne({
+                $or: [{ email: identifier }, { mobile: identifier }]
+            })
+    
+            //if no code exist or expired
+            if (!otpModel) {
+                return res.status(400)
+                    .json({
+                        message: "Code Does not Exist",
+                        success: false
+                    })
+            }
+    
+            //if code has expired
+            const currentTime = Date.now();
+    
+            if (currentTime > otpModel.expireIn) {
+                //deleting code if it is expired
+                await OtpModel.deleteOne({ _id: otpModel._id })
+    
+                //sending error
+                return res.status(400)
+                    .json({
+                        message: "Code Has Expired",
+                        success: false
+                    })
+            }
+    
+            //if code does not expired check is it same as in database
+            if (EnteredOtp == otpModel.otp) 
+            {
+                await OtpModel.deleteOne({_id:otpModel._id});
+                return res.status(200)
+                    .json({
+                        message: "Verification Successfull",
+                        success: true
+                    })
+            }
+            else //if code does not match
+            {
+                return res.status(404)
+                    .json({
+                        message: "Invalid Code",
+                        success: false
+                    })
+            }
+        }
+        catch (error) {
+            res.status(500)
+                .json({
+                    message: "Internal Server Error At Code Verification",
+                    success: false,
+                    error: error
+                })
+        }
+
 }
 
 const login = async (req, res) => {
@@ -152,5 +269,7 @@ const login = async (req, res) => {
 
 module.exports = {
     register,
-    login
+    login,
+    sendVerificationCode,
+    codeVerification
 }

@@ -8,13 +8,16 @@ const twilio = require("twilio")
 const UserModel = require("../models/User.js");
 const OtpModel = require("../models/Otp.js");
 
+//middlewares
+const {sendEmailOtp,sendMobileOtp} = require("../middlewares/sendOtp.js");
+
 
 // forgot - password api
 const forgotPassword = async (req, res) => {
 
     try {
         //getting indenitfier (email/mobile)
-        const { identifier } = req.body;
+        const { identifier,CC} = req.body;
 
         //checking user Exist in database
         const user = await UserModel.findOne({
@@ -38,13 +41,13 @@ const forgotPassword = async (req, res) => {
         //if password recovery through email
         if (identifier.includes("@")) {
             //sending code to email 
-            sentSuccess = await sendResetEmail(user.email, otp);
+            sentSuccess = await sendEmailOtp(user.email, otp);
             console.warn(sentSuccess, user.email, otp)
         }
         else//if password recovery through mobile
         {
             //sending otp to mobile
-            sentSuccess = await sendResetMobile(user.mobile, otp);
+            sentSuccess = await sendMobileOtp(CC,user.mobile, otp);
         }
 
 
@@ -153,97 +156,6 @@ const resetPassword = async (req, res) => {
                 success: false,
                 error: error
             })
-    }
-}
-
-//to send email to user
-const sendResetEmail = async (UserEmail,UserOtp) => {
-
-    //getting info for email
-
-    try//try and catch block to handle run time error
-    {
-
-        console.log(process.env.EMAIL, UserEmail, UserOtp)
-
-        //creating Transporter to send email
-        const transporter = nodemailer.createTransport({
-            service: "Gmail",
-            auth: {
-                user: process.env.EMAIL,
-                pass: process.env.EMAIL_PASSWORD
-            },
-            tls: {
-                rejectUnauthorized: false
-            }
-        })
-
-        //sending email to User
-        await transporter.sendMail({
-            from: process.env.EMAIL,
-            to: UserEmail,
-            subject: "Hunger Helper Password Reset",
-            html: `  <h2>Hunger Helper Password Reset</h2>
-                    <p>Your password reset code is: <strong>${UserOtp}</strong></p>
-                    <p>Enter this code to reset your password.</p>`
-        })
-
-        //deleting code if already exist
-        const optModelExist = await OtpModel.findOne({email:UserEmail})
-        
-        if(optModelExist)
-        {
-            await OtpModel.deleteOne({_id:optModelExist._id});
-        }
-
-        //saving user otp to database
-        const otpModel = new OtpModel({
-            email: UserEmail,
-            otp: UserOtp,
-            expireIn: Date.now() + 5 * 60 * 1000
-        })
-        await otpModel.save();
-
-        //if email sent Successfully
-        return true;
-    }
-    catch (error) {
-        console.error("Error Sending Email = ", error);
-        return false;
-    }
-
-}
-
-const sendResetMobile = async (mobile,UserOtp) => {
-
-    //storing details
-    const accountSid = process.env.ACCOUNT_SID;
-    const authToken = process.env.AUTH_TOKEN;
-
-    const client = new twilio(accountSid, authToken)
-    let countryCode = "+91"
-
-    try//try and catch block to handle run time error
-    {
-        //creating and sending message
-        const message = await client.messages.create({
-            body: `Your Password Reset Code is ${UserOtp}`,
-            to: `${countryCode}${UserMobile}`,
-            from: process.env.TWILIO_NUMBER
-        })
-
-        const otpModel = new OtpModel({
-            mobile: UserMobile,
-            otp: UserOtp,
-            expireIn: Date.now() * 5 * 60 * 1000
-        })
-        await otpModel.save();
-
-        return true;
-    }
-    catch (error) {
-        console.error("Error Sendin Otp = ", error);
-        return false;
     }
 }
 
