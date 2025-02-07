@@ -118,11 +118,22 @@ const login = async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: '24h' }
         )
+
+        //generation refresh jwt token
+        const jwt_refreshToken = jwt.sign(
+            {
+                email: user.email,
+                _id: user._id
+            },
+            process.env.JWT_REFRESH_SECRET,
+            { expiresIn: '7d' }
+        )
         
         res.status(200)
             .json({
                 message:"Login Successfull",
                 token: jwtToken,
+                refreshToken: jwt_refreshToken,
                 firstName:user.firstName,
                 lastName:user.lastName,
                 email:user.email

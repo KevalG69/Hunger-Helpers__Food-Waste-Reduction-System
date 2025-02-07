@@ -10,7 +10,7 @@ const verifyToken = (req,res,next)=>{
     if(!token)
     {
         //if token not exist
-        return res.status(403)  
+        return res.status(401)  
                 .json({
                     message:"Unauthorized token required",
                     valid:false
@@ -30,7 +30,7 @@ const verifyToken = (req,res,next)=>{
     catch(error)
     {
         //if token is not valid
-        res.status(403)
+        res.status(401)
             .json({
                 message:"Unauthorized token invalid",
                 valid:false
