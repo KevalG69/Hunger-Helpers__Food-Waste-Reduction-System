@@ -67,16 +67,16 @@ const loginValidator = (req,res,next)=>{
     {
         schema = joi.object({
             loginWith:joi.string(),
-            mobile:joi.string().min(10).required(),
+            identifier:joi.string().min(10).required(),
             password:joi.string().min(8).required()
         });
-        console.log("created")
+        console.log("clear")
     }
     else
     {
         schema = joi.object({
             loginWith:joi.string(),
-            email:joi.string().email().required(),
+            identifier:joi.string().email().required(),
             password:joi.string().min(8).required()
         });
     }

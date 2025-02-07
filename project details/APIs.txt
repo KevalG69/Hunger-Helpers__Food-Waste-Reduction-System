@@ -1,9 +1,9 @@
 1. Authentication APIs
-POST /api/auth/register → Register a new user (Donor, NGO, Volunteer)
-POST /api/auth/login → User login
-POST /api/auth/logout → User logout
+POST /api/auth/register → Register a new user (Donor, NGO, Volunteer)✔️
+POST /api/auth/login → User login✔️
+POST /api/auth/logout → User logout✔️
 POST /api/auth/refresh-token → Refresh authentication token
-POST /api/auth/forgot-password → Send password reset link
+POST /api/auth/forgot-password → Send password reset link✔️
 POST /api/auth/reset-password → Reset user password
 
 2. User Management APIs

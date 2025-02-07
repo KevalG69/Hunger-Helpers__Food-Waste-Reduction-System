@@ -21,7 +21,7 @@ const register = async (req, res) => {
         if (userExist) {
             return res.status(404)
                 .json({
-                    message: "User Alread Exist",
+                    message: "User Already Exist",
                     success: false
                 })
         }
@@ -53,7 +53,7 @@ const register = async (req, res) => {
 
         res.status(200)
             .json({
-                message: "User Registered SuccessFully",
+                message: "User Registered Successfully",
                 success: true
             })
     }
@@ -74,27 +74,16 @@ const login = async (req, res) => {
     //try and catch block for run time error
     try {
         //extracting data from req.body
+        const {identifier,password} = req.body;
 
-        //checking method from req.body
-        const { loginWith } = req.body;
-        let user;
-        let pass;
         const errorMessage = "Email/Mobile or Password invalid"
-        //if login method is mobile
-        if (loginWith == "Mobile") {
-            const { mobile,password} = req.body;
-            user = await UserModel.findOne({ mobile });
-            pass = password;
-        }
-        else//if login method is email
-        {
-            const { email,password } = req.body;
-            user = await UserModel.findOne({ email });
-            pass = password;
-        }
-     
 
+        
+        
         //checking if user exist
+        const user = await UserModel.findOne({
+            $or:[{email:identifier},{mobile:identifier}]
+        })
 
         //if user not exist
         if (!user) {
@@ -108,7 +97,7 @@ const login = async (req, res) => {
 
         //if user exist
 
-        const isPasswordSame = await bcrypt.compare(pass, user.password);
+        const isPasswordSame = await bcrypt.compare(password, user.password);
        
         //if entered password and password in database is not same
 
