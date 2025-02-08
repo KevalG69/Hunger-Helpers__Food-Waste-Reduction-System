@@ -14,11 +14,13 @@ const register = async (req, res) => {
     //try and catch block if there is any error on run time
     try {
         //getting data from req.body
-        const { nickName, firstName, lastName, state, city, role, email, mobile, password } = req.body;
+        const { nickName, firstName, lastName, state, city, role,identifier,password } = req.body;
         console.log(req.body);
 
         //checking if there is user already exist
-        const userExist = await UserModel.findOne({ mobile });
+        const userExist = await UserModel.findOne({
+            $or:[{email:identifier},{mobile:identifier}]
+        });
 
         //if there is user already exist
         if (userExist) {
@@ -31,6 +33,17 @@ const register = async (req, res) => {
 
         // if user not exist than creating one
 
+        let email;
+        let mobile;
+        if(identifier.includes("@"))
+        {
+            email=identifier;
+
+        }
+        else
+        {
+            mobile=identifier;
+        }
         // 1.create user using user model
         const userModel = new UserModel({
             nickName,
@@ -99,7 +112,7 @@ const sendVerificationCode = async (req, res) => {
                     success: false
                 })
         }
-
+        console.warn("Sent")
         //if code sent Successfully
         res.status(200)
             .json({
@@ -267,9 +280,31 @@ const login = async (req, res) => {
     }
 }
 
+const logout = async (req,res)=>{
+
+    try
+    {
+        
+        res.status(200)
+            .json({
+                message:"Logout Successfull",
+                success:true
+            })
+    }
+    catch(error)
+    {
+        res.status(500)
+            .json({
+                message:"Internal Server Error At Logout",
+                success:false,
+                error:error
+            })
+    }
+}
 module.exports = {
     register,
     login,
+    logout,
     sendVerificationCode,
     codeVerification
 }

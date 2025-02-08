@@ -14,6 +14,7 @@ const rolePermissionSchema = new mongoose.Schema({
     canReport:false,
     //admin
     canManageUsers: false,
+    canGetUser:false,
     canManageContent:false,
     canMakeManager:false,
     canManageDonation:false,

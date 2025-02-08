@@ -12,11 +12,12 @@ const RegisterStep1Validator = async (req, res, next) => {
 
     const { registerWith, identifier, CC } = req.body;
     let schema;
-    //creating schema
 
+    //creating schema
     //if register with mobile
     if (registerWith == "Mobile") {
         schema = joi.object({
+            registerWith: joi.string(),
             identifier: joi.string().min(10).required(),
             password: joi.string().min(8).required()
         })
@@ -24,6 +25,7 @@ const RegisterStep1Validator = async (req, res, next) => {
     else//if register with email
     {
         schema = joi.object({
+            registerWith: joi.string(),
             identifier: joi.string().email().required(),
             password: joi.string().min(8).required()
         })

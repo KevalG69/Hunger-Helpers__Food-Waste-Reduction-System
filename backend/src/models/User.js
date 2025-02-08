@@ -22,8 +22,8 @@ const userSchema = new mongoose.Schema({
     city: { type: String, required: true },
     locality: { type: String },
 
-    email: { type: String, unique: true },
-    mobile: { type: String, unique: true },
+    email: { type: String },
+    mobile: { type: String },
 
     profilePhoto: { type: String },
     password: { type: String, required: true },
@@ -63,6 +63,12 @@ userSchema.virtual("activity_logs", {
     foreignField: "user_id"
 })
 
+const User = mongoose.model('User', userSchema);
+
+//creating partial index in mobile field
+User.createIndexes({ mobile: 1 }, { unique: true, partialFilterExpression: { mobile: { $exists: true, $ne: null } } })
+  .then(() => console.log('Partial index created on mobile field'))
+  .catch(err => console.error('Error creating index:', err));
 
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = User;

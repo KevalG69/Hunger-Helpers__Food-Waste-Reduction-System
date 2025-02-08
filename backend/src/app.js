@@ -12,7 +12,7 @@ const dataBaseConnect = require("./config/dbConnect.js")
 
 //-from routes
 const AuthRouter = require("./routes/AuthRouter.js");
-
+const UserRouter = require("./routes/UserRouter.js");
 
 //creating app 
 const app = express();
@@ -39,7 +39,8 @@ app.use(bodyParser.json());
 app.use("/auth",AuthRouter);
 
 
-
+//--User Router
+app.use("/users",UserRouter);
 
 
 //--------------------

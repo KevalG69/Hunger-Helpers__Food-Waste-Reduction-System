@@ -10,7 +10,7 @@ const OtpModel = require("../models/Otp.js");
 
 
 //to send email to user
-const sendResetEmail = async (UserEmail,UserOtp) => {
+const sendEmailOtp = async (UserEmail,UserOtp) => {
 
     //getting info for email
 
@@ -67,7 +67,7 @@ const sendResetEmail = async (UserEmail,UserOtp) => {
 
 }
 
-const sendResetMobile = async (CC,mobile,UserOtp) => {
+const sendMobileOtp = async (CC,mobile,UserOtp) => {
 
     //storing details
     const accountSid = process.env.ACCOUNT_SID;
