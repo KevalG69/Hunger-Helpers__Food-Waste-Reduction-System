@@ -5,6 +5,7 @@ const activityLogsSchema = new mongoose.Schema({
     user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 
     activity_type: { type: String, required: true },
+    endpoint:{ type: String},
     timestamp: { type: Date, default: Date.now },
     metadata: { type: Object }
 })

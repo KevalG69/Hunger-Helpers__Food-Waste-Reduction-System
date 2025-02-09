@@ -9,7 +9,10 @@ POST /api/auth/reset-password → Reset user password✔️
 2. User Management APIs
 GET /api/users/ → Get all users (Admin only)✔️
 GET /api/users/:id → Get user by ID✔️
-PUT /api/users/:id → Update user profile
+PUT /api/users/profile → Update user profile✔️
+PUT /api/users/identifier -> Update user identifier✔️
+PUT /api/users/role -> Update user Role✔️
+PUT /api/users/role-manager -> Update user role to manager✔️
 DELETE /api/users/:id → Delete user account (Admin)
 GET /api/users/:id/activity-logs → Get user activity logs
 GET /api/users/:id/contributions → Get user contribution details

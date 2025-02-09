@@ -62,6 +62,11 @@ const forgotPassword = async (req, res) => {
         }
 
         // if recovery code send Successfully
+        //activityLogger
+        await activityLogger(user.id,"Forgot Password","auth/forgot-password",{
+            email:user.email,
+            mobile:user.mobile
+        })
         res.status(200)
             .json({
                 message: "Recovery Code Sent Successfully",
@@ -133,7 +138,7 @@ const resetPassword = async (req, res) => {
             //3.deleting Code
             await OtpModel.deleteOne({_id:otpModel._id});
 
-
+            
             return res.status(200)
                 .json({
                     message: "Password Reset Successfull",

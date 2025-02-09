@@ -8,6 +8,7 @@ const OtpModel = require("../models/Otp.js");
 
 //middlewares
 const {sendEmailOtp,sendMobileOtp} = require("../middlewares/sendOtp.js");
+const activityLogger = require("../functions&utils/activityLogger.js");
 
 const register = async (req, res) => {
 
@@ -66,6 +67,12 @@ const register = async (req, res) => {
 
 
         //4. sending response of success registretion
+
+        //activityLogger
+            await activityLogger(userModel.id,"User Registered","auth/register",{
+                email:userModel.email,
+                mobile:userModel.mobile
+            })
 
         res.status(200)
             .json({
@@ -259,6 +266,12 @@ const login = async (req, res) => {
             { expiresIn: '7d' }
         )
         
+        //activityLogger
+        await activityLogger(user.id,"User Login","auth/login",{
+            email:user.email,
+            mobile:user.mobile
+        })
+
         res.status(200)
             .json({
                 message:"Login Successfull",
@@ -284,7 +297,13 @@ const logout = async (req,res)=>{
 
     try
     {
-        
+        const {id} = req.query;
+        const user = await UserModel.findById(id)
+        //activityLogger
+        await activityLogger(user.id,"User Logout","auth/logout",{
+            email:user.email,
+            mobile:user.mobile
+        })
         res.status(200)
             .json({
                 message:"Logout Successfull",

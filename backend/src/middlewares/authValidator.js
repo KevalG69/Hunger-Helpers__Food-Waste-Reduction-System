@@ -14,8 +14,8 @@ const verifyToken = async (req, res, next) => {
         //if token not exist
         return res.status(401)
             .json({
-                message: "Unauthorized token required",
-                valid: false
+                message: "Unauthorized - token required",
+                success: false
             })
     }
 
@@ -44,8 +44,8 @@ const verifyToken = async (req, res, next) => {
         //if token is not valid
         res.status(401)
             .json({
-                message: "Unauthorized token invalid",
-                valid: false
+                message: "Unauthorized - token invalid",
+                success: false
             })
     }
 }
