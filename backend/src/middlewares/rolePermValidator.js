@@ -68,7 +68,54 @@ const canMakeManager = async(req,res,next)=>{
     }    
 }
 
+const canManageUsers = async(req,res,next)=>{
+     
+    //geting roler permission model
+    const rolePermModel = await RolePermModel.findOne({role:req.user.role});
+
+
+    // checking Permission
+    if(rolePermModel.permissions.canManageUsers)//if have permission 
+    {
+            next();
+    }
+    else//if dont have permission
+    {
+        return res.status(403)
+                .json({
+                    message:"Access Denied",
+                    success:false
+                })
+    }    
+
+}
+
+
+const canMonitorSystem = async(req,res,next)=>{
+     
+    //geting roler permission model
+    const rolePermModel = await RolePermModel.findOne({role:req.user.role});
+
+
+    // checking Permission
+    if(rolePermModel.permissions.canMonitorSystem)//if have permission 
+    {
+            next();
+    }
+    else//if dont have permission
+    {
+        return res.status(403)
+                .json({
+                    message:"Access Denied",
+                    success:false
+                })
+    }    
+
+}
+
 module.exports = {
     canChangeUserRole,
-    canMakeManager
+    canMakeManager,
+    canManageUsers,
+    canMonitorSystem
 }

@@ -2,10 +2,15 @@
 
 //Models
 const UserModel = require("../models/User.js")
+const ContributionInfoModel = require("../models/Contribution_Info.js");
+const NotificationModel = require("../models/Notification.js");
 
 //Middlewares
 
+//functions
+const activityLogger = require("../functions&utils/activityLogger.js");
 
+//Update User
 const UpdateUserProfile = async (req,res)=>{
 
     try
@@ -208,9 +213,75 @@ const UpdateUserIdentifier = async (req,res)=>{
     }
 }
 
+//Delete User Account
+const deleteUser =  async (req,res)=>{
+
+    try
+    {
+        //getting user
+        const {id} = req.query;
+        const {reason} = req.body;
+        //finding user in database
+        const user = await UserModel.findById(id);
+
+        //if user does not exist
+        if(!user)
+        {
+            return res.status(404)
+                    .json({
+                        message:"User Not Found",
+                        success:false
+                    })
+        }
+
+        //if user exist
+        
+        //checking if user is admin
+        if(user.role=="Admin")
+        {
+            return res.status(404)
+                    .json({
+                        message:"Cannot Delete Admin",
+                        success:false
+                    })
+        }
+
+    
+        //activityLogger
+        await activityLogger(req.user.id,"Deleted User Account Contribution_Info,Notification","delete users/:id",{
+            DeletedUserId:user.id,
+            UserEmail:user.email,
+            UserMobile:user.mobile,
+            Reason:reason  
+        })
+        
+        //deleting user
+        await ContributionInfoModel.deleteOne({user_id:id})
+        await NotificationModel.deleteOne({user_id:id})
+
+        await UserModel.findByIdAndDelete(id);
+
+        res.status(200)
+                .json({
+                    message:"User Account Deleted Successfully",
+                    success:true
+                })
+    }
+    catch(error)
+    {
+        console.error(error)
+        res.status(500)
+            .json({
+                message:"Failed To Delete User Account",
+                success:false,
+                error
+            })
+    }
+}
 
 module.exports = {
     UpdateUserProfile,
     UpdateUserRole,
-    UpdateUserIdentifier
+    UpdateUserIdentifier,
+    deleteUser
 }

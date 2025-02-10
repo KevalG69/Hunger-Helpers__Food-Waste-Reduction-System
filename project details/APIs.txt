@@ -13,10 +13,10 @@ PUT /api/users/profile → Update user profile✔️
 PUT /api/users/identifier -> Update user identifier✔️
 PUT /api/users/role -> Update user Role✔️
 PUT /api/users/role-manager -> Update user role to manager✔️
-DELETE /api/users/:id → Delete user account (Admin)
-GET /api/users/:id/activity-logs → Get user activity logs
-GET /api/users/:id/contributions → Get user contribution details
-GET /api/users/:id/donations → Get user's donations
+DELETE /api/users/:id → Delete user account (Admin)✔️
+GET /api/users/:id/activity-logs → Get user activity logs✔️
+GET /api/users/:id/contributions → Get user contribution details✔️
+GET /api/users/:id/donations → Get user's donations✔️
 
 3. Donation APIs
 POST /api/donations/ → Create a new donation

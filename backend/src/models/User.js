@@ -58,7 +58,7 @@ userSchema.virtual("assigned_donations", {
 })
 
 userSchema.virtual("activity_logs", {
-    ref: "Activity_logs",
+    ref: "Activity_Log",
     localField: "_id",
     foreignField: "user_id"
 })
