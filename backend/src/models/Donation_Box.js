@@ -10,7 +10,7 @@ const donationBoxSchema = new mongoose.Schema({
 
   donation_point_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Donation_Point' },
 
-  status: { type: String, enum: ['Pending', 'Completed', 'Accepted', 'Cancelled', 'Expired', 'Claimed', 'Delivered'], required: true },
+  status: { type: String, enum: ['Pending', 'Completed', 'Accepted', 'Cancelled', 'Expired', 'Claimed', 'Delivered'], default:"Pending",required: true },
 
   food_image: { type: String },
   food_name: { type: String, required: true },

@@ -24,7 +24,7 @@ const canChangeUserRole = async (req,res,next)=>{
     }
 
     // checking Permission
-    if(rolePermModel.permissions.canChangeUserRole)//if have permission 
+    if(rolePermModel.permissions.canChangeUserRole &&  req.user.verified==true)//if have permission 
     {
             next();
     }
@@ -113,9 +113,79 @@ const canMonitorSystem = async(req,res,next)=>{
 
 }
 
+const canCreateDonation = async(req,res,next)=>{
+     
+    //geting roler permission model
+    const rolePermModel = await RolePermModel.findOne({role:req.user.role});
+
+
+    // checking Permission
+    if(rolePermModel.permissions.canCreateDonation)//if have permission 
+    {
+            next();
+    }
+    else//if dont have permission
+    {
+        return res.status(403)
+                .json({
+                    message:"Access Denied",
+                    success:false
+                })
+    }    
+
+}
+
+const canViewDonations = async(req,res,next)=>{
+     
+    //geting roler permission model
+    const rolePermModel = await RolePermModel.findOne({role:req.user.role});
+
+
+    // checking Permission
+    if(rolePermModel.permissions.canViewDonations && req.user.verified==true)//if have permission 
+    {
+            next();
+    }
+    else//if dont have permission
+    {
+        return res.status(403)
+                .json({
+                    message:"Access Denied",
+                    success:false
+                })
+    }    
+
+}
+
+const canClaimDonation = async(req,res,next)=>{
+     
+    //geting roler permission model
+    const rolePermModel = await RolePermModel.findOne({role:req.user.role});
+
+
+    // checking Permission
+    if(rolePermModel.permissions.canClaimDonation && req.user.verified ==true)//if have permission 
+    {
+            next();
+    }
+    else//if dont have permission
+    {
+        return res.status(403)
+                .json({
+                    message:"Access Denied",
+                    success:false
+                })
+    }    
+
+}
 module.exports = {
     canChangeUserRole,
     canMakeManager,
     canManageUsers,
-    canMonitorSystem
+    canMonitorSystem,
+
+    canCreateDonation,
+    canViewDonations,
+
+    canClaimDonation
 }

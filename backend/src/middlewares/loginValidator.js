@@ -70,6 +70,7 @@ const RegisterStep1Validator = async (req, res, next) => {
 const RegisterStep2Validator = (req, res, next) => {
     //creating schema
     const schema = joi.object({
+        nickName: joi.string().min(3).max(20).allow(null).optional(),
         firstName: joi.string().min(3).max(20).required(),
         lastName: joi.string().min(3).max(15).required(),
         state: joi.string().required(),

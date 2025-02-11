@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 // NGO=>NGO'People manager,=>Teachers,volunteers 
 // 	Donators=>Restaurant'manager/Restaurant => houseHolds
 const userSchema = new mongoose.Schema({
-    verified: { type: String, default: false },
+    verified: { type: Boolean, default: false },
     role: {
         type: String, enum: ['Admin', 'Manager', 'Teacher', 'Volunteer', 'Restaurant-Donor', 'HouseHold-Donor'],
         default: 'HouseHold-Donor',

@@ -8,8 +8,7 @@ const UserModel = require("../models/User.js")
 
 const activityLogger = async (userId, activityType, endPoint, metadata = {}) => {
 
-    try 
-    {
+    try {
         const newLog = new ActivityLogModel({
             user_id: userId,
             activity_type: activityType,
@@ -17,15 +16,15 @@ const activityLogger = async (userId, activityType, endPoint, metadata = {}) => 
             metadata
         })
 
-        const savedLog  = await newLog.save();
+        const savedLog = await newLog.save();
 
-        await UserModel.findByIdAndUpdate(userId,{
-            $push:{ activity_logs: savedLog.id}
+        await UserModel.findByIdAndUpdate(userId, {
+            $push: { activity_logs: savedLog.id }
         })
         console.warn("Activity Logged")
     }
     catch (error) {
-        console.error("Activity log error = ",error)
+        console.error("Activity log error = ", error)
     }
 
 

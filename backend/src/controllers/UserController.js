@@ -11,7 +11,7 @@ const NotificationModel = require("../models/Notification.js");
 const activityLogger = require("../functions&utils/activityLogger.js");
 
 //Update User
-const UpdateUserProfile = async (req,res)=>{
+const updateUserProfile = async (req,res)=>{
 
     try
     {
@@ -87,7 +87,7 @@ const UpdateUserProfile = async (req,res)=>{
     }
 }
 
-const UpdateUserRole = async (req,res)=>{
+const updateUserRole = async (req,res)=>{
     try
     {
         //getting data
@@ -155,7 +155,7 @@ const UpdateUserRole = async (req,res)=>{
     }
 }
 
-const UpdateUserIdentifier = async (req,res)=>{
+const updateUserIdentifier = async (req,res)=>{
     try
     {
         //getting data
@@ -280,8 +280,8 @@ const deleteUser =  async (req,res)=>{
 }
 
 module.exports = {
-    UpdateUserProfile,
-    UpdateUserRole,
-    UpdateUserIdentifier,
+    updateUserProfile,
+    updateUserRole,
+    updateUserIdentifier,
     deleteUser
 }

@@ -11,6 +11,8 @@ const OtpModel = require("../models/Otp.js");
 //middlewares
 const {sendEmailOtp,sendMobileOtp} = require("../middlewares/sendOtp.js");
 
+//function 
+const activityLogger = require("../functions&utils/activityLogger.js")
 
 // forgot - password api
 const forgotPassword = async (req, res) => {
@@ -77,7 +79,7 @@ const forgotPassword = async (req, res) => {
     {
         res.status(500)
             .json({
-                message: "Internal Server Error - Forgot Password",
+                message: "Failed to do Forgot Password",
                 success: false,
                 error: error
             })

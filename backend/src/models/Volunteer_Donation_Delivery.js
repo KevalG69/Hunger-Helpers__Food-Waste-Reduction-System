@@ -8,7 +8,7 @@ const volunteerDDSchema = new mongoose.Schema({
         required: true
     },
     donation_id: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'User',
+        type: mongoose.Schema.Types.ObjectId, ref: 'Donation_Box',
         required: true
     },
     status: { type: String, enum: ['Accepted', 'PickedUp', 'Deliverd', 'Cancelled'] },

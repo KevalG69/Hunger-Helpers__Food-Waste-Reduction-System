@@ -2,9 +2,9 @@
 const UserRouter = require("express").Router();
 
 //Controllers
-const {GetAllUsers,GetUserByidentifier,GetUserActivityLogs, GetUserContributionInfo,GetUserDonations} 
+const {getAllUsers,getUserByidentifier,getUserActivityLogs, getUserContributionInfo,getUserDonations} 
                 = require("../controllers/GetUsersController.js");
-const {UpdateUserProfile, UpdateUserIdentifier,UpdateUserRole, deleteUser} 
+const {updateUserProfile, updateUserIdentifier,updateUserRole, deleteUser} 
         = require("../controllers/UserController.js");
 
 //Middlewares
@@ -19,36 +19,36 @@ const { userBasicDataValidator,userAdvDataValidator} = require("../middlewares/u
 
 
 //-----------------------
-//Get All user API - users/
-UserRouter.get("/",verifyToken,isAdmin,GetAllUsers);
+// - Get All user API - users/
+UserRouter.get("/",verifyToken,isAdmin,getAllUsers);
 
-//Get User By identifier - users/identifier
-UserRouter.get("/identifier",verifyToken,isManager,GetUserByidentifier);
+// - Get User By identifier - users/identifier
+UserRouter.get("/identifier",verifyToken,isManager,getUserByidentifier);
 
-//Get User Activity logs
-UserRouter.get("/activity-logs",verifyToken,canMonitorSystem,GetUserActivityLogs);
+// - Get User Activity logs
+UserRouter.get("/activity-logs",verifyToken,canMonitorSystem,getUserActivityLogs);
 
-//Get User Contribution Info
-UserRouter.get("/contribution-info/",verifyToken,isMangerOrSelf,GetUserContributionInfo);
+// - Get User Contribution Info
+UserRouter.get("/contribution-info/",verifyToken,isMangerOrSelf,getUserContributionInfo);
 
-//Get User Donations
-UserRouter.get("/Donations",verifyToken,isMangerOrSelf,GetUserDonations)
-
-//Update User users/identifier
-UserRouter.put("/profile",verifyToken,isMangerOrSelf,userBasicDataValidator,UpdateUserProfile);
+// - Get User Donations
+UserRouter.get("/donations",verifyToken,isMangerOrSelf,getUserDonations)
 
 
-//Update user Role
-UserRouter.put("/role",verifyToken,canChangeUserRole,UpdateUserRole);
 
-UserRouter.put("/role-manager",verifyToken,canMakeManager,UpdateUserRole);
+// - Update User users/identifier
+UserRouter.put("/profile",verifyToken,isMangerOrSelf,userBasicDataValidator,updateUserProfile);
+
+// - Update user Role
+UserRouter.put("/role",verifyToken,canChangeUserRole,updateUserRole);
+
+UserRouter.put("/role-manager",verifyToken,canMakeManager,updateUserRole);
+
+// - Update User identifier
+UserRouter.put("/identifier",verifyToken,isAdmin,userAdvDataValidator,updateUserIdentifier);
 
 
-//Update User identifier
-UserRouter.put("/identifier",verifyToken,isAdmin,userAdvDataValidator,UpdateUserIdentifier);
-
-
-//Delete user Account
+// - Delete user Account
 UserRouter.delete("/",verifyToken,canManageUsers,deleteUser)
 
 

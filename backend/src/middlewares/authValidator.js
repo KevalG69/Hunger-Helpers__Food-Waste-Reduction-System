@@ -111,9 +111,39 @@ const isMangerOrSelf = async (req, res, next) => {
     }
 }
 
+const notSelf = async (req,res,next)=>{
+      try {
+        //getting role and identifier
+        const id = req.params.id;
+
+        //Checking role and id
+        if(req.user.id!=id)
+        {
+            return next();
+        }
+
+        //if self
+
+        res.status(403)
+            .json({
+                message:"Cannot Accepted By YourSelf",
+                success:false
+            })
+    }
+    catch (error) {
+        console.log(error)
+        res.status(500)
+            .json({
+                message:"Internal Server Error At not self check",
+                success:false,
+                error
+            })
+    }
+}
 module.exports = {
     verifyToken,
     isAdmin,
     isManager,
-    isMangerOrSelf
+    isMangerOrSelf,
+    notSelf
 }

@@ -10,12 +10,42 @@ const Donations = require("../models/Donation_Box.js");
 
 //functions
 const activityLogger = require("../functions&utils/activityLogger.js");
-const GetAllUsers = async (req,res) =>{
+
+
+const getAllUsers = async (req,res) =>{
  
     try//try and catch block to handle run time error
     {
+        //extracting data
+        const {role, state,city,verified,limit=10,page=1,sort="createdAt"} = req.query;
+
+        //query
+        const query = {};
+
+        //filling query
+        if(role) query.role = role
+        if(state) query.state = state
+        if(city) query.city = city
+        if(verified) query.verified = verified
+    
+
+
         //getting all users
-        const Users = await UserModel.find().select("-password");
+        const Users = await UserModel.find(query)
+        .limit(parseInt(limit))
+        .skip((parseInt(page)-1)*parseInt(limit))
+        .sort(sort)
+        .select("-password");
+
+        //if not user Found
+        if(Users.length==0)
+        {
+            return res.status(404)
+                    .json({
+                        message:"No User Found",
+                        success:false
+                    })
+        }
 
         res.status(200)
             .json({
@@ -35,7 +65,7 @@ const GetAllUsers = async (req,res) =>{
     }
 }
 
-const GetUserByidentifier = async (req,res)=>{
+const getUserByidentifier = async (req,res)=>{
     
     try
     {
@@ -77,7 +107,7 @@ const GetUserByidentifier = async (req,res)=>{
     }
 }
 
-const GetUserActivityLogs = async(req,res)=>{
+const getUserActivityLogs = async(req,res)=>{
 
     try
     {
@@ -129,7 +159,7 @@ const GetUserActivityLogs = async(req,res)=>{
 }
 
 
-const GetUserContributionInfo = async(req,res)=>{
+const getUserContributionInfo = async(req,res)=>{
 
     try
     {
@@ -180,7 +210,7 @@ const GetUserContributionInfo = async(req,res)=>{
     }
 }
 
-const GetUserDonations = async(req,res)=>{
+const getUserDonations = async(req,res)=>{
 
     try
     {
@@ -232,9 +262,9 @@ const GetUserDonations = async(req,res)=>{
 }
 
 module.exports = {
-    GetAllUsers,
-    GetUserByidentifier,
-    GetUserActivityLogs,
-    GetUserContributionInfo,
-    GetUserDonations
+    getAllUsers,
+    getUserByidentifier,
+    getUserActivityLogs,
+    getUserContributionInfo,
+    getUserDonations
 }
