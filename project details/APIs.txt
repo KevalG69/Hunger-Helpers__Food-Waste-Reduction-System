@@ -23,9 +23,12 @@ POST /api/donations/ → Create a new donation✔️
 GET /api/donations/ → Get all donations✔️
 GET /api/donations/:id → Get donation by ID✔️
 PUT /api/donations/:id → Update donation details✔️
-PUT /api/donations/accept -> accept donations✔️
-DELETE /api/donations/:id → Delete a donation
+POST /api/donations/accept -> accept donations✔️
+POST /api/donations/cancel -> cancel Acepted Donation✔️
+DELETE /api/donations/:id → Delete a donation✔️
 POST /api/donations/:id/claim → Claim a donation (NGO/Volunteer)
+PUT /api/donations/donor-claim -> Claim Confirm By Donor
+PUT /api/donations/manager-mark-delivered -> Manager confirm Delivery
 
 4. Volunteer APIs
 GET /api/volunteers/ → Get all volunteers
@@ -33,12 +36,22 @@ GET /api/volunteers/:id → Get volunteer details
 POST /api/volunteers/:id/assign → Assign a donation to a volunteer
 GET /api/volunteers/:id/assigned-donations → Get assigned donations for a volunteer
 
+10. Donation Point Management APIs
+GET /api/donation-points/ → Get all donation points
+GET /api/donation-points/:id → Get donation point details by ID
+PUT /api/donation-points/:id → Update donation point details (Manager Only)
+DELETE /api/donation-points/:id → Delete a donation point (Manager Only)
+
+
 5. Help Request APIs
 POST /api/help-requests/ → Create a new help request
 GET /api/help-requests/ → Get all help requests
 GET /api/help-requests/:id → Get help request details
 PUT /api/help-requests/:id → Update help request
 DELETE /api/help-requests/:id → Cancel a help request
+
+
+
 
 6. Notification APIs
 GET /api/notifications/ → Get all notifications for the user
@@ -56,6 +69,7 @@ GET /api/analytics/ → Get overall system analytics
 GET /api/analytics/donations → Get donation analytics
 GET /api/analytics/volunteers → Get volunteer analytics
 GET /api/analytics/leaderboard → Get leaderboard rankings
+
 POST /api/reports/ → Submit a report (e.g., fake donation, abuse)
 GET /api/reports/ → Get all reports (Admin)
 PUT /api/reports/:id/status → Update report status

@@ -84,10 +84,10 @@ const isMangerOrSelf = async (req, res, next) => {
 
     try {
         //getting role and identifier
-        const id = req.params.id;
+        const {userId} = req.query;
 
         //Checking role and id
-        if(req.user.role=="Manager"||req.user.role=="Admin"|| req.user.id==id)
+        if(req.user.role=="Manager"||req.user.role=="Admin"|| req.user.id==userId)
         {
             return next();
         }
@@ -96,7 +96,7 @@ const isMangerOrSelf = async (req, res, next) => {
 
         res.status(403)
             .json({
-                message:"Access Denied",
+                message:"Access Denied Not Self/Manager/Admin",
                 success:false
             })
     }
@@ -114,10 +114,10 @@ const isMangerOrSelf = async (req, res, next) => {
 const notSelf = async (req,res,next)=>{
       try {
         //getting role and identifier
-        const id = req.params.id;
+        const {userId} = req.query;
 
         //Checking role and id
-        if(req.user.id!=id)
+        if(req.user.id!=userId)
         {
             return next();
         }
@@ -140,10 +140,41 @@ const notSelf = async (req,res,next)=>{
             })
     }
 }
+
+const isSelf = async (req,res,next)=>{
+    try {
+      //getting role and identifier
+      const {userId} = req.query;
+
+      //Checking role and id
+      if(req.user.id==userId)
+      {
+          return next();
+      }
+
+      //if not self
+
+      res.status(403)
+          .json({
+              message:"Its Not Your",
+              success:false
+          })
+  }
+  catch (error) {
+      console.log(error)
+      res.status(500)
+          .json({
+              message:"Internal Server Error At is Self check",
+              success:false,
+              error
+          })
+  }
+}
 module.exports = {
     verifyToken,
     isAdmin,
     isManager,
     isMangerOrSelf,
-    notSelf
+    notSelf,
+    isSelf
 }

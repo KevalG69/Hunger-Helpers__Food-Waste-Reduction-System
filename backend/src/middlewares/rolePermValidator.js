@@ -162,7 +162,7 @@ const canClaimDonation = async(req,res,next)=>{
     //geting roler permission model
     const rolePermModel = await RolePermModel.findOne({role:req.user.role});
 
-
+    console.log(req.user.role,req.user.verified)
     // checking Permission
     if(rolePermModel.permissions.canClaimDonation && req.user.verified ==true)//if have permission 
     {
@@ -172,7 +172,29 @@ const canClaimDonation = async(req,res,next)=>{
     {
         return res.status(403)
                 .json({
-                    message:"Access Denied",
+                    message:"Access Denied No permission Or Not verified",
+                    success:false
+                })
+    }    
+
+}
+
+const canDeleteDonation = async(req,res,next)=>{
+     
+    //geting roler permission model
+    const rolePermModel = await RolePermModel.findOne({role:req.user.role});
+
+    console.log(req.user.role,req.user.verified)
+    // checking Permission
+    if(rolePermModel.permissions.canDeleteDonation && req.user.verified ==true)//if have permission 
+    {
+            next();
+    }
+    else//if dont have permission
+    {
+        return res.status(403)
+                .json({
+                    message:"Access Denied No permission Or Not verified",
                     success:false
                 })
     }    
@@ -186,6 +208,7 @@ module.exports = {
 
     canCreateDonation,
     canViewDonations,
+    canDeleteDonation,
 
     canClaimDonation
 }
