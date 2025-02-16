@@ -14,6 +14,8 @@ const dataBaseConnect = require("./config/dbConnect.js")
 const AuthRouter = require("./routes/AuthRouter.js");
 const UserRouter = require("./routes/UserRouter.js");
 const DonationBoxRouter = require("./routes/DonationBoxRouter.js");
+const RequestRouter = require("./routes/RequestRouter.js");
+
 
 //creating app 
 const app = express();
@@ -47,7 +49,7 @@ app.use("/users",UserRouter);
 //--Donations Router
 app.use("/donation-box",DonationBoxRouter);
 
-
+app.use("/request",RequestRouter);
 
 
 //--------------------

@@ -9,7 +9,7 @@ const RequestModel = require("../models/Request.js");
 
 //functions
 const activityLogger = require("../functions&utils/activityLogger.js");
-const { canClaimDonation } = require("../middlewares/rolePermValidator.js");
+
 
 const createDonationBox = async (req, res) => {
 
@@ -122,10 +122,10 @@ const getDonationById = async (req, res) => {
 
     try {
         //getting Donation id to Access
-        const { id } = req.query;
+        const { donationBoxId } = req.query;
 
         //getting donation
-        const donation_box = await DonationBoxModel.findById(id);
+        const donation_box = await DonationBoxModel.findById(donationBoxId);
 
         //if there is no donation Box
 
@@ -165,10 +165,10 @@ const updateDonationBox = async (req, res) => {
         const updatedData = req.body;
 
 
-        const { id } = req.query;
+        const { donationBoxId } = req.query;
 
         //finding Donation Box
-        const donation_box = await DonationBoxModel.findById(id);
+        const donation_box = await DonationBoxModel.findById(donationBoxId);
 
         //if donation does not exist
         if (!donation_box) {
@@ -225,10 +225,10 @@ const acceptDonationBox = async (req, res) => {
 
     try {
         //getting request data
-        const { id } = req.query;
+        const { donationBoxId } = req.query;
 
         //finding donation box
-        const donation_box = await DonationBoxModel.findById(id);
+        const donation_box = await DonationBoxModel.findById(donationBoxId);
 
         //checkinf if donation Exist
         if (!donation_box) {
@@ -303,10 +303,10 @@ const cancelDonationBox = async (req, res) => {
 
     try {
         //getting donation box id
-        const { id } = req.query;
+        const { donationBoxId } = req.query;
 
         //getting Donation
-        const donation_box = await DonationBoxModel.findById(id);
+        const donation_box = await DonationBoxModel.findById(donationBoxId);
 
         //if donation box does not Exist
         if (!donation_box) {
@@ -387,10 +387,10 @@ const deleteDonationBox = async (req, res) => {
     try
     {   
         //getting donation box id
-        const {id} = req.query;
+        const {donationBoxId} = req.query;
 
         //finding donation Box
-        const donation_box = await DonationBoxModel.findById(id);
+        const donation_box = await DonationBoxModel.findById(donationBoxId);
 
         //checking if donation box Exist
         if(!donation_box)
@@ -449,11 +449,12 @@ const claimDonationBox = async (req,res)=>{
     try
     {
         //getting id
-        const {id} = req.query;
+        const {donationBoxId} = req.query;
 
+        console.log("Claim ")
         //finding donation box id
-        const donation_box = await DonationBoxModel.findById(id);
-
+        const donation_box = await DonationBoxModel.findById(donationBoxId);
+        console.log("got donation box")
         //if donation box does not exist
         if(!donation_box)
         {
@@ -463,7 +464,7 @@ const claimDonationBox = async (req,res)=>{
                         success:false
                     })
         }
-
+        console.log("donation box exist")
         //if donation box exist
 
         //checking is it accept
@@ -475,17 +476,19 @@ const claimDonationBox = async (req,res)=>{
                         success:false
                     })
         }
-
+        console.log("donation box accepted")
         //sending claim confirm request
         const requestModel = new RequestModel({
-            type:"Claim Confirm",
-            requesterFrom:req.user.id,
-            requestedTo:donation_box.user_id,
+            type:"Claim-Confirm",
+            requestedFrom:req.user.id,
+            requestedTo:donation_box.user_id,            
             askedTo:"Claim",
+            donationBoxId:donation_box.id,
+            status:"Pending"
         })
 
         requestModel.save();
-
+        console.log("saved")
          //activityLogger
          await activityLogger(req.user.id, "Claim Confirm Requested ", "donation-box/claim-volunteer/:id", {
             DonationBoxId: donation_box.id,
@@ -511,6 +514,241 @@ const claimDonationBox = async (req,res)=>{
             })
     }
 }
+
+
+const claimConfirm = async(req,res)=>{
+
+    try
+    {
+        //getting Request
+        const {requestId} = req.body;
+
+        //finding request in database
+        const requestModel = await RequestModel.findById(requestId);
+
+        //if request is not available
+        if(!requestModel)
+        {
+            return res.status(404)
+                    .json({
+                        message:"No Request available",
+                        success:false
+                    })
+        }
+
+        //if request available
+
+        //checking type of request
+        if(requestModel.type != "Claim-Confirm")
+        {
+            return res.status(403)
+                    .json({
+                        message:"Not Claim-Confirm Request",
+                        success:false
+                    })
+        }
+
+        //getting claim request donation box
+        const donation_box = await DonationBoxModel.findById(requestModel.donationBoxId);
+
+        //checking if donation box available
+        if(!donation_box)
+        {
+            return res.status(404)
+                    .json({
+                        message:"Donation Box NOT FOUND",
+                        success:false
+                    })
+        }
+
+        //checking donation box eligible
+        if(donation_box.status != "Accepted")
+        {
+            return res.status(403)
+                    .json({
+                        message:"Cannot Confirm Claim For Donation Box",
+                        success:false
+                    })
+        }
+
+
+        //confirming claim
+
+        await DonationBoxModel.findByIdAndUpdate(donation_box.id,{status:"Claimed"});
+        await VolunteerDDModel.findOneAndUpdate({volunteer_id:donation_box.volunteer_id},{status:"Claimed"});
+    
+          //activityLogger
+          await activityLogger(req.user.id, "Claim-Confirmed ", "donation-box/claim-confirm/:id", {
+            DonationBoxId: donation_box.id,
+            DonationName:donation_box.food_name,
+            RequestedTo: donation_box.user_id,
+            VolunteerId: donation_box.volunteer_id
+        });
+
+        //deleting request
+        await RequestModel.findByIdAndDelete(requestId);
+
+
+        //response
+        res.status(200)
+            .json({
+                message:"Claim Confirmed",
+                success:true
+            });
+
+    }
+    catch(error)
+    {
+        console.error(error);
+        res.status(500)
+                .json({
+                    message:"Failed To Confirm Claim",
+                    success:false,
+                    error
+                });
+    }
+}
+
+const claimDenied = async(req,res)=>{
+    try
+    {
+        //getting Request
+        const {requestId} = req.body;
+
+        //finding request in database
+        const requestModel = await RequestModel.findById(requestId);
+
+        //if request is not available
+        if(!requestModel)
+        {
+            return res.status(404)
+                    .json({
+                        message:"Request NOT FOUND",
+                        success:false
+                    })
+        }
+
+        //if request available
+
+        //checking type of request
+        if(requestModel.type != "Claim-Confirm")
+        {
+            return res.status(403)
+                    .json({
+                        message:"Not Claim-Confirm Request",
+                        success:false
+                    })
+        }
+
+        //getting claim request donation box
+        const donation_box = await DonationBoxModel.findById(requestModel.donationBoxId);
+
+        //checking if donation box available
+        if(!donation_box)
+        {
+            return res.status(404)
+                    .json({
+                        message:"Donation Box NOT FOUND",
+                        success:false
+                    })
+        }
+
+       
+
+        //deleting request
+        await RequestModel.findByIdAndDelete(requestId);
+    
+          //activityLogger
+          await activityLogger(req.user.id, "Claim-Denied ", "donation-box/claim-denied/:id", {
+            DonationBoxId: donation_box.id,
+            DonationName:donation_box.food_name,
+            RequestedTo: donation_box.user_id,
+            VolunteerId: donation_box.volunteer_id
+        });
+
+
+        //response
+        res.status(200)
+            .json({
+                message:"Claim Denied",
+                success:true
+            });
+
+    }
+    catch(error)
+    {
+        console.error(error);
+        res.status(500)
+                .json({
+                    message:"Failed To Denny Claim",
+                    success:false,
+                    error
+                });
+    }
+}
+
+const markAsDelivered = async (req,res)=>{
+
+    try
+    {
+        //getting donation box id
+        const {donationBoxId} = req.query;
+
+
+        //finding donation box
+        const donation_box = await DonationBoxModel.findById(id);
+
+        //checking if it exist
+        if(!donation_box)
+        {
+            return res.status(404)
+                    .json({
+                        message:"Donation Box NOT FOUND",
+                        success:false
+                    })
+        }
+
+        //if donation box exist
+
+        //checking is it already claimed
+        if(donation_box.status !="Claimed")
+        {
+            return res.status(403)
+                    .json({
+                        message:`Cannot Mark As Delivered Donation Box is ${donation_box.status}`,
+                        success:false
+                    })
+        }
+
+        //marking donation box deliverd and updating contribution of users
+
+        await VolunteerDDModel.findOneAndUpdate({volunteer_id:donation_box.volunteer_id},{status:"Delivered"});
+        donation_box.status ="Delivered";
+        donation_box.save();
+
+        //updating contribution info
+
+
+        
+          //activityLogger
+          await activityLogger(req.user.id, "Donation Marked As Delivered ", "donation-box/delivered/:id", {
+            DonationBoxId: donation_box.id,
+            DonationName:donation_box.food_name,
+            DonorId:donation_box.user_id,
+            VolunteerId: donation_box.volunteer_id
+        });
+    }
+    catch(error)
+    {
+        console.error(error);
+        res.status(500)
+            .json({
+                message:"Failed to Mark Donation Box As Delivered",
+                success:false,
+                error
+            })
+    }
+}
 module.exports = {
     createDonationBox,
     getAllDonations,
@@ -521,5 +759,9 @@ module.exports = {
     acceptDonationBox,
 
     cancelDonationBox,
-    claimDonationBox
+    claimDonationBox,
+    claimConfirm,
+    claimDenied,
+
+    markAsDelivered
 }

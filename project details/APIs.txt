@@ -26,24 +26,26 @@ PUT /api/donations/:id → Update donation details✔️
 POST /api/donations/accept -> accept donations✔️
 POST /api/donations/cancel -> cancel Acepted Donation✔️
 DELETE /api/donations/:id → Delete a donation✔️
-POST /api/donations/:id/claim → Claim a donation (NGO/Volunteer)
-PUT /api/donations/donor-claim -> Claim Confirm By Donor
-PUT /api/donations/manager-mark-delivered -> Manager confirm Delivery
+POST /api/donations/claim-volunteer → Claim a donation (NGO/Volunteer)✔️
+POST /api/donations/claim-confirm -> Claim Confirm By Donor✔️
+POST /api/donations/claim-denied -> Claim Confirm By Donor✔️
+PUT /api/donations/manager-mark-delivered -> Manager confirm Delivery +update contribution_info
+                                             for volunteer and donors✔️
 
 4. Volunteer APIs
-GET /api/volunteers/ → Get all volunteers
-GET /api/volunteers/:id → Get volunteer details
+GET /api/volunteers/ → Get all volunteers✔️
+GET /api/volunteers/:id → Get volunteer details✔️
 POST /api/volunteers/:id/assign → Assign a donation to a volunteer
 GET /api/volunteers/:id/assigned-donations → Get assigned donations for a volunteer
 
-10. Donation Point Management APIs
+5. Donation Point Management APIs
 GET /api/donation-points/ → Get all donation points
 GET /api/donation-points/:id → Get donation point details by ID
 PUT /api/donation-points/:id → Update donation point details (Manager Only)
 DELETE /api/donation-points/:id → Delete a donation point (Manager Only)
 
 
-5. Help Request APIs
+6. Help Request APIs
 POST /api/help-requests/ → Create a new help request
 GET /api/help-requests/ → Get all help requests
 GET /api/help-requests/:id → Get help request details
@@ -53,18 +55,18 @@ DELETE /api/help-requests/:id → Cancel a help request
 
 
 
-6. Notification APIs
+7. Notification APIs
 GET /api/notifications/ → Get all notifications for the user
 PUT /api/notifications/:id/read → Mark notification as read
 DELETE /api/notifications/:id → Delete a notification
 
-7. Chat APIs
+8. Chat APIs
 POST /api/chats/ → Start a new chat thread
 GET /api/chats/:thread_id → Get chat messages for a thread
 POST /api/chats/:thread_id/messages → Send a message in a chat
 DELETE /api/chats/:thread_id/messages/:id → Delete a message
 
-8. Analytics & Reports APIs
+9. Analytics & Reports APIs
 GET /api/analytics/ → Get overall system analytics
 GET /api/analytics/donations → Get donation analytics
 GET /api/analytics/volunteers → Get volunteer analytics
@@ -74,6 +76,6 @@ POST /api/reports/ → Submit a report (e.g., fake donation, abuse)
 GET /api/reports/ → Get all reports (Admin)
 PUT /api/reports/:id/status → Update report status
 
-9. Leaderboard APIs
+10. Leaderboard APIs
 GET /api/leaderboard/ → Get global leaderboard
 GET /api/leaderboard/:region → Get leaderboard for a specific region

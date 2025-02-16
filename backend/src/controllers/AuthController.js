@@ -279,10 +279,12 @@ const login = async (req, res) => {
                 refreshToken: jwt_refreshToken,
                 firstName:user.firstName,
                 lastName:user.lastName,
-                email:user.email
+                email:user.email,
+                mobile:user.mobile
             })
     }
     catch (error) {
+        console.error(error)
         //if any error occure
         res.status(500)
             .json({

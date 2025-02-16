@@ -89,14 +89,18 @@ const RegisterStep2Validator = (req, res, next) => {
     }
 
     console.log("Step 2 clear")
-    next();
+    res.status(200)
+        .json({
+            message:"ok",
+            success:true
+        })
 }
 
 //login details validators
 const loginValidator = (req, res, next) => {
 
     const { loginWith } = req.body;
-    console.log(loginWith)
+    
     let schema;
     if (loginWith == "Mobile") {
         schema = joi.object({
@@ -104,7 +108,7 @@ const loginValidator = (req, res, next) => {
             identifier: joi.string().min(10).required(),
             password: joi.string().min(8).required()
         });
-        console.log("clear")
+       
     }
     else {
         schema = joi.object({

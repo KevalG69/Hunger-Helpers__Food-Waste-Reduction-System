@@ -8,11 +8,13 @@ const DonationBoxRouter = require("express").Router();
 const { createDonationBox, getAllDonations,
         getDonationById, updateDonationBox,
         acceptDonationBox, cancelDonationBox,
-        deleteDonationBox, claimDonationBox }
+        deleteDonationBox, claimDonationBox ,
+        claimConfirm, claimDenied,
+        markAsDelivered}
         = require("../controllers/DonationBoxController.js")
 
 //Middlewares
-const { verifyToken, isMangerOrSelf, notSelf, isSelf } = require("../middlewares/authValidator.js");
+const { verifyToken, isMangerOrSelf, notSelf, isSelf, isManager } = require("../middlewares/authValidator.js");
 const donationBoxValidator = require("../middlewares/donationBoxValidator.js");
 const { canCreateDonation, canViewDonations, canClaimDonation, canDeleteDonation }
         = require("../middlewares/rolePermValidator.js")
@@ -22,19 +24,17 @@ const { canCreateDonation, canViewDonations, canClaimDonation, canDeleteDonation
 
 //---------------------APIs
 
-//- POST /api/donations/ → Create a new donation
 
-DonationBoxRouter.post("/create", verifyToken, canCreateDonation, donationBoxValidator, createDonationBox);
-
-//GET /api/donations/ → Get all donations
+//GET /api/donations/ → -->Get all<--  donations
 DonationBoxRouter.get("/", verifyToken, canViewDonations, getAllDonations);
 
 //GET /api/donations/:id → Get donation by ID
 DonationBoxRouter.get("/id", verifyToken, canViewDonations, getDonationById);
 
 
-//PUT /api/donations/:id → Update donation details
-DonationBoxRouter.put("/update", verifyToken, isMangerOrSelf, donationBoxValidator, updateDonationBox);
+
+//- POST /api/donations/ → -->Create<--  a new donation
+DonationBoxRouter.post("/create", verifyToken, canCreateDonation, donationBoxValidator, createDonationBox);
 
 //PUT /api/donations/accept -> accept donations
 DonationBoxRouter.post("/accept", verifyToken, notSelf, canClaimDonation, acceptDonationBox);
@@ -48,6 +48,20 @@ DonationBoxRouter.post("/cancel-donor", verifyToken, isSelf, cancelDonationBox);
 //POST /api/donations/claim-volunteer → Claim a donation (NGO/Volunteer)
 DonationBoxRouter.post("/claim-volunteer",verifyToken,notSelf,canClaimDonation,claimDonationBox);
 
+//POST /api/donations/claim-volunteer → Claim Confirm (Donor)
+DonationBoxRouter.post("/claim-confirm",verifyToken,isSelf,claimConfirm);
+
+//POST /api/donations/claim-volunteer → Claim Confirm Denied (Donor)
+DonationBoxRouter.post("/claim-denied",verifyToken,isSelf,claimDenied);
+
+
+
+//PUT /api/donations/:id → Update donation details
+DonationBoxRouter.put("/update", verifyToken, isMangerOrSelf, donationBoxValidator, updateDonationBox);
+
+//PUT /api/donations/manager-mark-delivered -> Manager confirm Delivery +update contribution_info
+//for volunteer and donors
+DonationBoxRouter.put("/delivered",verifyToken,isManager,markAsDelivered);
 
 
 //DELETE /api/donations/:id → Delete a donation
