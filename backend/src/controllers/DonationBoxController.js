@@ -9,6 +9,7 @@ const RequestModel = require("../models/Request.js");
 
 //functions
 const activityLogger = require("../functions&utils/activityLogger.js");
+const { updateDonationPoints, updateVolunteerPoints } = require("../functions&utils/updateContributionPoints.js");
 
 
 const createDonationBox = async (req, res) => {
@@ -487,7 +488,7 @@ const claimDonationBox = async (req,res)=>{
             status:"Pending"
         })
 
-        requestModel.save();
+        await requestModel.save();
         console.log("saved")
          //activityLogger
          await activityLogger(req.user.id, "Claim Confirm Requested ", "donation-box/claim-volunteer/:id", {
@@ -575,7 +576,7 @@ const claimConfirm = async(req,res)=>{
         //confirming claim
 
         await DonationBoxModel.findByIdAndUpdate(donation_box.id,{status:"Claimed"});
-        await VolunteerDDModel.findOneAndUpdate({volunteer_id:donation_box.volunteer_id},{status:"Claimed"});
+        await VolunteerDDModel.findOneAndUpdate({volunteer_id:donation_box.volunteer_id.toString()},{status:"Claimed",updatedAt:Date.now()});
     
           //activityLogger
           await activityLogger(req.user.id, "Claim-Confirmed ", "donation-box/claim-confirm/:id", {
@@ -696,7 +697,7 @@ const markAsDelivered = async (req,res)=>{
 
 
         //finding donation box
-        const donation_box = await DonationBoxModel.findById(id);
+        const donation_box = await DonationBoxModel.findById(donationBoxId);
 
         //checking if it exist
         if(!donation_box)
@@ -722,14 +723,20 @@ const markAsDelivered = async (req,res)=>{
 
         //marking donation box deliverd and updating contribution of users
 
-        await VolunteerDDModel.findOneAndUpdate({volunteer_id:donation_box.volunteer_id},{status:"Delivered"});
+        await VolunteerDDModel.findOneAndUpdate({donation_id:donation_box.id},{status:"Delivered"});
         donation_box.status ="Delivered";
-        donation_box.save();
+        await donation_box.save();
 
         //updating contribution info
+        await updateDonationPoints(donation_box.user_id);
+        await updateVolunteerPoints(donation_box.volunteer_id);
+        //updating assisting volunteer points also
+        if(donation_box.assistingVolunteer.lenght !=0)
+        {
+          donation_box.assistingVolunteer.forEach(async (volunteer_id) => await updateVolunteerPoints(volunteer_id));
 
+        }
 
-        
           //activityLogger
           await activityLogger(req.user.id, "Donation Marked As Delivered ", "donation-box/delivered/:id", {
             DonationBoxId: donation_box.id,
@@ -737,6 +744,12 @@ const markAsDelivered = async (req,res)=>{
             DonorId:donation_box.user_id,
             VolunteerId: donation_box.volunteer_id
         });
+
+        res.status(200)
+            .json({
+                message:"Marked As Delivered",
+                success:true
+            })
     }
     catch(error)
     {
