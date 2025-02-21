@@ -35,8 +35,9 @@ PUT /api/donations/manager-mark-delivered -> Manager confirm Delivery +update co
 4. Volunteer APIs
 GET /api/volunteers/ → Get all volunteers✔️
 GET /api/volunteers/:id → Get volunteer details✔️
-POST /api/volunteers/:id/assign → Assign a donation to a volunteer
-GET /api/volunteers/:id/assigned-donations → Get assigned donations for a volunteer
+POST /api/volunteers/:id/assign → Assign a donation to a volunteer✔️
+GET /api/volunteers/:id/assigned-donations → Get assigned donations for a volunteer✔️
+POST /api/volunteers/:id/assign-cancel → Assign a donation to a volunteer
 
 5. Donation Point Management APIs
 GET /api/donation-points/ → Get all donation points

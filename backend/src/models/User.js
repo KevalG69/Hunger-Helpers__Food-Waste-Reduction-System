@@ -54,7 +54,7 @@ userSchema.virtual("Donations", {
 userSchema.virtual("assigned_donations", {
     ref: "Volunteer_Donation_Delivery",
     localField: "_id",
-    foreignField: "user_id"
+    foreignField: "volunteer_id"
 })
 
 userSchema.virtual("activity_logs", {

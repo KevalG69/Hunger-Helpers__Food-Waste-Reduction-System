@@ -253,7 +253,7 @@ const login = async (req, res) => {
                 _id: user._id
             },
             process.env.JWT_SECRET,
-            { expiresIn: '24h' }
+            { expiresIn: '7d' }
         )
 
         //generation refresh jwt token

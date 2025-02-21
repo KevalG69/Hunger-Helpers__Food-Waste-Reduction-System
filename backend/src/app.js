@@ -15,6 +15,7 @@ const AuthRouter = require("./routes/AuthRouter.js");
 const UserRouter = require("./routes/UserRouter.js");
 const DonationBoxRouter = require("./routes/DonationBoxRouter.js");
 const RequestRouter = require("./routes/RequestRouter.js");
+const VolunteerRouter = require("./routes/VolunteerRouter.js");
 
 
 //creating app 
@@ -49,7 +50,14 @@ app.use("/users",UserRouter);
 //--Donations Router
 app.use("/donation-box",DonationBoxRouter);
 
+//--Volunteer Router
+app.use("/volunteers",VolunteerRouter);
+
+
+//--Request Router
 app.use("/request",RequestRouter);
+
+
 
 
 //--------------------

@@ -256,18 +256,19 @@ const acceptDonationBox = async (req, res) => {
         donation_box.status = "Accepted"
         donation_box.volunteer_id = req.user.id;
 
-        //2.updating and pushing assigne donation box to Volunteer account
-        await UserModel.findByIdAndUpdate(req.user.id, {
-            $push: { assigned_donations: donation_box.id }
-        })
-
+        
         //3.creating volunteer Donation Delivery 
         const volunteerDDmodel = new VolunteerDDModel({
             volunteer_id: req.user.id,
             donation_id: donation_box.id,
+            type:"Main",
             status: 'Accepted'
         })
-
+        
+        //2.updating and pushing assigne donation box to Volunteer account
+        await UserModel.findByIdAndUpdate(req.user.id, {
+            $push: { assigned_donations: volunteerDDmodel.id }
+        })
         //saving
         donation_box.save();
         volunteerDDmodel.save();
@@ -482,7 +483,12 @@ const claimDonationBox = async (req,res)=>{
         const requestModel = new RequestModel({
             type:"Claim-Confirm",
             requestedFrom:req.user.id,
+
+            requestedFrom_firstName:req.user.firstName,
+            requestedFrom_lastName:req.user.lastName,
+
             requestedTo:donation_box.user_id,            
+            
             askedTo:"Claim",
             donationBoxId:donation_box.id,
             status:"Pending"

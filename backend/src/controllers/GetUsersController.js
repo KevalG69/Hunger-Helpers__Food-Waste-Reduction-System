@@ -112,11 +112,11 @@ const getUserActivityLogs = async(req,res)=>{
     try
     {
         //getting User id
-        const {id} = req.query;
+        const {userId} = req.query;
         
         //getting User
 
-        const user = await UserModel.findById(id).populate('activity_logs').exec();
+        const user = await UserModel.findById(userId).populate('activity_logs').exec();
 
         //if user does not exist
         if(!user)
@@ -164,11 +164,11 @@ const getUserContributionInfo = async(req,res)=>{
     try
     {
         //getting User id
-        const {id} = req.query;
+        const {userId} = req.query;
         
         //getting User
 
-        const user = await UserModel.findById(id).populate("contribution_info");
+        const user = await UserModel.findById(userId).populate("contribution_Info");
 
         //if user does not exist
         if(!user)
@@ -190,7 +190,7 @@ const getUserContributionInfo = async(req,res)=>{
             UserMobile:user.mobile,
         })
 
-        const contribution_info = user.contribution_info;
+        const contribution_info = user.contribution_Info;
         res.status(200)
             .json({
                 message:"Fetched User Contribution Info Successfully",
@@ -215,23 +215,30 @@ const getUserDonations = async(req,res)=>{
     try
     {
         //getting User id
-        const {id} = req.query;
+        const {userId} = req.query;
         
         //getting User
 
-        const user = await UserModel.findById(id).populate("donations").exec();
+        const user = await UserModel.findById(userId).populate("Donations").exec();
 
         //if user does not exist
         if(!user)
         {
-            res.status(404)
+            return res.status(404)
                     .json({
                         message:"User Not Found",
                         success
                     })
         }
 
-
+        if(user.Donations.length ==0)
+        {
+            return res.status(404)  
+                    .json({
+                        message:"No Donations FOUND",
+                        success:false
+                    })
+        }
         //if user found
         
          //activityLogger
@@ -241,7 +248,7 @@ const getUserDonations = async(req,res)=>{
             UserMobile:user.mobile,
         })
 
-        const donations = user.donations;
+        const donations = user.Donations;
         res.status(200)
             .json({
                 message:"Fetched User Donations Info Successfully",
