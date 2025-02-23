@@ -35,15 +35,17 @@ PUT /api/donations/manager-mark-delivered -> Manager confirm Delivery +update co
 4. Volunteer APIs
 GET /api/volunteers/ → Get all volunteers✔️
 GET /api/volunteers/:id → Get volunteer details✔️
-POST /api/volunteers/:id/assign → Assign a donation to a volunteer✔️
+POST /api/volunteers/:id/assign-confirm → Assign a donation to a volunteer✔️
 GET /api/volunteers/:id/assigned-donations → Get assigned donations for a volunteer✔️
-POST /api/volunteers/:id/assign-cancel → Assign a donation to a volunteer
+POST /api/volunteers/:id/assign-cancel → cancel Assigned donation box to a volunteer✔️
+POST /api/volunteers/:id/assign-req-cancel → cancel volunteer assign me request✔️
+POST /api/volunteers/:id/assign-request → request to assign me donation box a volunteer✔️
 
 5. Donation Point Management APIs
-GET /api/donation-points/ → Get all donation points
-GET /api/donation-points/:id → Get donation point details by ID
-PUT /api/donation-points/:id → Update donation point details (Manager Only)
-DELETE /api/donation-points/:id → Delete a donation point (Manager Only)
+GET /api/donation-points/ → Get all donation points✔️
+GET /api/donation-points/:id → Get donation point details by ID✔️
+PUT /api/donation-points/:id → Update donation point details (Manager Only)✔️
+DELETE /api/donation-points/:id → Delete a donation point (Manager Only)✔️
 
 
 6. Help Request APIs

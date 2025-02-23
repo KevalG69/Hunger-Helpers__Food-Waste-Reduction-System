@@ -88,13 +88,19 @@ const getAllDonations = async (req, res) => {
             .skip((parseInt(page) - 1) * parseInt(limit))
             .sort({ createdAt: -1 })
 
+        const total = await DonationBoxModel.countDocuments(query);
+
         //if there is no donation Box
 
         if (donation_boxes.length == 0) {
             return res.status(404)
                 .json({
                     message: "No Donation Found",
-                    success: false
+                    success: false,
+                    data:[],
+                    total,
+                    page,
+                    limit
                 })
         }
 
@@ -104,7 +110,10 @@ const getAllDonations = async (req, res) => {
             .json({
                 message: "Fetched Donation Boxes Successfully",
                 success: true,
-                donation_boxes
+                data:donation_boxes,
+                total,
+                page,
+                limit
             })
 
     }
@@ -134,7 +143,8 @@ const getDonationById = async (req, res) => {
             return res.status(404)
                 .json({
                     message: "No Donation Found",
-                    success: false
+                    success: false,
+                    data:[]
                 })
         }
 
@@ -144,7 +154,7 @@ const getDonationById = async (req, res) => {
             .json({
                 message: "Fetched Donation Box Successfully",
                 success: true,
-                donation_box
+                data:donation_box
             })
 
     }
@@ -507,7 +517,8 @@ const claimDonationBox = async (req,res)=>{
         res.status(200)
             .json({
                 message:"Claim Confirm Request Sent Successfully",
-                success:true
+                success:true,
+                donationBoxId
             })
     }
     catch(error)

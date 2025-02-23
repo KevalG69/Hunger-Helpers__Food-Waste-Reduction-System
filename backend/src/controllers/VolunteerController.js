@@ -91,12 +91,14 @@ const assignVolunteer = async (req, res) => {
         //saving database
         await donation_box.save();
         const vDDid = await volunteerDDmodel.save();
-
+    
         //pushing 
         volunteer.assigned_donations.push(vDDid.id);
 
         await volunteer.save()
-
+        
+        //deleting request 
+        await RequestModel.findByIdAndDelete(requestId);
         //activityLogger
         await activityLogger(req.user.id, "Assigned Volunteer", "volunteer/assign/:id", {
             DonationBoxId: donation_box.id,
@@ -185,7 +187,7 @@ const requestAssignVolunteer = async (req, res) => {
             requestedFrom_firstName: volunteer.firstName,
             requestedFrom_lastName: volunteer.lastName,
             requestedTo: donation_box.volunteer_id,
-            askedTo: "Assing-me",
+            askedTo: "Assign-me",
             donationBoxId: donation_box.id,
             status: "Pending",
         })
@@ -220,18 +222,18 @@ const cancelRequest = async (req, res) => {
 
         //checking if Request is available
         const requestModel = await RequestModel.findById(requestId);
-
+        console.log(requestModel)
         if (!requestModel) {
             return res.status(404)
                 .json({
-                    message: "No Request FOUND",
+                    message: "No Request FOUND (does not Exist)",
                     success: false
                 });
         }
         else if (requestModel.askedTo != "Assign-me" || requestModel.donationBoxId != donationBoxId) {
             return res.status(404)
                 .json({
-                    message: "No Request FOUND",
+                    message: "No Request FOUND (Wrong Type)",
                     success: false
                 });
         }
@@ -264,7 +266,7 @@ const cancelAssignedVolunteer = async (req, res) => {
 
     try {
         //getting id
-        const { volunteerId } = req.query;
+        const volunteerId  = req.user.id;
         const { donationBoxId } = req.body;
 
 

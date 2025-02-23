@@ -16,7 +16,7 @@ const UserRouter = require("./routes/UserRouter.js");
 const DonationBoxRouter = require("./routes/DonationBoxRouter.js");
 const RequestRouter = require("./routes/RequestRouter.js");
 const VolunteerRouter = require("./routes/VolunteerRouter.js");
-
+const DonationPointRouter = require("./routes/DonationPointRouter.js");
 
 //creating app 
 const app = express();
@@ -38,21 +38,23 @@ app.use("/",(req,res,next)=>{
 app.use(bodyParser.json());
 
 //Router
-//--Register/login auth Router
+//--Register/login auth Router 1 
 
 app.use("/auth",AuthRouter);
 
 
-//--User Router
+//--User Router 2
 app.use("/users",UserRouter);
 
 
-//--Donations Router
+//--Donations Router 3
 app.use("/donation-box",DonationBoxRouter);
 
-//--Volunteer Router
+//--Volunteer Router 4
 app.use("/volunteers",VolunteerRouter);
 
+//--Donation Point Router 5
+app.use("/donation-point",DonationPointRouter);
 
 //--Request Router
 app.use("/request",RequestRouter);

@@ -12,259 +12,292 @@ const Donations = require("../models/Donation_Box.js");
 const activityLogger = require("../functions&utils/activityLogger.js");
 
 
-const getAllUsers = async (req,res) =>{
- 
+const getAllUsers = async (req, res) => {
+
     try//try and catch block to handle run time error
     {
         //extracting data
-        const {role, state,city,verified,limit=10,page=1,sort="createdAt"} = req.query;
+        const { role, state, city, verified, limit = 10, page = 1, sort = "createdAt" } = req.query;
 
         //query
         const query = {};
 
         //filling query
-        if(role) query.role = role
-        if(state) query.state = state
-        if(city) query.city = city
-        if(verified) query.verified = verified
-    
+        if (role) query.role = role
+        if (state) query.state = state
+        if (city) query.city = city
+        if (verified) query.verified = verified
+
 
 
         //getting all users
         const Users = await UserModel.find(query)
-        .limit(parseInt(limit))
-        .skip((parseInt(page)-1)*parseInt(limit))
-        .sort(sort)
-        .select("-password");
+            .limit(parseInt(limit))
+            .skip((parseInt(page) - 1) * parseInt(limit))
+            .sort(sort)
+            .select("-password");
+
+        const total = await UserModel.countDocuments(query);
 
         //if not user Found
-        if(Users.length==0)
-        {
+        if (Users.length == 0) {
             return res.status(404)
-                    .json({
-                        message:"No User Found",
-                        success:false
-                    })
+                .json({
+                    message: "No User Found",
+                    success: false,
+                    data: [],
+                    total,
+                    page,
+                    limit
+                })
         }
 
         res.status(200)
             .json({
-                message:"All Users Fatched Successfully",
-                success:true,
-                Users
+                message: "All Users Fatched Successfully",
+                success: true,
+                data: Users,
+                total,
+                page,
+                limit
             })
     }
-    catch(error)
-    {
+    catch (error) {
         console.error(error)
         res.status(500)
             .json({
-                message:"Internal Server Error At Get All Users",
-                success:false
+                message: "Internal Server Error At Get All Users",
+                success: false
             })
     }
 }
 
-const getUserByidentifier = async (req,res)=>{
-    
-    try
-    {
+const getUserByidentifier = async (req, res) => {
+
+    try {
         //getting user identifier
         const identifier = req.params.identifier;
 
         //getting user
         const user = await UserModel.findOne({
-            $or:[{email:identifier},{mobile:identifier}]
+            $or: [{ email: identifier }, { mobile: identifier }]
         })
 
         //if user does not exist
-        if(!user)        
-        {
+        if (!user) {
             return res.status(404)
                 .json({
-                    message:"User not Found",
-                    success:false
+                    message: "User not Found",
+                    success: false,
+                    data: null
                 })
         }
 
         // if user exist
         res.status(200)
             .json({
-                message:"User Fetched Successfully",
-                success:true,
-                user
+                message: "User Fetched Successfully",
+                success: true,
+                data: user
             })
     }
-    catch(error)
-    {
+    catch (error) {
         console.error(error);
         res.status(500)
             .json({
-                message:"Internal Server Error At Getting User",
-                success:false,
+                message: "Internal Server Error At Getting User",
+                success: false,
                 error
             })
     }
 }
 
-const getUserActivityLogs = async(req,res)=>{
+const getUserActivityLogs = async (req, res) => {
 
-    try
-    {
-        //getting User id
-        const {userId} = req.query;
-        
-        //getting User
+    try {
+        // Extract query params
+        let { page = 1, limit = 10, userId, activityType, startDate, endDate, sort, order } = req.query;
 
-        const user = await UserModel.findById(userId).populate('activity_logs').exec();
+        const user = await UserModel.findById(userId);
 
-        //if user does not exist
         if(!user)
         {
-            res.status(404)
+            return res.status(404)
                     .json({
-                        message:"User Not Found",
-                        success
+                        message:"User NOT FOUND",
+                        success:false,
+                        data:null,
+                        total:0,
+                        page,
+                        limit
                     })
         }
 
 
-        //if user found
-        
-         //activityLogger
-         await activityLogger(req.user.id,"Fetched User Activity Logs","get users/:id/activity-logs",{
-            UserId:user.id,
-            UserEmail:user.email,
-            UserMobile:user.mobile,
+        page = parseInt(page);
+        limit = parseInt(limit);
+        const skip = (page - 1) * limit;
+
+        // Filters
+        let filters = {};
+        if (userId) filters.user_id = userId;
+        if (activityType) filters.activity_type = new RegExp(activityType, "i"); // Case-insensitive search
+        if (startDate || endDate) {
+            filters.createdAt = {};
+            if (startDate) filters.createdAt.$gte = new Date(startDate);
+            if (endDate) filters.createdAt.$lte = new Date(endDate);
+        }
+
+        // Sorting
+        let sortOptions = { createdAt: -1 }; // Default: Newest first
+        if (sort) {
+            order = order === "asc" ? 1 : -1;
+            sortOptions = { [sort]: order };
+        }
+
+        // Fetch logs with filters & pagination
+        const activity_logs = await ActivityLogModel.find(filters)
+            .sort(sortOptions)
+            .skip(skip)
+            .limit(limit);
+
+        const total = await ActivityLogModel.countDocuments(filters);
+
+
+        //activityLogger
+        await activityLogger(req.user.id, "Fetched User Activity Logs", "get users/:id/activity-logs", {
+            UserId: user.id,
+            UserEmail: user.email,
+            UserMobile: user.mobile,
         })
 
-        const activity_logs = user.activity_logs
+
         res.status(200)
             .json({
-                message:"Fetched User Activity Logs Successfully",
-                success:true,
-                activity_logs
+                message: "Fetched User Activity Logs Successfully",
+                success: true,
+                data: activity_logs,
+                total,
+                page,
+                limit
             })
     }
-    catch(error)
-    {
+    catch (error) {
         console.error(error)
         res.status(500)
-                .json({
-                    message:"Failed to Fetched User's Activity Logs",
-                    success:false,
-                    error
-                })
+            .json({
+                message: "Failed to Fetched User's Activity Logs",
+                success: false,
+                error
+            })
     }
 }
 
 
-const getUserContributionInfo = async(req,res)=>{
+const getUserContributionInfo = async (req, res) => {
 
-    try
-    {
+    try {
         //getting User id
-        const {userId} = req.query;
-        
+        const { userId } = req.query;
+
         //getting User
 
         const user = await UserModel.findById(userId).populate("contribution_Info");
 
         //if user does not exist
-        if(!user)
-        {
+        if (!user) {
             res.status(404)
-                    .json({
-                        message:"User Not Found",
-                        success
-                    })
+                .json({
+                    message: "User Not Found",
+                    success
+                })
         }
 
 
         //if user found
-        
-         //activityLogger
-         await activityLogger(req.user.id,"Fetched User Contribution Info ","get users/contribution-info/:id",{
-            UserId:user.id,
-            UserEmail:user.email,
-            UserMobile:user.mobile,
+
+        //activityLogger
+        await activityLogger(req.user.id, "Fetched User Contribution Info ", "get users/contribution-info/:id", {
+            UserId: user.id,
+            UserEmail: user.email,
+            UserMobile: user.mobile,
         })
 
         const contribution_info = user.contribution_Info;
         res.status(200)
             .json({
-                message:"Fetched User Contribution Info Successfully",
-                success:true,
+                message: "Fetched User Contribution Info Successfully",
+                success: true,
                 contribution_info
             })
     }
-    catch(error)
-    {
+    catch (error) {
         console.error(error)
         res.status(500)
-                .json({
-                    message:"Failed to Fetched User's Contribution Info",
-                    success:false,
-                    error
-                })
+            .json({
+                message: "Failed to Fetched User's Contribution Info",
+                success: false,
+                error
+            })
     }
 }
 
-const getUserDonations = async(req,res)=>{
+const getUserDonations = async (req, res) => {
 
-    try
-    {
+    try {
         //getting User id
-        const {userId} = req.query;
-        
+        const { userId } = req.query;
+
         //getting User
 
         const user = await UserModel.findById(userId).populate("Donations").exec();
 
         //if user does not exist
-        if(!user)
-        {
+        if (!user) {
             return res.status(404)
-                    .json({
-                        message:"User Not Found",
-                        success
-                    })
+                .json({
+                    message: "User Not Found",
+                    success
+                })
         }
 
-        if(user.Donations.length ==0)
-        {
-            return res.status(404)  
-                    .json({
-                        message:"No Donations FOUND",
-                        success:false
-                    })
+        const total = user.Donations.length;
+
+        if (user.Donations.length == 0) {
+            return res.status(404)
+                .json({
+                    message: "No Donations FOUND",
+                    success: false,
+                    data:null,
+                    total
+                })
         }
         //if user found
-        
-         //activityLogger
-         await activityLogger(req.user.id,"Fetched User Donations Info ","get users/donations/:id",{
-            UserId:user.id,
-            UserEmail:user.email,
-            UserMobile:user.mobile,
+
+        //activityLogger
+        await activityLogger(req.user.id, "Fetched User Donations Info ", "get users/donations/:id", {
+            UserId: user.id,
+            UserEmail: user.email,
+            UserMobile: user.mobile,
         })
 
         const donations = user.Donations;
         res.status(200)
             .json({
-                message:"Fetched User Donations Info Successfully",
-                success:true,
-                donations
+                message: "Fetched User Donations Info Successfully",
+                success: true,
+                data:donations,
+                total
             })
     }
-    catch(error)
-    {
+    catch (error) {
         console.error(error)
         res.status(500)
-                .json({
-                    message:"Failed to Fetched User's Donations Info",
-                    success:false,
-                    error
-                })
+            .json({
+                message: "Failed to Fetched User's Donations Info",
+                success: false,
+                error
+            })
     }
 }
 
