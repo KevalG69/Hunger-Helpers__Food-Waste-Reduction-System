@@ -105,7 +105,9 @@ const assignVolunteer = async (req, res) => {
             DonationName: donation_box.food_name,
             DonorId: donation_box.user_id,
             VolunteerId: donation_box.volunteer_id,
-            AssignedTo: volunteer.id
+            VolunteerName: `${req.user.firstName} ${req.user.lastName}`,
+            AssignedTo: volunteer.id,
+            AssignedToName:`${volunteer.firstName} ${volunteer.lastName}`
         });
 
         res.status(200)
@@ -326,6 +328,7 @@ const cancelAssignedVolunteer = async (req, res) => {
         //activityLogger
         await activityLogger(req.user.id, "Cancelled Assigned Volunteer", "volunteer/assign-cancel/:id", {
             AssignedTo: volunteer.id,
+            AssignedName:`${volunteer.firstName} ${volunteer.lastName}`,
             VolunteerId: donation_box.volunteer_id,
             DonorId: donation_box.user_id,
             DonationBoxId: donation_box.id,
@@ -381,7 +384,7 @@ const getAssignedDonationBox = async (req, res) => {
 
 
         const assigned_donations = volunteer.assigned_donations;
-        console.log(assigned_donations, volunteer.assigned_donations)
+       
 
         res.status(200)
             .json({

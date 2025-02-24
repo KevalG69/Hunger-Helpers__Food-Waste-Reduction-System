@@ -48,8 +48,8 @@ PUT /api/donation-points/:id → Update donation point details (Manager Only)✔
 DELETE /api/donation-points/:id → Delete a donation point (Manager Only)✔️
 
 
-6. Help Request APIs
-POST /api/help-requests/ → Create a new help request
+6. Volunteer Help APIs
+POST /api/help-requests/ → Create a new help request✔️
 GET /api/help-requests/ → Get all help requests
 GET /api/help-requests/:id → Get help request details
 PUT /api/help-requests/:id → Update help request

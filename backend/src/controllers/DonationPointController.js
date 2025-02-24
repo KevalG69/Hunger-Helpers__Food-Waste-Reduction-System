@@ -5,6 +5,8 @@ const DonationPointModel = require("../models/Donation_Point.js");
 //Middlewares
 
 //Functions
+const activityLogger = require("../functions&utils/activityLogger.js");
+
 
 const getAllDonationPoints = async (req, res) => {
 
@@ -124,13 +126,14 @@ const createDonationPoint = async (req,res)=>{
         //extracting Data
         const donationPointData = req.body;
 
+        donationPointData.manager_id = req.user.id;
         const donationPoint = new DonationPointModel(donationPointData);
 
         const SdonationPoint= await donationPoint.save();
 
         //activityLogger
         await activityLogger(req.user.id, "Created Donation Point", "post /donation-point/create", {
-            Manager_Name: req.user.first_name,
+            Manager_Name: `${req.user.firstName} ${req.user.lastName}`,
             Manager_email:req.user.email,
             DonationPointId: SdonationPoint.id,
             DonationBoxName: SdonationPoint.name,
@@ -182,7 +185,7 @@ const updateDonationPoint = async (req,res)=>{
         
         const restrictedFields = ['createdAt','updatedAt'];
 
-        restrictedFields.forEach(field => delete updatedData[field]);
+        restrictedFields.forEach(field => delete updatedDonationPoint[field]);
 
         //if donaton point exist
         Object.assign(donationPoint,updatedDonationPoint);
@@ -195,8 +198,7 @@ const updateDonationPoint = async (req,res)=>{
             DonationPointId:donationPointId,
             DonationPointName:donationPoint.name,
             Manager_Email:req.user.email,
-            Manager_firstName:req.user.first_name,
-            Manager_lastName:req.user.last_name
+            Manager_Name:`${req.user.firstName} ${req.user.lastName}`,
         })
 
         //response
@@ -245,7 +247,7 @@ const deleteDonationPoint = async(req,res)=>{
 
         //activityLogger
         await activityLogger(req.user.id, "Deleted Donation Point", "delete /donation-point/:id", {
-            Manager_Name: req.user.first_name,
+            Manager_Name: `${req.user.firstName} ${req.user.lastName}`,
             Manager_email:req.user.email,
             DonationPointId: donationPoint.id,
             DonationBoxName: donationPoint.name,

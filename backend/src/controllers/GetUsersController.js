@@ -166,6 +166,7 @@ const getUserActivityLogs = async (req, res) => {
 
         //activityLogger
         await activityLogger(req.user.id, "Fetched User Activity Logs", "get users/:id/activity-logs", {
+            FetchedByName:`${req.user.firstName} ${req.user.lastName}`,
             UserId: user.id,
             UserEmail: user.email,
             UserMobile: user.mobile,
@@ -276,6 +277,7 @@ const getUserDonations = async (req, res) => {
 
         //activityLogger
         await activityLogger(req.user.id, "Fetched User Donations Info ", "get users/donations/:id", {
+            FetchedBy:`${req.user.firstName} ${req.user.lastName}`,
             UserId: user.id,
             UserEmail: user.email,
             UserMobile: user.mobile,

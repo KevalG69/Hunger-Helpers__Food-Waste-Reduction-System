@@ -209,6 +209,7 @@ const updateDonationBox = async (req, res) => {
         await activityLogger(donation_box.id, "Donation Box Updated", "donation-box/update/:id", {
             ByUserId: req.user.id,
             UserEmail: req.user.email,
+            UserName:`${req.user.firstName} ${req.user.lastName}`,
             UserMobile: req.user.mobile,
 
         })
@@ -288,6 +289,8 @@ const acceptDonationBox = async (req, res) => {
         await activityLogger(req.user.id, "Accepted Donation", "donation-box/accept/:id", {
             DonationBoxId: donation_box.id,
             DonatedBy: donation_box.user_id,
+            VolunteerId:req.user.id,
+            VolunteerName:`${req.user.firstName} ${req.user.lastName}`,
             VolunteerDonationDeliveryId: volunteerDDmodel.id,
 
         })
@@ -372,7 +375,8 @@ const cancelDonationBox = async (req, res) => {
         await activityLogger(req.user.id, "Cancelled Donation Box", "donation-box/cancel/:id", {
             DonationBoxId: donation_box.id,
             DonatedBy: donation_box.user_id,
-            VolunteerId: donation_box.volunteer_id
+            VolunteerId: donation_box.volunteer_id,
+            VolunteerName:`${req.user.firstName} ${req.user.lastName}`
         });
 
         //
@@ -433,6 +437,7 @@ const deleteDonationBox = async (req, res) => {
         //activityLogger
         await activityLogger(req.user.id, "DELETE Donation Box", "delete donation-box/id/:id", {
             DonationBoxId: donation_box.id,
+            DeletedByName:`${req.user.firstName} ${req.user.lastName}`,
             DonatedBy: donation_box.user_id,
             VolunteerId: donation_box.volunteer_id
         });
@@ -476,7 +481,6 @@ const claimDonationBox = async (req,res)=>{
                         success:false
                     })
         }
-        console.log("donation box exist")
         //if donation box exist
 
         //checking is it accept
@@ -488,7 +492,7 @@ const claimDonationBox = async (req,res)=>{
                         success:false
                     })
         }
-        console.log("donation box accepted")
+
         //sending claim confirm request
         const requestModel = new RequestModel({
             type:"Claim-Confirm",
@@ -510,6 +514,7 @@ const claimDonationBox = async (req,res)=>{
          await activityLogger(req.user.id, "Claim Confirm Requested ", "donation-box/claim-volunteer/:id", {
             DonationBoxId: donation_box.id,
             DonationName:donation_box.food_name,
+            RequestedFromName:`${req.user.firstName} ${req.user.lastName}`,
             RequestedTo: donation_box.user_id,
             VolunteerId: donation_box.volunteer_id
         });
@@ -599,6 +604,7 @@ const claimConfirm = async(req,res)=>{
           await activityLogger(req.user.id, "Claim-Confirmed ", "donation-box/claim-confirm/:id", {
             DonationBoxId: donation_box.id,
             DonationName:donation_box.food_name,
+            ConfirmedByName:`${req.user.firstName} ${req.user.lastName}`,
             RequestedTo: donation_box.user_id,
             VolunteerId: donation_box.volunteer_id
         });
@@ -680,6 +686,7 @@ const claimDenied = async(req,res)=>{
           await activityLogger(req.user.id, "Claim-Denied ", "donation-box/claim-denied/:id", {
             DonationBoxId: donation_box.id,
             DonationName:donation_box.food_name,
+            DeniedByName:`${req.user.firstName} ${req.user.lastName}`,
             RequestedTo: donation_box.user_id,
             VolunteerId: donation_box.volunteer_id
         });
@@ -758,6 +765,7 @@ const markAsDelivered = async (req,res)=>{
           await activityLogger(req.user.id, "Donation Marked As Delivered ", "donation-box/delivered/:id", {
             DonationBoxId: donation_box.id,
             DonationName:donation_box.food_name,
+            MarkedByName:`${req.user.firstName} ${req.user.lastName}`,
             DonorId:donation_box.user_id,
             VolunteerId: donation_box.volunteer_id
         });

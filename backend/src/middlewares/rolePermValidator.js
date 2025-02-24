@@ -267,19 +267,41 @@ const canCreateDonationPoint = async(req,res,next)=>{
 
 }
 
+const canRequestHelp = async(req,res,next)=>{
+     
+    //geting roler permission model
+    const rolePermModel = await RolePermModel.findOne({role:req.user.role});
+
+    console.log(req.user.role,req.user.verified)
+    // checking Permission
+    if(rolePermModel.permissions.canRequestHelp && req.user.verified ==true)//if have permission 
+    {
+            next();
+    }
+    else//if dont have permission
+    {
+        return res.status(403)
+                .json({
+                    message:"Access Denied No permission Or Not verified",
+                    success:false
+                })
+    }    
+
+}
 module.exports = {
     canChangeUserRole,
     canMakeManager,
     canManageUsers,
     canMonitorSystem,
 
-    canCreateDonation,
     canCreateDonationPoint,
-    canViewDonations,
     canTrackDonationPoint,
+    
+    canViewDonations,
+    canCreateDonation,
     canDeleteDonation,
-
     canClaimDonation,
 
+    canRequestHelp,
     canAssignVolunteers
 }

@@ -62,6 +62,7 @@ const updateUserProfile = async (req,res)=>{
         //activityLogger
         await activityLogger(user.id,"User Profile Updated","users/profile",{
             ByUserId:req.user.id,
+            ByUserName:`${req.user.firstName} ${req.user.lastName}`,
             UserEmail:req.user.email,
             UserMobile:req.user.mobile
            
@@ -130,9 +131,9 @@ const updateUserRole = async (req,res)=>{
          //activityLogger
          await activityLogger(user.id,"User Role Updated","users/role",{
             ByUserId:req.user.id,
+            ByUserName:`${req.user.firstName} ${req.user.lastName}`,
             UserEmail:req.user.email,
             UserMobile:req.user.mobile
-           
         })
 
         //sending response
@@ -188,6 +189,7 @@ const updateUserIdentifier = async (req,res)=>{
           //activityLogger
           await activityLogger(user.id,"User Email/Mobile Updated","users/identifier",{
             ByUserId:req.user.id,
+            ByUserName:`${req.user.firstName} ${req.user.lastName}`,
             UserEmail:req.user.email,
             UserMobile:req.user.mobile
            
@@ -247,20 +249,21 @@ const deleteUser =  async (req,res)=>{
         }
 
     
+        //deleting user
+        await ContributionInfoModel.deleteOne({user_id:id})
+        await NotificationModel.deleteOne({user_id:id})
+        
+        await UserModel.findByIdAndDelete(id);
+        
         //activityLogger
         await activityLogger(req.user.id,"Deleted User Account Contribution_Info,Notification","delete users/:id",{
+            DeletedByName:`${req.user.firstName} ${req.user.lastName}`,
             DeletedUserId:user.id,
             UserEmail:user.email,
             UserMobile:user.mobile,
             Reason:reason  
         })
         
-        //deleting user
-        await ContributionInfoModel.deleteOne({user_id:id})
-        await NotificationModel.deleteOne({user_id:id})
-
-        await UserModel.findByIdAndDelete(id);
-
         res.status(200)
                 .json({
                     message:"User Account Deleted Successfully",

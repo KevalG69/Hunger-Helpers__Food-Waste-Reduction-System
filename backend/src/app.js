@@ -17,7 +17,7 @@ const DonationBoxRouter = require("./routes/DonationBoxRouter.js");
 const RequestRouter = require("./routes/RequestRouter.js");
 const VolunteerRouter = require("./routes/VolunteerRouter.js");
 const DonationPointRouter = require("./routes/DonationPointRouter.js");
-
+const VolunteerHelpRouter = require("./routes/VolunteerHelpRouter.js");
 //creating app 
 const app = express();
 app.use(cors());
@@ -55,6 +55,9 @@ app.use("/volunteers",VolunteerRouter);
 
 //--Donation Point Router 5
 app.use("/donation-point",DonationPointRouter);
+
+//-Help Request Router 6
+app.use("/volunteer-help",VolunteerHelpRouter);
 
 //--Request Router
 app.use("/request",RequestRouter);
