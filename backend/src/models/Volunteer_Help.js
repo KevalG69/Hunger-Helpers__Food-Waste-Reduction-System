@@ -7,9 +7,11 @@ const volunteerHelpSchema = new mongoose.Schema({
 
     status: { type: String, enum: ['Open', 'InProgress', 'Resolved', 'Cancelled'],default:"Open", required: true },
     description: { type: String, required: true },
-    requestedAt: { type: Date, default: Date.now, required: true },
+
+    createdAt: { type: Date, default: Date.now, required: true },
     resolvedAt: { type: Date },
+    
     assistingVolunteers: { type: mongoose.Schema.Types.ObjectId, ref: "User" }
-})
+});
 
 module.exports = mongoose.model("Volunteer_Help", volunteerHelpSchema);

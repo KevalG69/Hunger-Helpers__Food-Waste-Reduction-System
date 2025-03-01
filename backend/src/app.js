@@ -18,6 +18,9 @@ const RequestRouter = require("./routes/RequestRouter.js");
 const VolunteerRouter = require("./routes/VolunteerRouter.js");
 const DonationPointRouter = require("./routes/DonationPointRouter.js");
 const VolunteerHelpRouter = require("./routes/VolunteerHelpRouter.js");
+const NotificationRouter = require("./routes/NotificationRouter.js");
+const AnalyticsRouter = require("./routes/AnalyticsRouter.js");
+
 //creating app 
 const app = express();
 app.use(cors());
@@ -58,6 +61,12 @@ app.use("/donation-point",DonationPointRouter);
 
 //-Help Request Router 6
 app.use("/volunteer-help",VolunteerHelpRouter);
+
+//-Notification Request Router 7
+app.use("/notification",NotificationRouter);
+
+//-Analytics Request Router 8
+app.use("/analytics",AnalyticsRouter);
 
 //--Request Router
 app.use("/request",RequestRouter);

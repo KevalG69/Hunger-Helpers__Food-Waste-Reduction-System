@@ -50,18 +50,18 @@ DELETE /api/donation-points/:id → Delete a donation point (Manager Only)✔️
 
 6. Volunteer Help APIs
 POST /api/help-requests/ → Create a new help request✔️
-GET /api/help-requests/ → Get all help requests
-GET /api/help-requests/:id → Get help request details
-PUT /api/help-requests/:id → Update help request
-DELETE /api/help-requests/:id → Cancel a help request
+GET /api/help-requests/ → Get all help requests✔️
+GET /api/help-requests/:id → Get help request details✔️
+PUT /api/help-requests/:id → Update help request✔️
+DELETE /api/help-requests/:id → Cancel a help request✔️
 
 
 
 
 7. Notification APIs
-GET /api/notifications/ → Get all notifications for the user
-PUT /api/notifications/:id/read → Mark notification as read
-DELETE /api/notifications/:id → Delete a notification
+GET /api/notifications/ → Get all notifications for the user✔️
+PUT /api/notifications/:id/read → Mark notification as read✔️
+DELETE /api/notifications/:id → Delete a notification✔️
 
 8. Chat APIs
 POST /api/chats/ → Start a new chat thread
