@@ -10,6 +10,7 @@ const RequestModel = require("../models/Request.js");
 //functions
 const activityLogger = require("../functions&utils/activityLogger.js");
 const { updateDonationPoints, updateVolunteerPoints } = require("../functions&utils/updateContributionPoints.js");
+const sendNotification = require("../functions&utils/sendNotification.js");
 
 
 const createDonationBox = async (req, res) => {
@@ -49,12 +50,24 @@ const createDonationBox = async (req, res) => {
             $push: { donations: sId }
         })
 
+        const notificationId = sendNotification("volunteer","Donation Update","New Donation Available",
+                {Donation_Id:sId,
+                Donation_Name:donation_box.food_name,
+                Donation_Type:donation_box.food_type,
+                Donation_Quantity:donation_box.food_quantity}
+        )
+
+        //pushing notification object id to in user
+        await UserModel.findByIdAndUpdate(req.user.id, {
+            $push: { notifications: notificationId }
+        });
+
         //activityLogger
         await activityLogger(req.user.id, "Created Donation Box", "post /donation-box/create", {
             DonationBoxId: sId,
             DonationBoxName: savedDonationBox.food_name,
         })
-
+   
         res.status(200)
             .json({
                 message: "Created Donation Box Successfully",
@@ -174,6 +187,7 @@ const updateDonationBox = async (req, res) => {
     try {
         //extracting data from req.body
         const updatedData = req.body;
+        const reason = updatedData.reason;
 
 
         const { donationBoxId } = req.query;
@@ -199,15 +213,44 @@ const updateDonationBox = async (req, res) => {
                 })
         }
 
-
+        delete updatedData['reason'];
         Object.assign(donation_box, updatedData);
         donation_box.updatedAt = Date.now();
 
         await donation_box.save();
 
+        if(donation_box.volunteer_id)
+        {
+            sendNotification(donation_box.volunteer_id,"Donation Update","Updated Donation Box",
+                {Donation_Id:donationBoxId,
+                Donation_Name:donation_box.food_name,
+                Donation_Type:donation_box.food_type,
+                Donation_Quantity:donation_box.food_quantity}
+            );
+                //pushing notification object id to in user
+            await UserModel.findByIdAndUpdate(donation_box.volunteer_id, {
+                $push: { notifications: notificationId }
+            });
+
+
+
+        }
+        else
+        {
+            sendNotification("volunteer","Donation Update","Updated Donation Box",
+                {Donation_Id:donationBoxId,
+                    Donation_Name:donation_box.food_name,
+                    Donation_Type:donation_box.food_type,
+                    Donation_Quantity:donation_box.food_quantity}
+                );
+        }
+                
+
+
         //activityLogger
         await activityLogger(donation_box.id, "Donation Box Updated", "donation-box/update/:id", {
             ByUserId: req.user.id,
+            reason:reason,
             UserEmail: req.user.email,
             UserName:`${req.user.firstName} ${req.user.lastName}`,
             UserMobile: req.user.mobile,
@@ -285,6 +328,18 @@ const acceptDonationBox = async (req, res) => {
         volunteerDDmodel.save();
 
 
+        sendNotification(donation_box.user_id,"Donation Update","Volunteer Accepted Your Donation Box",
+            {Donation_Id:donationBoxId,
+            Donation_Name:donation_box.food_name,
+            Donation_Type:donation_box.food_type,
+            Donation_Quantity:donation_box.food_quantity}
+        );
+            //pushing notification object id to in user
+        await UserModel.findByIdAndUpdate(donation_box.user_id, {
+            $push: { notifications: notificationId }
+        });
+
+
         //activityLogger
         await activityLogger(req.user.id, "Accepted Donation", "donation-box/accept/:id", {
             DonationBoxId: donation_box.id,
@@ -319,6 +374,7 @@ const cancelDonationBox = async (req, res) => {
     try {
         //getting donation box id
         const { donationBoxId } = req.query;
+        const {reason}= req.body;
 
         //getting Donation
         const donation_box = await DonationBoxModel.findById(donationBoxId);
@@ -350,6 +406,17 @@ const cancelDonationBox = async (req, res) => {
             //changing donation box status to cancelled
             donation_box.status = "Cancelled";
             donation_box.save();
+            sendNotification(donation_box.volunteer_id,"Donation Update","Donor Cancelled Donation Box",
+                {Donation_Id:donationBoxId,
+                Donation_Name:donation_box.food_name,
+                Donation_Type:donation_box.food_type,
+                Donation_Quantity:donation_box.food_quantity}
+            );
+                //pushing notification object id to in user
+            await UserModel.findByIdAndUpdate(donation_box.volunteer_id, {
+                $push: { notifications: notificationId }
+            });
+
         }
         else if (req.user.id == donation_box.volunteer_id) {
 
@@ -362,6 +429,19 @@ const cancelDonationBox = async (req, res) => {
 
             volunteerDDmodel.save();
             donation_box.save();
+
+            sendNotification(req.user.id,"Donation Update","Volunteer Cancelled Donation Box",
+                {Donation_Id:donationBoxId,
+                Donation_Name:donation_box.food_name,
+                Donation_Type:donation_box.food_type,
+                Donation_Quantity:donation_box.food_quantity}
+            );
+                //pushing notification object id to in user
+            await UserModel.findByIdAndUpdate(req.user.id, {
+                $push: { notifications: notificationId }
+            });
+
+
         }
         else {
             return res.status(401)
@@ -373,6 +453,7 @@ const cancelDonationBox = async (req, res) => {
 
         //activityLogger
         await activityLogger(req.user.id, "Cancelled Donation Box", "donation-box/cancel/:id", {
+            reason:reason,
             DonationBoxId: donation_box.id,
             DonatedBy: donation_box.user_id,
             VolunteerId: donation_box.volunteer_id,
@@ -404,6 +485,7 @@ const deleteDonationBox = async (req, res) => {
     {   
         //getting donation box id
         const {donationBoxId} = req.query;
+        const { reason } = req.body;
 
         //finding donation Box
         const donation_box = await DonationBoxModel.findById(donationBoxId);
@@ -434,8 +516,11 @@ const deleteDonationBox = async (req, res) => {
 
         await DonationBoxModel.findByIdAndDelete(id);
 
+
+
         //activityLogger
         await activityLogger(req.user.id, "DELETE Donation Box", "delete donation-box/id/:id", {
+            Reason:reason,
             DonationBoxId: donation_box.id,
             DeletedByName:`${req.user.firstName} ${req.user.lastName}`,
             DonatedBy: donation_box.user_id,
@@ -509,7 +594,19 @@ const claimDonationBox = async (req,res)=>{
         })
 
         await requestModel.save();
-        console.log("saved")
+
+        sendNotification(donation_box.user_id,"Donation Update","Requested to Claim Donation Box",
+            {Donation_Id:donationBoxId,
+            Donation_Name:donation_box.food_name,
+            Donation_Type:donation_box.food_type,
+            Donation_Quantity:donation_box.food_quantity}
+        );
+            //pushing notification object id to in user
+        await UserModel.findByIdAndUpdate(donation_box.user_id, {
+            $push: { notifications: notificationId }
+        });
+
+
          //activityLogger
          await activityLogger(req.user.id, "Claim Confirm Requested ", "donation-box/claim-volunteer/:id", {
             DonationBoxId: donation_box.id,
@@ -600,6 +697,21 @@ const claimConfirm = async(req,res)=>{
         await DonationBoxModel.findByIdAndUpdate(donation_box.id,{status:"Claimed"});
         await VolunteerDDModel.findOneAndUpdate({volunteer_id:donation_box.volunteer_id.toString()},{status:"Claimed",updatedAt:Date.now()});
     
+        //deleting request
+        await RequestModel.findByIdAndDelete(requestId);
+
+         sendNotification(donation_box.volunteer_id,"Donation Update","Claim Request Accepted By Donor",
+                {Donation_Id:donationBoxId,
+                Donation_Name:donation_box.food_name,
+                Donation_Type:donation_box.food_type,
+                Donation_Quantity:donation_box.food_quantity}
+            );
+                //pushing notification object id to in user
+            await UserModel.findByIdAndUpdate(donation_box.volunteer_id, {
+                $push: { notifications: notificationId }
+            });
+
+
           //activityLogger
           await activityLogger(req.user.id, "Claim-Confirmed ", "donation-box/claim-confirm/:id", {
             DonationBoxId: donation_box.id,
@@ -609,8 +721,6 @@ const claimConfirm = async(req,res)=>{
             VolunteerId: donation_box.volunteer_id
         });
 
-        //deleting request
-        await RequestModel.findByIdAndDelete(requestId);
 
 
         //response
@@ -682,6 +792,18 @@ const claimDenied = async(req,res)=>{
         //deleting request
         await RequestModel.findByIdAndDelete(requestId);
     
+        sendNotification(donation_box.volunteer_id,"Donation Update","Claim Request Denied By Donor",
+            {Donation_Id:donationBoxId,
+            Donation_Name:donation_box.food_name,
+            Donation_Type:donation_box.food_type,
+            Donation_Quantity:donation_box.food_quantity}
+        );
+            //pushing notification object id to in user
+        await UserModel.findByIdAndUpdate(donation_box.volunteer_id, {
+            $push: { notifications: notificationId }
+        });
+
+
           //activityLogger
           await activityLogger(req.user.id, "Claim-Denied ", "donation-box/claim-denied/:id", {
             DonationBoxId: donation_box.id,
@@ -760,6 +882,29 @@ const markAsDelivered = async (req,res)=>{
           donation_box.assistingVolunteer.forEach(async (volunteer_id) => await updateVolunteerPoints(volunteer_id));
 
         }
+
+        sendNotification(donation_box.volunteer_id,"Donation Update","Delivered Donation Box Successfully",
+            {Donation_Id:donationBoxId,
+            Donation_Name:donation_box.food_name,
+            Donation_Type:donation_box.food_type,
+            Donation_Quantity:donation_box.food_quantity}
+        );
+            //pushing notification object id to in user
+        await UserModel.findByIdAndUpdate(donation_box.volunteer_id, {
+            $push: { notifications: notificationId }
+        });
+
+        sendNotification(donation_box.user_id,"Donation Update","Delivered Donation Box Successfully",
+            {Donation_Id:donationBoxId,
+            Donation_Name:donation_box.food_name,
+            Donation_Type:donation_box.food_type,
+            Donation_Quantity:donation_box.food_quantity}
+        );
+            //pushing notification object id to in user
+        await UserModel.findByIdAndUpdate(donation_box.user_id, {
+            $push: { notifications: notificationId }
+        });
+
 
           //activityLogger
           await activityLogger(req.user.id, "Donation Marked As Delivered ", "donation-box/delivered/:id", {

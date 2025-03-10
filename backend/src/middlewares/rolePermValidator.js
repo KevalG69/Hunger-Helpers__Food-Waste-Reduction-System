@@ -288,20 +288,94 @@ const canRequestHelp = async(req,res,next)=>{
     }    
 
 }
+
+const canViewAnalytics = async(req,res,next)=>{
+     
+    //geting roler permission model
+    const rolePermModel = await RolePermModel.findOne({role:req.user.role});
+
+    console.log(req.user.role,req.user.verified)
+    // checking Permission
+    if(rolePermModel.permissions.canViewAnalytics)//if have permission 
+    {
+            next();
+    }
+    else//if dont have permission
+    {
+        return res.status(403)
+                .json({
+                    message:"Access Denied No permission Or Not verified",
+                    success:false
+                })
+    }    
+
+}
+
+const canManageContent = async(req,res,next)=>{
+     
+    //geting roler permission model
+    const rolePermModel = await RolePermModel.findOne({role:req.user.role});
+
+    console.log(req.user.role,req.user.verified)
+    // checking Permission
+    if(rolePermModel.permissions.canManageContent && req.user.verified==true)//if have permission 
+    {
+            next();
+    }
+    else//if dont have permission
+    {
+        return res.status(403)
+                .json({
+                    message:"Access Denied No permission Or Not verified",
+                    success:false
+                })
+    }    
+
+}
+
+const canReport = async(req,res,next)=>{
+     
+    //geting roler permission model
+    const rolePermModel = await RolePermModel.findOne({role:req.user.role});
+
+    console.log(req.user.role,req.user.verified)
+
+    // checking Permission
+    if(rolePermModel.permissions.canReport)//if have permission 
+    {
+            next();
+    }
+    else//if dont have permission
+    {
+        return res.status(403)
+                .json({
+                    message:"Access Denied No permission Or Not verified",
+                    success:false
+                })
+    }    
+
+}
+
 module.exports = {
     canChangeUserRole,
+    canMonitorSystem,
+    
+    canCreateDonationPoint,
+    canCreateDonation,
     canMakeManager,
     canManageUsers,
-    canMonitorSystem,
-
-    canCreateDonationPoint,
-    canTrackDonationPoint,
+    canManageContent,
+    
+    canClaimDonation,
+    canRequestHelp,
+    canAssignVolunteers,
+    canReport,
     
     canViewDonations,
-    canCreateDonation,
-    canDeleteDonation,
-    canClaimDonation,
+    canViewAnalytics,
+    
+    canTrackDonationPoint,
+    
+    canDeleteDonation
 
-    canRequestHelp,
-    canAssignVolunteers
 }

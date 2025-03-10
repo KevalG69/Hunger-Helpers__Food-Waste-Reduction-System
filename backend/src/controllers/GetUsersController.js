@@ -120,17 +120,16 @@ const getUserActivityLogs = async (req, res) => {
 
         const user = await UserModel.findById(userId);
 
-        if(!user)
-        {
+        if (!user) {
             return res.status(404)
-                    .json({
-                        message:"User NOT FOUND",
-                        success:false,
-                        data:null,
-                        total:0,
-                        page,
-                        limit
-                    })
+                .json({
+                    message: "User NOT FOUND",
+                    success: false,
+                    data: null,
+                    total: 0,
+                    page,
+                    limit
+                })
         }
 
 
@@ -166,7 +165,7 @@ const getUserActivityLogs = async (req, res) => {
 
         //activityLogger
         await activityLogger(req.user.id, "Fetched User Activity Logs", "get users/:id/activity-logs", {
-            FetchedByName:`${req.user.firstName} ${req.user.lastName}`,
+            FetchedByName: `${req.user.firstName} ${req.user.lastName}`,
             UserId: user.id,
             UserEmail: user.email,
             UserMobile: user.mobile,
@@ -269,7 +268,7 @@ const getUserDonations = async (req, res) => {
                 .json({
                     message: "No Donations FOUND",
                     success: false,
-                    data:null,
+                    data: null,
                     total
                 })
         }
@@ -277,7 +276,7 @@ const getUserDonations = async (req, res) => {
 
         //activityLogger
         await activityLogger(req.user.id, "Fetched User Donations Info ", "get users/donations/:id", {
-            FetchedBy:`${req.user.firstName} ${req.user.lastName}`,
+            FetchedBy: `${req.user.firstName} ${req.user.lastName}`,
             UserId: user.id,
             UserEmail: user.email,
             UserMobile: user.mobile,
@@ -288,7 +287,7 @@ const getUserDonations = async (req, res) => {
             .json({
                 message: "Fetched User Donations Info Successfully",
                 success: true,
-                data:donations,
+                data: donations,
                 total
             })
     }
@@ -303,10 +302,71 @@ const getUserDonations = async (req, res) => {
     }
 }
 
+const getUserReports = async (req, res) => {
+    try {
+
+        const { userId, status, page = 1, limit = 10, reportType, sort = "createdAt" } = req.query;
+
+        const query = {};
+        if (status) query.status = status;
+        if (reportType) query.reportType = reportType;
+
+        query.reportedUserId = userId;
+
+        const reports = await ReportModel.find(query)
+            .limit(parseInt(limit))
+            .skip((parseInt(page) - 1) * parseInt(limit))
+            .sort(sort);
+
+        const total = await reports.countDocuments(query);
+
+
+        //checking if reports exist
+        if(!reports.length) {
+            return res.status(404)
+                .json({
+                    message: "Reports NOT FOUND",
+                    success: false,
+                    data: [],
+                    total,
+                    page,
+                    limit
+                })
+        }
+
+        //if reports exist
+
+        res.status(200)
+            .json({
+                message: "Fetched Reports Successfully",
+                success: true,
+                data: reports,
+                total,
+                page,
+                limit
+            })
+
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500)
+            .json({
+                message: "Failed to Fetch User Reports",
+                success: false,
+                data: [],
+                total: 0,
+                page,
+                limit
+
+            })
+    }
+}
+
 module.exports = {
     getAllUsers,
     getUserByidentifier,
     getUserActivityLogs,
     getUserContributionInfo,
-    getUserDonations
+    getUserDonations,
+    getUserReports
 }

@@ -2,21 +2,21 @@
 const UserRouter = require("express").Router();
 
 //Controllers
-const {getAllUsers,getUserByidentifier,getUserActivityLogs, getUserContributionInfo,getUserDonations} 
+const {getAllUsers,getUserByidentifier,getUserActivityLogs, getUserContributionInfo,getUserDonations, getUserReports} 
                 = require("../controllers/GetUsersController.js");
 const {updateUserProfile, updateUserIdentifier,updateUserRole, deleteUser} 
         = require("../controllers/UserController.js");
 
 //Middlewares
-const {verifyToken,isAdmin,isManager,isMangerOrSelf} = require("../middlewares/authValidator");
+const {verifyToken,isAdmin,isManager,isMangerOrSelf, isSelf} = require("../middlewares/authValidator");
 
 const { canChangeUserRole,canMakeManager, canManageUsers, canMonitorSystem } 
         = require("../middlewares/rolePermValidator.js");
 
 const { userBasicDataValidator,userAdvDataValidator} = require("../middlewares/userDataValidator.js");
 
-
-
+//Funcitons
+const upload = require("../functions&utils/uploadImage.js");
 
 //-----------------------
 // - Get All user API - users/
@@ -34,7 +34,11 @@ UserRouter.get("/contribution-info/",verifyToken,isMangerOrSelf,getUserContribut
 // - Get User Donations
 UserRouter.get("/donations",verifyToken,isMangerOrSelf,getUserDonations)
 
+//- GET User Reports
+UserRouter.get("/reports",verifyToken,isManager,getUserReports);
 
+//-Update User Profile-Photo
+UserRouter.post("/upload-profile-photo",verifyToken,isSelf,upload.single("profilePhoto"),uploadUserProfilePhoto)
 
 // - Update User users/identifier
 UserRouter.put("/profile",verifyToken,isMangerOrSelf,userBasicDataValidator,updateUserProfile);

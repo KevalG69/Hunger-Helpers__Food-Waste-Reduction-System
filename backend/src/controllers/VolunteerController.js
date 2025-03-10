@@ -99,6 +99,21 @@ const assignVolunteer = async (req, res) => {
         
         //deleting request 
         await RequestModel.findByIdAndDelete(requestId);
+
+         sendNotification(volunteer.id,"Request Update","Your Are Assigned to Help Donation Box",
+                        {Donation_Id:donationBoxId,
+                        Donation_Name:donation_box.food_name,
+                        Donation_Type:donation_box.food_type,
+                        Donation_Quantity:donation_box.food_quantity}
+                    );
+                        //pushing notification object id to in user
+                    await UserModel.findByIdAndUpdate(volunteer.id, {
+                        $push: { notifications: notificationId }
+                    });
+        
+        
+
+
         //activityLogger
         await activityLogger(req.user.id, "Assigned Volunteer", "volunteer/assign/:id", {
             DonationBoxId: donation_box.id,
@@ -196,6 +211,16 @@ const requestAssignVolunteer = async (req, res) => {
 
         await requestModel.save();
 
+        sendNotification(donation_box.volunteer_id,"Request Update","Volunteer Want to Help You",
+            {Donation_Id:donationBoxId,
+            Donation_Name:donation_box.food_name,
+            Donation_Type:donation_box.food_type,
+            Donation_Quantity:donation_box.food_quantity}
+        );
+            //pushing notification object id to in user
+        await UserModel.findByIdAndUpdate(donation_box.volunteer_id, {
+            $push: { notifications: notificationId }
+        });
         res.status(200)
             .json({
                 message: "Assign Request Sent Successfully",
@@ -245,7 +270,15 @@ const cancelRequest = async (req, res) => {
         //deleting request
         await RequestModel.findByIdAndDelete(requestId);
 
-
+        sendNotification(requestModel.requestedFrom,"Request Update","Thanks But I got this",
+            {Donation_Id:donationBoxId,
+            Asked_To:requestModel.askedTo }
+        );
+            //pushing notification object id to in user
+        await UserModel.findByIdAndUpdate(requestModel.requestedFrom, {
+            $push: { notifications: notificationId }
+        });
+        
         //sending respons
         res.status(200)
             .json({
@@ -325,6 +358,17 @@ const cancelAssignedVolunteer = async (req, res) => {
 
         await VolunteerDDModel.findOneAndDelete({ volunteer_id: volunteerId });
 
+        
+        sendNotification(volunteerId,"Request Update","Your Not Helping Anymore :/",
+            {Donation_Id:donationBoxId,
+            Donation_Name:donation_box.food_name,
+            Donation_Type:donation_box.food_type,
+            Donation_Quantity:donation_box.food_quantity}
+        );
+            //pushing notification object id to in user
+        await UserModel.findByIdAndUpdate(volunteerId, {
+            $push: { notifications: notificationId }
+        });
         //activityLogger
         await activityLogger(req.user.id, "Cancelled Assigned Volunteer", "volunteer/assign-cancel/:id", {
             AssignedTo: volunteer.id,

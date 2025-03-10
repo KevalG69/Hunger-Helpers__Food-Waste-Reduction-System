@@ -126,7 +126,7 @@ const notSelf = async (req,res,next)=>{
 
         res.status(403)
             .json({
-                message:"Cannot Accepted By YourSelf",
+                message:"Cannot Do it By YourSelf",
                 success:false
             })
     }

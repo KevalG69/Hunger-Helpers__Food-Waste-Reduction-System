@@ -127,6 +127,17 @@ const updateUserRole = async (req,res)=>{
         //saving user changes
         await user.save();
 
+        sendNotification(user.id,"Profile Update","Your Role is Updated!",
+            {Donation_Id:donationBoxId,
+            Donation_Name:donation_box.food_name,
+            Donation_Type:donation_box.food_type,
+            Donation_Quantity:donation_box.food_quantity}
+        );
+            //pushing notification object id to in user
+        await UserModel.findByIdAndUpdate(user.id, {
+            $push: { notifications: notificationId }
+        });
+
 
          //activityLogger
          await activityLogger(user.id,"User Role Updated","users/role",{
@@ -215,6 +226,39 @@ const updateUserIdentifier = async (req,res)=>{
     }
 }
 
+const uploadUserProfilePhoto = async(req,res)=>{
+    try
+    {
+        await UserModel.findByIdAndUpdate(req.user.id,{profilePhoto:req.file.path});
+        
+          //activityLogger
+          await activityLogger(req.user.id,"Updated Profile Photo","users/upload-profile-photo",{
+            ByUserId:req.user.id,
+            ByUserName:`${req.user.firstName} ${req.user.lastName}`,
+            UserEmail:req.user.email,
+            UserMobile:req.user.mobile
+        })
+
+        res.status(200)
+            .json({
+                message:"Updated Profile Photo Successfully",
+                success:true,
+                imageUrl:req.file.path
+            })
+    }
+    catch(error)
+    {
+        console.error(error);
+        res.status(500)
+            .json({
+                message:"Failed to Upload Profile Photo",
+                success:false,
+                imageUrl:null,
+                error
+            })
+    }
+}
+
 //Delete User Account
 const deleteUser =  async (req,res)=>{
 
@@ -286,5 +330,6 @@ module.exports = {
     updateUserProfile,
     updateUserRole,
     updateUserIdentifier,
+    uploadUserProfilePhoto,
     deleteUser
 }
