@@ -63,22 +63,28 @@ GET /api/notifications/ → Get all notifications for the user✔️
 PUT /api/notifications/:id/read → Mark notification as read✔️
 DELETE /api/notifications/:id → Delete a notification✔️
 
+-------------
 8. Chat APIs
 POST /api/chats/ → Start a new chat thread
 GET /api/chats/:thread_id → Get chat messages for a thread
 POST /api/chats/:thread_id/messages → Send a message in a chat
 DELETE /api/chats/:thread_id/messages/:id → Delete a message
 
+live tracking
+notification to nearby volunteer
+
+------------
+
 9. Analytics & Reports APIs
-GET /api/analytics/ → Get overall system analytics
-GET /api/analytics/donations → Get donation analytics
-GET /api/analytics/volunteers → Get volunteer analytics
-GET /api/analytics/leaderboard → Get leaderboard rankings
+GET /api/analytics/ → Get overall system analytics✔️
+POST /api/analytics/ -> create analytics info✔️
+PUT /api/analytics/update → update analytics data✔️
 
-POST /api/reports/ → Submit a report (e.g., fake donation, abuse)
-GET /api/reports/ → Get all reports (Admin)
-PUT /api/reports/:id/status → Update report status
+10.Reports APIs
+POST /api/reports/ → Submit a report (e.g., fake donation, abuse)✔️
+GET /api/reports/ → Get all reports (Admin)✔️
+PUT /api/reports/:id/status → Update report status✔️
 
-10. Leaderboard APIs
-GET /api/leaderboard/ → Get global leaderboard
-GET /api/leaderboard/:region → Get leaderboard for a specific region
+11. Leaderboard APIs
+GET /api/leaderboard/ → Get global leaderboard✔️
+GET /api/leaderboard/:region → Get leaderboard for a specific region✔️

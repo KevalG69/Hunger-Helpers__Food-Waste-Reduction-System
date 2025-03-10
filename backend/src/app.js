@@ -149,7 +149,7 @@ app.use("/analytics",AnalyticsRouter);
 app.use("/leaderboard",LeaderboardRouter);
 
 //-Report Request Router 10
-app.use("/Report",ReportRouter);
+app.use("/report",ReportRouter);
 
 //--Request Router
 app.use("/request",RequestRouter);

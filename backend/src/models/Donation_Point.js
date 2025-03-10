@@ -5,6 +5,7 @@ const DonatonPointSchema = new mongoose.Schema({
     manager_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     name: { type: String, unique: true, required: true },
     description: { type: String, required: true },
+    donations:[{ type: mongoose.Schema.Types.ObjectId, ref: 'Donation_Box'}],
     location: {
         lat: { type: Number, required: true },
         lng: { type: Number, required: true }

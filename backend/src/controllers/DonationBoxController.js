@@ -6,6 +6,7 @@ const UserModel = require("../models/User.js");
 const DonationBoxModel = require("../models/Donation_Box.js");
 const VolunteerDDModel = require("../models/Volunteer_Donation_Delivery.js");
 const RequestModel = require("../models/Request.js");
+const DonationPointModel = require("../models/Donation_Point.js");
 
 //functions
 const activityLogger = require("../functions&utils/activityLogger.js");
@@ -839,7 +840,7 @@ const markAsDelivered = async (req,res)=>{
     try
     {
         //getting donation box id
-        const {donationBoxId} = req.query;
+        const {donationBoxId,donationPointId} = req.query;
 
 
         //finding donation box
@@ -882,6 +883,15 @@ const markAsDelivered = async (req,res)=>{
           donation_box.assistingVolunteer.forEach(async (volunteer_id) => await updateVolunteerPoints(volunteer_id));
 
         }
+
+        if(donationPointId)
+        {
+            await DonationPointModel.findByIdAndUpdate(donationPointId,{
+                $push:{donations:donationBoxId}
+            });
+
+        }
+
 
         sendNotification(donation_box.volunteer_id,"Donation Update","Delivered Donation Box Successfully",
             {Donation_Id:donationBoxId,
