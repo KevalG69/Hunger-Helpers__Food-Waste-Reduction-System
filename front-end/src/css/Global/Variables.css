@@ -1,0 +1,45 @@
+:root{
+
+    /* colors */
+    --primary1 : #4CAF50;
+    --primary1-15 : rgba(76,175,80,0.15);
+    --primary2 : #35D03B;
+    --secondary : #B04C78;
+    --secondary2 : #D13479;
+    --secondary3 : #2C332D;
+    --gradient : linear-gradient(180deg,#B04C78,#4A2032);
+    --gradient2 : linear-gradient(180deg,#D13479,#6B1B3E);
+    --blue : #26B3F4;
+    --error: #E23259;
+    --black: #222A23;
+    --black75 : rgba(34,42,35,0.75);
+    --black50 : rgba(34,42,35,0.50);
+    --black25 : rgba(34,42,35,0.25);
+    --black10 : rgba(34,42,35,0.10);
+    --black5 : rgba(34,42,35,0.05);
+    --gradient15 : linear-gradient(
+        180deg,
+        rgba(176,76,120,0.15),
+        rgba(74,32,50,0.15)
+    );
+    --error15 : rgba(226,50,89,0.15);
+    --primary1-30 : rgba(76,175,80,0.30);
+
+
+    /* TEXT Styles */
+   
+    --font-primary: 'Noto Sans',sans-serif;
+    --font-secondary:'Noto Sans',serif;
+    --font-extra-large:4.76875rem;
+    --font-h1:3.8125rem;
+    --font-h2:3.05rem;
+    --font-h3:2.44375rem;
+    --font-h4:1.95625rem;
+    --font-h5:1.5625rem;
+    --font-h6:1.25rem;
+    --font-h7:1rem;
+    --font-h8:0.8rem;
+    --font-h9:0.6375rem;
+    --font-h10:0.5125rem;
+}
+
