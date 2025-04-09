@@ -4,7 +4,7 @@ const cors = require("cors")
 const dotenv = require("dotenv").config();
 const bodyParser = require("body-parser");
 
-const http = require("express");
+const http = require("http");
 const {Server} = require("socket.io")
 //Core Modules
 

@@ -2,7 +2,7 @@
 
 
 //funcitons
-function DonationPoint(){
+function Donations(){
 
     return (
         <>
@@ -14,4 +14,4 @@ function DonationPoint(){
     
 }
 
-export default DonationPoint;
+export default Donations;

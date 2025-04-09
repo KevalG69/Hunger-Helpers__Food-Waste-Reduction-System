@@ -4,7 +4,7 @@ const UserRouter = require("express").Router();
 //Controllers
 const {getAllUsers,getUserByidentifier,getUserActivityLogs, getUserContributionInfo,getUserDonations, getUserReports} 
                 = require("../controllers/GetUsersController.js");
-const {updateUserProfile, updateUserIdentifier,updateUserRole, deleteUser} 
+const {updateUserProfile, updateUserIdentifier,updateUserRole, deleteUser,uploadUserProfilePhoto} 
         = require("../controllers/UserController.js");
 
 //Middlewares

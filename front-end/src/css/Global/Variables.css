@@ -41,5 +41,8 @@
     --font-h8:0.8rem;
     --font-h9:0.6375rem;
     --font-h10:0.5125rem;
+
+    /* other */
+    --shadow: rgba(0,0,0,0.25);
 }
 

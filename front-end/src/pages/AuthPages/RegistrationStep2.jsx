@@ -4,7 +4,10 @@ import { useNavigate } from "react-router-dom"
 import { toast } from 'react-toastify';
 
 //css
-import '../../css/Pages/Login.css'
+import '../../css/Pages/RegistrationStep1.css'
+
+//utitls
+import { handleSuccess,handleError } from '../../utils/Toast';
 
 //svgs 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -13,12 +16,12 @@ import AuthButton from '../../components/SingleComponents/AuthButton';
 import { Link } from 'react-router-dom';
 
 //funcitons
-function Login(){
+function RegistrationStep1(){
 
     const navigate = useNavigate();
 
     //State
-    const [loginInfo,setLoginInfo] = useState({
+    const [registerInfo,setRegisterInfo] = useState({
         identifier:'',
         password:''
     })
@@ -44,11 +47,18 @@ function Login(){
 
     //Inpute Text
     const handleOnChange = (event)=>{
+        //extracting data
         const {name,value} = event.target;
         console.log(name,value);
-        const copyLoginInfo = {...loginInfo};
-        copyLoginInfo[name]=value;
-        setLoginInfo(copyLoginInfo);
+
+        //copying data
+        const copyRegisterInfo = {...registerInfo};
+
+        //making chang in copy data
+        copyRegisterInfo[name]=value;
+
+        //changing original data
+        setRegisterInfo(copyRegisterInfo);
     }
 
 
@@ -59,7 +69,7 @@ function Login(){
         console.warn("Submited")
 
         //extracting info
-        const {identifier,password} = loginInfo;
+        const {identifier,password} = registerInfo;
         
         //checking data
         if(!identifier || !password)
@@ -72,11 +82,11 @@ function Login(){
         }
         else if(isValidEmail(identifier))
         {
-            fetchLoginAPI('Email');
+            fetchregisterAPI('Email');
         }
         else if(isValidMobile(identifier))
         {
-            fetchLoginAPI('Mobile');
+            fetchregisterAPI('Mobile');
 
         }
         else
@@ -88,35 +98,65 @@ function Login(){
     }
 
     //handling errors
-    const handleError = (error)=>{
+    const frontError = (error)=>{
         console.log(error);
     }
 
-    const fetchLoginAPI = (type)=>{
+    const fetchregisterAPI = async (registerWith)=>{
         
         //try and catch block
-
         try
         {   
+            const {identifier,password} = registerInfo;
             //API
-        //    const url =
+            const url = "http://localhost:3000/auth/register-step1";
+
+            //fetching apis
+            const response = await fetch(url,{
+                method: "POST",
+                headers :{
+                    'Content-type' : 'application/json'
+                },
+                body : JSON.stringify({registerWith,identifier,password})
+            });
+
+            //getting response from api
+            const result = await response.json();
+            console.log(result);
+
+            const {message,success} = result;
+
+            if(!success)
+            {
+                handleError(message," Please Try Again ");
+            }
+            else if(success)
+            {
+                handleSuccess(message);
+                setTimeout(()=>{
+                    navigate('/');
+                },1000)
+                
+            }
+
+
 
         }   
         catch(error)
         {
-            handleError(error);
+            frontError(error);
         }
         
     }
 
     return (
-        <div className="login-frame">
+        <div className="register-frame">
 
-            <div className="login-container">
+            <div className="register-container">
                 <FontAwesomeIcon className="close_btn" size="xl" icon={faXmark} onClick={handleCloseBtn} />
                 <div id="form-container">
 
-                    <header>Login</header>
+                    <header>Register</header>
 
                     <form onSubmit={handleSubmit}>
 
@@ -137,19 +177,15 @@ function Login(){
 
                         </div>
                         
-                        <AuthButton name={"Login"}></AuthButton>
+                        <span> <span style={{color:"var(--primary2)"}}>verification code </span>will sent to your Email/Mobile</span>
+                        <AuthButton name={"Register"}></AuthButton>
                         
 
                         <div id="links">
-                            <span>
-                                <Link to="/Forgot-password" id="forgot-text">
-                                    Forgot Password
-                                </Link> 
-                            </span>
-                            <span id="register-text">
-                                Don't Have Account ?  
-                                <Link to="/RegistrationStep1" style={{color:"var(--error)"}}>
-                                    Register here
+                            <span id="login-text">
+                                Already Have Account ?  
+                                <Link to="/Login" style={{color:"var(--error)"}}>
+                                    Login here
                                 </Link>
                             </span>
                         </div>
@@ -164,4 +200,4 @@ function Login(){
     
 }
 
-export default Login;
+export default RegistrationStep1;

@@ -3,6 +3,8 @@
 const ReportRouter = require("express").Router();
 
 //Controller
+const {updateReportStatus,createReport,getAllReport} = require('../controllers/ReportController.js');
+
 
 //middlewares
 const { verifyToken, notSelf, isMangerOrSelf, isManager } = require("../middlewares/authValidator");
