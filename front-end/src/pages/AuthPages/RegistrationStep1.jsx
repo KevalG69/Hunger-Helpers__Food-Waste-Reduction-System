@@ -1,5 +1,5 @@
 //Modules
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from "react-router-dom"
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
@@ -16,11 +16,14 @@ import { faXmark} from '@fortawesome/free-solid-svg-icons'
 
 //componets
 import AuthButton from '../../components/SingleComponents/AuthButton';
+import { contextAPI } from '../../services/RegistrationContext';
 
 
 
 //funcitons
 function RegistrationStep1(){
+
+    const {updateRegistrationData} = useContext(contextAPI);
 
     const navigate = useNavigate();
 
@@ -113,8 +116,7 @@ function RegistrationStep1(){
         {   
             const {identifier,password} = registerInfo;
             // On register submit
-            localStorage.setItem("registerWith",registerWith)
-            localStorage.setItem("registerIdentifier", identifier);
+            updateRegistrationData({registerWith,identifier,password});
             //API
             const url = "http://localhost:3000/auth/register-step1";
 
@@ -135,7 +137,7 @@ function RegistrationStep1(){
 
             if(!success)
             {
-                handleError(message," Please Try Again ");
+                handleError(message);
             }
             else if(success)
             {

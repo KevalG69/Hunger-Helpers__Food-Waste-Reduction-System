@@ -47,6 +47,7 @@
 .verification-box h2 {
     font-size: var(--font-h5);
     margin-bottom: 1rem;
+    color: var(--black);
 }
 
 .verification-box p {
@@ -63,8 +64,8 @@
 }
 
 .otp-inputs input {
-    width: 3.125rem;
-    height: 3.125;
+    width: 27.125rem;
+    height: 3.125rem;
     font-size: var(--font-h2);
     text-align: center;
     border: 1px solid #ccc;

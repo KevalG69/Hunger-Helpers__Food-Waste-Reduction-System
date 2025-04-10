@@ -67,7 +67,10 @@ const RegisterStep1Validator = async (req, res, next) => {
 
 
 
-const RegisterStep2Validator = (req, res, next) => {
+const RegisterStep2Validator = (req, res) => {
+
+    const {nickName,firstName,lastName,state,city} = req.body;
+    console.log(req.body)
     //creating schema
     const schema = joi.object({
         nickName: joi.string().min(3).max(20).allow(null).optional(),

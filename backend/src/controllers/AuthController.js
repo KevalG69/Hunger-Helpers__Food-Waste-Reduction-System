@@ -275,6 +275,7 @@ const login = async (req, res) => {
         res.status(200)
             .json({
                 message:"Login Successfull",
+                success:true,
                 token: jwtToken,
                 refreshToken: jwt_refreshToken,
                 firstName:user.firstName,

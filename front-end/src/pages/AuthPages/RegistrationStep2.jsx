@@ -1,203 +1,227 @@
-//Modules
-import { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from "react-router-dom"
-import { toast } from 'react-toastify';
-
-//css
-import '../../css/Pages/RegistrationStep1.css'
-
-//utitls
-import { handleSuccess,handleError } from '../../utils/Toast';
 
 //svgs 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faXmark} from '@fortawesome/free-solid-svg-icons'
-import AuthButton from '../../components/SingleComponents/AuthButton';
-import { Link } from 'react-router-dom';
+import { faXmark } from '@fortawesome/free-solid-svg-icons'
 
-//funcitons
-function RegistrationStep1(){
+//service
+import { contextAPI } from '../../services/RegistrationContext';
 
-    const navigate = useNavigate();
-
-    //State
-    const [registerInfo,setRegisterInfo] = useState({
-        identifier:'',
-        password:''
-    })
+//css
+import '../../css/Pages/RegistrationStep2.css';
+import { handleError, handleSuccess } from '../../utils/Toast';
 
 
-    //validator
-    const isValidEmail = (value) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(value);
-      };
+const RegistrationStep2 = () => {
 
-    const isValidMobile = (value) => {
-        const mobileRegex = /^[6-9]\d{9}$/;
-        return mobileRegex.test(value);
-    };
+  const { registrationData,updateUserData } = useContext(contextAPI);
+  const navigate = useNavigate();
 
-    //event handlers
+  const [formData, setFormData] = useState({
+    nickName: "",
+    role: "",
+    firstName: "",
+    lastName: "",
+    state: "",
+    city: "",
+  });
 
-    //Close Button 
-    const handleCloseBtn = ()=>{
-        navigate(-1);
+  //Close Button 
+  const handleCloseBtn = () => {
+    navigate(-1);
+  }
+  const onBack = () => {
+    navigate(-1);
+  }
+
+  const handleChange = (e) => {
+    //extracting data
+    const { name, value } = e.target;
+    console.log(name, value);
+
+    //copying data
+    const copyFormData = { ...formData };
+
+    //making chang in copy data
+    copyFormData[name] = value;
+
+    //changing original data
+    setFormData(copyFormData);
+
+
+    console.log(formData.nickName);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.warn("Submited")
+
+    //extracting info
+    const { nickName, firstName, lastName, state, city, role } = formData;
+
+
+    //checking data
+    if (!lastName || !firstName || !state || !city) {
+      handleError('All Field Required');
     }
-
-    //Inpute Text
-    const handleOnChange = (event)=>{
-        //extracting data
-        const {name,value} = event.target;
-        console.log(name,value);
-
-        //copying data
-        const copyRegisterInfo = {...registerInfo};
-
-        //making chang in copy data
-        copyRegisterInfo[name]=value;
-
-        //changing original data
-        setRegisterInfo(copyRegisterInfo);
+    else if (!role) {
+      handleError("Please Select Role");
     }
-
-
-    //Submited
-    const handleSubmit = (event)=>{
-        //preventing refresh page
-        event.preventDefault();
-        console.warn("Submited")
-
-        //extracting info
-        const {identifier,password} = registerInfo;
-        
-        //checking data
-        if(!identifier || !password)
-        {
-            toast.error('Both Field Required');
-        }
-        else if(password.length<8)
-        {
-            toast.error("Password length should at least 8");
-        }
-        else if(isValidEmail(identifier))
-        {
-            fetchregisterAPI('Email');
-        }
-        else if(isValidMobile(identifier))
-        {
-            fetchregisterAPI('Mobile');
-
-        }
-        else
-        {
-            toast.error("INVALID Email/Mobile Or Passoword");
-            console.error("INVALID Email/Mobile Or Passoword");
-        }
-
+    else {
+      fetchStep2API();
     }
+  };
 
-    //handling errors
-    const frontError = (error)=>{
-        console.log(error);
+  const fetchStep2API = async () => {
+
+    try {
+      const url = "http://localhost:3000/auth/register-step2";
+      const { nickName, firstName, lastName, state, city } = formData;
+      let nickname = nickName == "" ? null : nickName;
+      let firtname = firstName;
+      console.log(formData);
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json"
+        },
+        body: JSON.stringify({
+          nickName: nickname,
+          firstName: firtname,
+          lastName,
+          state,
+          city
+        })
+      })
+
+      const result = await response.json();
+
+      const { message, success } = result;
+
+      if (success) {
+        handleSuccess(message);
+        fetchRegisterAPI();
+      }
+      else {
+        console.log(result.error.details[0].message)
+
+        handleError(`${result.error.details[0].message}`);
+
+      }
     }
-
-    const fetchregisterAPI = async (registerWith)=>{
-        
-        //try and catch block
-        try
-        {   
-            const {identifier,password} = registerInfo;
-            //API
-            const url = "http://localhost:3000/auth/register-step1";
-
-            //fetching apis
-            const response = await fetch(url,{
-                method: "POST",
-                headers :{
-                    'Content-type' : 'application/json'
-                },
-                body : JSON.stringify({registerWith,identifier,password})
-            });
-
-            //getting response from api
-            const result = await response.json();
-            console.log(result);
-
-            const {message,success} = result;
-
-            if(!success)
-            {
-                handleError(message," Please Try Again ");
-            }
-            else if(success)
-            {
-                handleSuccess(message);
-                setTimeout(()=>{
-                    navigate('/');
-                },1000)
-                
-            }
-
-
-
-        }   
-        catch(error)
-        {
-            frontError(error);
-        }
-        
+    catch (error) {
+      console.log(error);
+      handleError("UnExpected Error")
     }
+  }
 
-    return (
-        <div className="register-frame">
+  const fetchRegisterAPI = async () => {
 
-            <div className="register-container">
-                <FontAwesomeIcon className="close_btn" size="xl" icon={faXmark} onClick={handleCloseBtn} />
-                <div id="form-container">
+    try {
+      const url = "http://localhost:3000/auth/register";
+      const { identifier, password } = registrationData;
+      const { nickName, firstName, lastName, state, city, role } = formData;
+      console.log(formData);
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json"
+        },
+        body: JSON.stringify({
+          nickName,
+          firstName,
+          lastName,
+          role,
+          state,
+          city,
+          identifier,
+          password,
+        })
+      })
 
-                    <header>Register</header>
+      const result = await response.json();
 
-                    <form onSubmit={handleSubmit}>
+      const { message, success } = result;
 
-                        <div>
-                        
-                            <input type="text" 
-                                name="identifier"
-                                placeholder='Email/Mobile'
-                                onChange={handleOnChange}
-                                autoFocus
-                                />
-                                
-                            
-                            <input type="password" 
-                                onChange={handleOnChange}
-                                name="password"
-                                placeholder='password'/>
+      if (success) {
+        handleSuccess(message);
+        updateUserData({nickName,firstName,lastName,role,state,city,identifier,avaibility_status:true});
+        setTimeout(() => {
+          navigate("/Home");
+        }, 1000)
+      }
+      else {
+        handleError(message);
+      }
+    }
+    catch (error) {
+      console.log(error);
+      handleError("UnExpected Error")
+    }
+  }
 
-                        </div>
-                        
-                        <span> <span style={{color:"var(--primary2)"}}>verification code </span>will sent to your Email/Mobile</span>
-                        <AuthButton name={"Register"}></AuthButton>
-                        
 
-                        <div id="links">
-                            <span id="login-text">
-                                Already Have Account ?  
-                                <Link to="/Login" style={{color:"var(--error)"}}>
-                                    Login here
-                                </Link>
-                            </span>
-                        </div>
+  return (
+    <div className="details-modal">
+      <div className="details-box">
+        <FontAwesomeIcon className="close_btn" size="xl" icon={faXmark} onClick={handleCloseBtn} />
 
-                    </form>
+        <h2>Finally! Your Details</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="row">
+            <input
+              type="text"
+              placeholder="nick name (Optional)"
+              name="nickName"
+              value={formData.nickName}
+              onChange={handleChange}
+            />
+            <select name="role" value={formData.role} onChange={handleChange}>
+              <option value="">Role</option>
+              <option value="HouseHold-Donor">Household (Donor)</option>
+              <option value="Restaurant-Donor">Restaurant (Donor)</option>
+              <option value="Volunteer">Volunteer</option>
+            </select>
+          </div>
+          <input
+            type="text"
+            placeholder="First Name"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+          />
+          <input
+            type="text"
+            placeholder="Last Name"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+          />
+          <div className="row">
+            <input
+              type="text"
+              placeholder="State"
+              name="state"
+              value={formData.state}
+              onChange={handleChange}
+            />
+            <input
+              type="text"
+              placeholder="City"
+              name="city"
+              value={formData.city}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="buttons">
+            <button type="button" className="back" onClick={onBack}>Back</button>
+            <button type="submit" className="submit">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
 
-                </div>
-            </div>
-
-        </div>
-    ) 
-    
-}
-
-export default RegistrationStep1;
+export default RegistrationStep2;

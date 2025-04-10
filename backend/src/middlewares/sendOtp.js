@@ -37,8 +37,8 @@ const sendEmailOtp = async (UserEmail,UserOtp) => {
             to: UserEmail,
             subject: "Hunger Helper Password Reset",
             html: `  <h2>Hunger Helper Password Reset</h2>
-                    <p>Your password reset code is: <strong>${UserOtp}</strong></p>
-                    <p>Enter this code to reset your password.</p>`
+                    <p>Your code is: <strong>${UserOtp}</strong></p>
+                    <p>Enter this code to verify oR reset your password.</p>`
         })
 
         //deleting code if already exist
