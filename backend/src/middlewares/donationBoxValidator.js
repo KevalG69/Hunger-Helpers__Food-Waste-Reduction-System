@@ -19,10 +19,8 @@ const donationBoxValidator = (req,res,next)=>{
             food_cookedAt: joi.date().required(),
             food_expireAt: joi.date().required(),
             pickup_location: joi.string().required(),
-            location:{
-                lat:joi.number().required(),
-                lng:joi.number().required()
-            },
+            lat:joi.number().required(),
+            lng:joi.number().required(),
             pickup_time: joi.date().required()
         })
     

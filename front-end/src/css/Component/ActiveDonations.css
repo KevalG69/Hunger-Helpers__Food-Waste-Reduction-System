@@ -1,0 +1,33 @@
+.donation-layout {
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+  }
+  
+  .donation-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+    padding: 1.5rem;
+    overflow: auto;
+  }
+  
+  .donation-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 75vw;
+  }
+  
+  /* Mobile */
+  @media (max-width: 768px) {
+    .donation-layout {
+      flex-direction: column;
+    }
+  
+    .donation-cards {
+      flex-direction: column;
+    }
+  }
+  

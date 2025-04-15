@@ -179,7 +179,7 @@ const canClaimDonation = async(req,res,next)=>{
 
 }
 
-const canDeleteDonation = async(req,res,next)=>{s
+const canDeleteDonation = async(req,res,next)=>{
      
     //geting roler permission model
     const rolePermModel = await RolePermModel.findOne({role:req.user.role});

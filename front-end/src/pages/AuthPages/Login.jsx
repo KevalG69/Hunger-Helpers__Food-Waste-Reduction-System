@@ -1,5 +1,5 @@
 //Modules
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from "react-router-dom"
 import { toast } from 'react-toastify';
 
@@ -13,10 +13,14 @@ import AuthButton from '../../components/SingleComponents/AuthButton';
 import { Link } from 'react-router-dom';
 
 //utils
-import { handleError,handleSuccess } from '../../utils/Toast';
+import { handleError, handleSuccess } from '../../utils/Toast';
+import { contextAPI } from '../../services/RegistrationContext';
+import { useFetchUser } from '../../utils/FetchUser';
 
 //funcitons
 function Login() {
+
+    const { updateUserData } = useContext(contextAPI);
 
     const navigate = useNavigate();
 
@@ -85,7 +89,7 @@ function Login() {
 
     }
 
-    
+
 
     const fetchLoginAPI = async (loginWith) => {
 
@@ -93,7 +97,7 @@ function Login() {
 
         try {
             const url = "http://localhost:3000/auth/login";
-            const {identifier,password} = loginInfo
+            const { identifier, password } = loginInfo
             //fetching apis
             const response = await fetch(url, {
                 method: "POST",
@@ -114,15 +118,47 @@ function Login() {
             }
             else if (success) {
                 handleSuccess(message);
-                localStorage.setItem("Token",result.token);
-                localStorage.setItem("RToken",result.refreshToken);
-                localStorage.setItem("identifier",result.email);
-                localStorage.setItem("firstName",result.firstName);
-                localStorage.setItem("lastName",result.lastName);
+                localStorage.setItem("Token", result.token);
+                localStorage.setItem("RToken", result.refreshToken);
+                console.log("Naviget")
+
+                const {
+                    _id,
+                    profilePhoto,
+                    verified,
+                    nickName,
+                    firstName,
+                    lastName,
+                    role,
+                    state,
+                    city,
+                    locality,
+                    age,
+                    identifier,
+                    avaibility_status
+
+                } = result.data;
+                console.log("result Data = ", result, result.data)
+                updateUserData({
+                    _id,
+                    profilePhoto,
+                    verified,
+                    nickName,
+                    firstName,
+                    lastName,
+                    role,
+                    state,
+                    city,
+                    locality,
+                    age,
+                    identifier,
+                    avaibility_status
+                });
 
                 setTimeout(() => {
+                    window.location.reload();
                     navigate("/Home");
-                }, 1000)
+                }, 2000)
 
             }
 

@@ -9,6 +9,7 @@ const userBasicDataValidator = (req,res,next)=>{
  //creating schema
     const schema = joi.object({
         nickName: joi.string(),
+        role:joi.string(),
         firstName: joi.string().min(3).max(20),
         lastName: joi.string().min(3).max(15),
         state: joi.string(),

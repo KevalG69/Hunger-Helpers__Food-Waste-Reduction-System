@@ -1,0 +1,38 @@
+.lang-container {
+    padding: 20px;
+    background-color: #edf9ef;
+    border-radius: 8px;
+    margin: 10px;
+    flex: 1;
+  }
+  
+  .lang-container h2 {
+    margin-bottom: 15px;
+    font-weight: bold;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 10px;
+  }
+  
+  .lang-select {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f5f5f5;
+    outline: none;
+  }
+  
+  .lang-note {
+    margin-top: 15px;
+    font-size: 15px;
+    color: #444;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .lang-select {
+      font-size: 14px;
+    }
+  }
+  

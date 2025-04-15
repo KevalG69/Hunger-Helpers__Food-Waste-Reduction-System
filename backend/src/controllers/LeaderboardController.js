@@ -43,13 +43,13 @@ const getLeaderboard = async (req,res)=>{
 
 }
 
-const getLeaderboardByRegion = async (req,res)=>{
+const getLeaderboardByType = async (req,res)=>{
     try
     {
-        const {region} = req.query;
+        const {Type} = req.query;
 
         //finding leaderboard
-        const leaderboard = await leaderboardModel.findOne({region:region});
+        const leaderboard = await leaderboardModel.findOne({ranking_type:Type});
 
         //checking if leaderboard exist
         if(!leaderboard)
@@ -84,5 +84,5 @@ const getLeaderboardByRegion = async (req,res)=>{
 
 module.exports = {
     getLeaderboard,
-    getLeaderboardByRegion
+    getLeaderboardByType
 }

@@ -1,27 +1,35 @@
 //Modules 
-
+const { getIO } = require("../functions&utils/socketHandler.js"); // adjust path accordingly
 
 //Models 
 const notificationModel = require("../models/Notification.js");
 
 //
 
-const sendNotification = async (room,emt,message,metadata)=>{
+const sendNotification = async (room,emt,message,userId,metadata)=>{
+    const io = getIO();
 
-    req.io.to(room.toString()).emit(emt,{
+    if(!io)
+    {
+        console.error("Io Undefined")
+        return;
+    }
+
+    io.to(room.toString()).emit(emt,{
         message:message,
         metadata
     });
 
-    if(req.user.id == room)
+    if(userId)
     {
         const notification = new notificationModel({
-            user_id:req.user.id,
+            user_id:userId,
             type: emt,
             message: message,
             read_status:false
         })
         const nId = notification.save();
+        console.log("Sent Notifications")
         return nId.id;
     }
 }

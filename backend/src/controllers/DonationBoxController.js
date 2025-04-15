@@ -1,5 +1,5 @@
 //Modules
-
+const {io} = require("../app.js");
 
 //Models
 const UserModel = require("../models/User.js");
@@ -14,25 +14,38 @@ const { updateDonationPoints, updateVolunteerPoints } = require("../functions&ut
 const sendNotification = require("../functions&utils/sendNotification.js");
 
 
+
 const createDonationBox = async (req, res) => {
 
     try {
+        
         //extracting data from req.body
-        const { food_image,
+        const { 
             food_name,
             food_type,
             food_quantity,
             food_cookedAt,
             food_expireAt,
             pickup_location,
-            location: { lat, lng },
+            lat,
+             lng,
             pickup_time } = req.body;
 
         //creating donation Box
 
+        let image = null;
+        if(!req.file)
+        {
+            image = null
+        }
+        else
+        {
+            image = req.file.path
+        }
+
         const donation_box = new DonationBoxModel({
             user_id: req.user.id,
-            food_image,
+            food_image:image,
             food_name,
             food_type,
             food_quantity,
@@ -51,7 +64,7 @@ const createDonationBox = async (req, res) => {
             $push: { donations: sId }
         })
 
-        const notificationId = sendNotification("volunteer","Donation Update","New Donation Available",
+        const notificationId = await sendNotification("volunteer","Donation-Update","New Donation Available",req.user.id,
                 {Donation_Id:sId,
                 Donation_Name:donation_box.food_name,
                 Donation_Type:donation_box.food_type,
@@ -93,8 +106,12 @@ const getAllDonations = async (req, res) => {
 
     try {
         //query
-        const { status, page = 1, limit = 10 } = req.query;
-        const query = status ? status : {};
+        const { type,status, page = 1, limit = 10 } = req.query;
+        const query = {}
+
+        if(status) query.status = status
+        if(type) query.food_type = type
+    
 
         //getting all donations according to query
         const donation_boxes = await DonationBoxModel.find(query)
@@ -222,7 +239,7 @@ const updateDonationBox = async (req, res) => {
 
         if(donation_box.volunteer_id)
         {
-            sendNotification(donation_box.volunteer_id,"Donation Update","Updated Donation Box",
+           const notificationId= sendNotification(donation_box.volunteer_id,"Donation-Update","Updated Donation Box",donation_box.volunteer_id,
                 {Donation_Id:donationBoxId,
                 Donation_Name:donation_box.food_name,
                 Donation_Type:donation_box.food_type,
@@ -238,7 +255,7 @@ const updateDonationBox = async (req, res) => {
         }
         else
         {
-            sendNotification("volunteer","Donation Update","Updated Donation Box",
+           const notificationId =  sendNotification("volunteer","Donation-Update","Updated Donation Box",
                 {Donation_Id:donationBoxId,
                     Donation_Name:donation_box.food_name,
                     Donation_Type:donation_box.food_type,
@@ -329,7 +346,7 @@ const acceptDonationBox = async (req, res) => {
         volunteerDDmodel.save();
 
 
-        sendNotification(donation_box.user_id,"Donation Update","Volunteer Accepted Your Donation Box",
+        const notificationId = await sendNotification(req.user.id,"Donation-Update","Volunteer Accepted Your Donation Box",donation_box.user_id,
             {Donation_Id:donationBoxId,
             Donation_Name:donation_box.food_name,
             Donation_Type:donation_box.food_type,
@@ -407,7 +424,7 @@ const cancelDonationBox = async (req, res) => {
             //changing donation box status to cancelled
             donation_box.status = "Cancelled";
             donation_box.save();
-            sendNotification(donation_box.volunteer_id,"Donation Update","Donor Cancelled Donation Box",
+            const notificationId = sendNotification(donation_box.volunteer_id,"Donation-Update","Donor Cancelled Donation Box",donation_box.volunteer_id,
                 {Donation_Id:donationBoxId,
                 Donation_Name:donation_box.food_name,
                 Donation_Type:donation_box.food_type,
@@ -431,7 +448,7 @@ const cancelDonationBox = async (req, res) => {
             volunteerDDmodel.save();
             donation_box.save();
 
-            sendNotification(req.user.id,"Donation Update","Volunteer Cancelled Donation Box",
+            const notificationId = sendNotification(req.user.id,"Donation-Update","Volunteer Cancelled Donation Box",req.user.id,
                 {Donation_Id:donationBoxId,
                 Donation_Name:donation_box.food_name,
                 Donation_Type:donation_box.food_type,
@@ -596,7 +613,7 @@ const claimDonationBox = async (req,res)=>{
 
         await requestModel.save();
 
-        sendNotification(donation_box.user_id,"Donation Update","Requested to Claim Donation Box",
+        sendNotification(donation_box.user_id,"Donation-Update","Requested to Claim Donation Box",
             {Donation_Id:donationBoxId,
             Donation_Name:donation_box.food_name,
             Donation_Type:donation_box.food_type,
@@ -701,7 +718,7 @@ const claimConfirm = async(req,res)=>{
         //deleting request
         await RequestModel.findByIdAndDelete(requestId);
 
-         sendNotification(donation_box.volunteer_id,"Donation Update","Claim Request Accepted By Donor",
+         sendNotification(donation_box.volunteer_id,"Donation-Update","Claim Request Accepted By Donor",
                 {Donation_Id:donationBoxId,
                 Donation_Name:donation_box.food_name,
                 Donation_Type:donation_box.food_type,
@@ -793,7 +810,7 @@ const claimDenied = async(req,res)=>{
         //deleting request
         await RequestModel.findByIdAndDelete(requestId);
     
-        sendNotification(donation_box.volunteer_id,"Donation Update","Claim Request Denied By Donor",
+        sendNotification(donation_box.volunteer_id,"Donation-Update","Claim Request Denied By Donor",
             {Donation_Id:donationBoxId,
             Donation_Name:donation_box.food_name,
             Donation_Type:donation_box.food_type,
@@ -893,7 +910,7 @@ const markAsDelivered = async (req,res)=>{
         }
 
 
-        sendNotification(donation_box.volunteer_id,"Donation Update","Delivered Donation Box Successfully",
+        sendNotification(donation_box.volunteer_id,"Donation-Update","Delivered Donation Box Successfully",
             {Donation_Id:donationBoxId,
             Donation_Name:donation_box.food_name,
             Donation_Type:donation_box.food_type,
@@ -904,7 +921,7 @@ const markAsDelivered = async (req,res)=>{
             $push: { notifications: notificationId }
         });
 
-        sendNotification(donation_box.user_id,"Donation Update","Delivered Donation Box Successfully",
+        sendNotification(donation_box.user_id,"Donation-Update","Delivered Donation Box Successfully",
             {Donation_Id:donationBoxId,
             Donation_Name:donation_box.food_name,
             Donation_Type:donation_box.food_type,

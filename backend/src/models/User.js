@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
         required: true
     },
 
-    nickName: { type: String },
+    nickName: { type: String ,default:"None"},
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     age: { type: Number },

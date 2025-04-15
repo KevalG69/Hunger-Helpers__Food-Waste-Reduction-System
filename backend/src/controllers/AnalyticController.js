@@ -2,7 +2,7 @@
 
 //Models
 const AnalyticDataModel = require("../models/Analytics_Data.js");
-
+const DonationDataModel = require("../models/Donation_Data.js");
 //middlewares
 
 //function
@@ -142,8 +142,39 @@ const updateAnalyticData = async (req,res)=>{
     }
 }
 
+const getDonationData = async (req,res)=>{
+    try
+    {
+        //query
+         
+        //find all analytics
+        const analytics = await DonationDataModel.find();
+
+
+        //if Found
+        res.status(200)
+            .json({
+                message:"Fetched Analytics Data Successfully",
+                success:true,
+                data:analytics,
+              
+            })
+    }
+    catch(error)
+    {
+        console.error(error);
+        res.status(500)
+            .json({
+                message:"Failed to Fetch Analytics Data",
+                success:false,
+                data:[],
+                error
+            })
+    }
+}
 module.exports={
     getAllAnalytics,
     getAnalyticByRegion,
+    getDonationData,
     updateAnalyticData
 };

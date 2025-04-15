@@ -18,7 +18,12 @@ const createReport = async (req, res) => {
         } = req.body;
 
         if (!reportedDonationId) {
-            reportedDonationId = null;
+            return res.status(404)
+                .json({
+                    message:"Donation Box Not Found",
+                    success:false,
+                    data:null
+                })
         }
         else {
             //finding donatoin box
@@ -38,7 +43,7 @@ const createReport = async (req, res) => {
 
         //finding report
         const report = await ReportModel.findOne({
-            reporterId: req.use.id,
+            reporterId: req.user.id,
             reportedUserId: reportedUserId,
             reportedDonationId: reportedDonationId,
             reportType: reportType

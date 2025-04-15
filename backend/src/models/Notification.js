@@ -6,7 +6,7 @@ const notificationsSchema = new mongoose.Schema({
 
     type: {
         type: String,
-        enum: ['Donation Update', 'Reminder', 'Achievement', 'Message', 'Reports', 'Profile Update','Request Update'],
+        enum: ['Donation-Update', 'Reminder', 'Achievement', 'Message', 'Reports', 'Profile-Update','Request-Update'],
         required: true
     },
     message: { type: String, required: true },

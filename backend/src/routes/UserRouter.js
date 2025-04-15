@@ -2,7 +2,8 @@
 const UserRouter = require("express").Router();
 
 //Controllers
-const {getAllUsers,getUserByidentifier,getUserActivityLogs, getUserContributionInfo,getUserDonations, getUserReports} 
+const {getAllUsers,getUserByidentifier,getUserActivityLogs, getUserContributionInfo,getUserDonations, 
+        getUserDelivery, getUserReports} 
                 = require("../controllers/GetUsersController.js");
 const {updateUserProfile, updateUserIdentifier,updateUserRole, deleteUser,uploadUserProfilePhoto} 
         = require("../controllers/UserController.js");
@@ -33,6 +34,9 @@ UserRouter.get("/contribution-info/",verifyToken,isMangerOrSelf,getUserContribut
 
 // - Get User Donations
 UserRouter.get("/donations",verifyToken,isMangerOrSelf,getUserDonations)
+
+// - Get User Donations
+UserRouter.get("/deliveries",verifyToken,isMangerOrSelf,getUserDelivery)
 
 //- GET User Reports
 UserRouter.get("/reports",verifyToken,isManager,getUserReports);

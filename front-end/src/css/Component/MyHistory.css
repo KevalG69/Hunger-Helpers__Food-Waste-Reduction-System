@@ -1,0 +1,48 @@
+
+.content {
+    flex: 1;
+    min-width: 19rem;
+    background-color: transparent;
+    padding: 1rem;
+    border-radius: 0.5rem;
+  }
+  
+  .content h2
+  {
+    font-size: var(--font-h5);
+    margin-bottom: 2rem;
+    color: var(--black);
+  }
+
+  .history-box {
+    margin-bottom: 1.5rem;
+  }
+  
+  .history-box h4 {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  .empty-box {
+    background-color: var(--black10);
+    padding: 2rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    color: var(--black25);
+    font-size: var(--font-h5);
+  }
+  
+  /* ✅ Responsive */
+  @media (max-width: 768px) {
+    .profile-container {
+      flex-direction: column;
+    }
+  
+    .sidebar {
+      width: 100%;
+    }
+  
+    .content {
+      width: 100%;
+    }
+  }

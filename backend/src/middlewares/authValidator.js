@@ -7,10 +7,10 @@ const UserModel = require("../models/User.js")
 const verifyToken = async (req, res, next) => {
 
     //getting token from user headers
-    const token = req.header("Authorization");
+    const authToken = req.header("Authorization");
 
     //checking if token exist
-    if (!token) {
+    if (!authToken|| !authToken.startsWith("Bearer ")) {
         //if token not exist
         return res.status(401)
             .json({
@@ -18,13 +18,14 @@ const verifyToken = async (req, res, next) => {
                 success: false
             })
     }
+    const token = authToken.split(" ")[1]; // Only the token part
 
     //if token exist try and catch block to handle run time error
     try {
         //comparing JWT_SECRET and token
         //if token in invalid jwt.verfiy throw error
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log(decoded);
+        // console.log(decoded);
 
         //checking if user exist        
         req.user = await UserModel.findById(decoded._id);

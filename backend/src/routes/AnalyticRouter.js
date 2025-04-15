@@ -3,7 +3,7 @@
 const AnalyticRouter = require("express").Router();
 
 //Controller
-const {getAllAnalytics, getAnalyticByRegion, updateAnalyticData}= require("../controllers/AnalyticController.js");
+const {getAllAnalytics, getAnalyticByRegion, updateAnalyticData,getDonationData}= require("../controllers/AnalyticController.js");
 //Functions
 const { verifyToken } = require("../middlewares/authValidator.js");
 const {canViewAnalytics,canManageContent} = require("../middlewares/rolePermValidator.js");
@@ -11,10 +11,14 @@ const {canViewAnalytics,canManageContent} = require("../middlewares/rolePermVali
 //--------------------APIs
 
 //GET /api/analytics/ → Get overall system analytics
-AnalyticRouter.get("/",verifyToken,canViewAnalytics,getAllAnalytics);
+AnalyticRouter.get("/",getAllAnalytics);
+
+//GET /api/analytics/ → Get overall system analytics
+AnalyticRouter.get("/donation-data",getDonationData);
+
 
 //GET /api/analytics/region → Get donation analytics
-AnalyticRouter.get("/region",verifyToken,canViewAnalytics,getAnalyticByRegion);
+AnalyticRouter.get("/region",canViewAnalytics,getAnalyticByRegion);
 
 //PUT /api/analytics/ → update analytics data
 AnalyticRouter.put("/",verifyToken,canManageContent,updateAnalyticData);

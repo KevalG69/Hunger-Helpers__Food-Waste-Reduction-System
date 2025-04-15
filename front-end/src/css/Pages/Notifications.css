@@ -1,0 +1,109 @@
+.notification-page {
+    max-width: 900px;
+    margin: auto;
+    padding: 1.5rem;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .notification-page h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .notification-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  /* Shared Styles */
+  .notification-card,
+  .request-card {
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    background-color: #ffe5e5;
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+  }
+  
+  .notification-time {
+    font-size: 0.85rem;
+    color: #444;
+  }
+  
+  .notification-title {
+    font-size: 1rem;
+    color: #222;
+    margin-left: 0.5rem;
+    flex-grow: 1;
+  }
+  
+  .notification-message {
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+    color: #333;
+  }
+  
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #900;
+  }
+  
+  /* Request Card */
+  .request-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 0.8rem;
+  }
+  
+  .accept-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .reject-btn {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  @media (max-width: 768px) {
+    .notification-card, .request-card {
+      padding: 0.8rem;
+    }
+  
+    .notification-title {
+      font-size: 0.9rem;
+    }
+  
+    .notification-message {
+      font-size: 0.85rem;
+    }
+  
+    .accept-btn, .reject-btn {
+      padding: 5px 10px;
+      font-size: 0.85rem;
+    }
+  }
+  

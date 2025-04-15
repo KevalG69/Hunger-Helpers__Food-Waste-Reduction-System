@@ -3,12 +3,17 @@ const express = require("express")
 const cors = require("cors")
 const dotenv = require("dotenv").config();
 const bodyParser = require("body-parser");
+const cron = require('node-cron');
 
 const http = require("http");
 const {Server} = require("socket.io")
+
 //Core Modules
 
 //local Modules
+const updateAllLeaderboards = require("./functions&utils/updateLeaderboard.js");
+const calculateRegionAnalytics = require('./functions&utils/calculateAnalytics.js');
+const calculateDailyDonationData = require('./functions&utils/calculateDailyDonationData.js');
 
 //-from config
 const dataBaseConnect = require("./config/dbConnect.js")
@@ -28,86 +33,34 @@ const ReportRouter = require("./routes/ReportRouter.js");
 
 //creating app 
 const app = express();
-app.use(cors());
 
 //-------------Socket io implementaion for real time notification
 
 //creating HTTP server
 const server = http.createServer(app);
+// Import and initialize Socket.IO
+const { initSocket } = require("./functions&utils/socketHandler.js");
+initSocket(server); // Pass the http server to socket module
 
-//intializing socket.io
-const io = new Server(server,{
-    cors:{
-        origin:"http://localhost:5332",
-        methods:["GET","POST"]
-    },
-    connectionTimeout: 10000, // Timeout after 10 seconds
-    reconnection: true, // Enable reconnection
-    reconnectionAttempts: 5, // Max reconnection attempts
-    reconnectionDelay: 1000, // Delay between reconnection attempts
-});
-
-//handle Socket.io connection
-io.on("connection",(socket)=>{
-
-    //sending connection message
-    console.log(`User connecte : ${socket.id}`);
-
-    //on user join room or creating group 
-    socket.on("joinRoom",(userId)=>{
-        socket.join(userId)//join room named after the user id
-        console.log(`User ${userId} joined room ${userId}`);
-    });
-
-    //join donor room
-    socket.on("joinDonorRoom",(userId)=>{
-        socket.join("donor");
-        console.log(`User ${socket.id} joined the Donor Room`);
-    });
-
-    //join volunteer room
-    socket.on("joinVolunteerRoom",(userId)=>{
-        socket.join("volunteer");
-        console.log(`User ${socket.id} joined volunteer Room`);
-    });
-
-    //join manager 
-    socket.on("joinManagerRoom",(userId)=>{
-        socket.join("manager");
-        console.log(`User ${socket.id} joined Manager Room`);
-    });
-
-    //join admin
-    socket.on("joinAdminRoom",(userId)=>{
-        socket.join("admin");
-        console.log(`User ${socket.id} joined admin Room`);
-    });
-
-    socket.on("notification", (message) => {
-        console.log("Received notification:", message);
-        // Update state to display the notification
-      });
-
-      
-    //Leave Room
-    socket.on("leaveRoom", (userId) => {
-        socket.leave(userId); // Leave the room
-        console.log(`User ${userId} left room ${userId}`);
-      });
-
-    socket.on("disconnect",()=>{
-        console.log(`User disconnected : ${socket.id}`);
-    });
-
-})
 //----------------
+app.use(cors());
 
 //connecting to database
 dataBaseConnect();
 
 //--bodyparser
 
+//-----------------Auto Updaters
 
+// Run every day at midnight
+cron.schedule('0 0 * * *', async () => {
+    console.log('⏳ Running daily leaderboard update...');
+    await updateAllLeaderboards();
+    await calculateRegionAnalytics();
+  await calculateDailyDonationData();
+  });
+
+  
 
 //requests
 app.use("/",(req,res,next)=>{
@@ -129,6 +82,8 @@ app.use("/users",UserRouter);
 
 //--Donations Router 3
 app.use("/donation-box",DonationBoxRouter);
+
+
 
 //--Volunteer Router 4
 app.use("/volunteers",VolunteerRouter);
@@ -159,8 +114,10 @@ app.use("/request",RequestRouter);
 
 //--------------------
 const PORT = process.env.PORT;
+
+
 //listening requests
-app.listen(PORT,()=>{
-    console.log(`Server Running on http://localhost:${PORT}`)
-})
+server.listen(PORT, () => {
+    console.log(`Server Running on http://localhost:${PORT}`);
+});
 

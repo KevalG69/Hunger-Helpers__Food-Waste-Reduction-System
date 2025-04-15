@@ -228,7 +228,7 @@ const getUserContributionInfo = async (req, res) => {
             .json({
                 message: "Fetched User Contribution Info Successfully",
                 success: true,
-                contribution_info
+                data:contribution_info
             })
     }
     catch (error) {
@@ -288,6 +288,66 @@ const getUserDonations = async (req, res) => {
                 message: "Fetched User Donations Info Successfully",
                 success: true,
                 data: donations,
+                total
+            })
+    }
+    catch (error) {
+        console.error(error)
+        res.status(500)
+            .json({
+                message: "Failed to Fetched User's Donations Info",
+                success: false,
+                error
+            })
+    }
+}
+
+const getUserDelivery = async (req, res) => {
+
+    try {
+        //getting User id
+        const { userId } = req.query;
+
+        //getting User
+
+        const user = await UserModel.findById(userId).populate("assigned_donations").exec();
+
+        //if user does not exist
+        if (!user) {
+            return res.status(404)
+                .json({
+                    message: "User Not Found",
+                    success
+                })
+        }
+
+        const total = user.assigned_donations.length;
+
+        if (user.assigned_donations.length == 0) {
+            return res.status(404)
+                .json({
+                    message: "No assigned donations FOUND",
+                    success: false,
+                    data: null,
+                    total
+                })
+        }
+        //if user found
+
+        //activityLogger
+        await activityLogger(req.user.id, "Fetched User Delivery Info ", "get users/delivery/:id", {
+            FetchedBy: `${req.user.firstName} ${req.user.lastName}`,
+            UserId: user.id,
+            UserEmail: user.email,
+            UserMobile: user.mobile,
+        })
+
+        const delivery = user.assigned_donations;
+        res.status(200)
+            .json({
+                message: "Fetched User Donations Info Successfully",
+                success: true,
+                data: delivery,
                 total
             })
     }
@@ -368,5 +428,6 @@ module.exports = {
     getUserActivityLogs,
     getUserContributionInfo,
     getUserDonations,
+    getUserDelivery,
     getUserReports
 }

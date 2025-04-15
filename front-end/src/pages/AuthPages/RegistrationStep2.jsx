@@ -146,7 +146,8 @@ const RegistrationStep2 = () => {
 
       if (success) {
         handleSuccess(message);
-        updateUserData({nickName,firstName,lastName,role,state,city,identifier,avaibility_status:true});
+        const data = result.data;
+        updateUserData({data});
         setTimeout(() => {
           navigate("/Home");
         }, 1000)

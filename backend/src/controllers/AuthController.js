@@ -63,7 +63,7 @@ const register = async (req, res) => {
         userModel.password = await bcrypt.hash(password, 10);
 
         //3. Saving User in database
-        await userModel.save();
+        const user = await userModel.save();
 
 
         //4. sending response of success registretion
@@ -77,7 +77,8 @@ const register = async (req, res) => {
         res.status(200)
             .json({
                 message: "User Registered Successfully",
-                success: true
+                success: true,
+                data:user
             })
     }
     catch (error) {
@@ -253,7 +254,7 @@ const login = async (req, res) => {
                 _id: user._id
             },
             process.env.JWT_SECRET,
-            { expiresIn: '7d' }
+            { expiresIn: '24h' }
         )
 
         //generation refresh jwt token
@@ -278,10 +279,7 @@ const login = async (req, res) => {
                 success:true,
                 token: jwtToken,
                 refreshToken: jwt_refreshToken,
-                firstName:user.firstName,
-                lastName:user.lastName,
-                email:user.email,
-                mobile:user.mobile
+                data:user
             })
     }
     catch (error) {
@@ -323,10 +321,33 @@ const logout = async (req,res)=>{
             })
     }
 }
+
+const fetchUser = async (req,res)=>{
+    
+    try
+    {
+        res.status(200)
+            .json({
+                message:"Fetched User Successfully",
+                success:true,
+                data:req.user
+            })
+    }
+    catch(error)
+    {
+        res.status(500)
+            .json({
+                message:"Failed to Load User Data",
+                success:false,
+                error:error
+            })
+    }
+}
 module.exports = {
     register,
     login,
     logout,
     sendVerificationCode,
-    codeVerification
+    codeVerification,
+    fetchUser
 }

@@ -111,7 +111,7 @@ nav
     border-radius: 1rem;
     
 }
-nav NavLink.active
+nav a.active
 {
     background-color: var(--secondary3);
     border-radius: 1rem;

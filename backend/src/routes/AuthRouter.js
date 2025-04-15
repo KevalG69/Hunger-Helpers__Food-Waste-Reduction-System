@@ -3,11 +3,13 @@ const AuthRouter = require("express").Router();
 
 //Middlewares
 const {RegisterStep1Validator,RegisterStep2Validator,loginValidator} = require("../middlewares/loginValidator.js")
+const { verifyToken } = require("../middlewares/authValidator.js");
 
 //Controllers
-const {register,login,logout, codeVerification, sendVerificationCode} = require("../controllers/AuthController.js")
+const {register,login,logout, codeVerification, sendVerificationCode, fetchUser} = require("../controllers/AuthController.js")
 const {forgotPassword,resetPassword} = require("../controllers/RecoverPassController.js");
 const refreshToken = require("../controllers/RefreshTokenController.js");
+
 
 
 //Request
@@ -43,4 +45,6 @@ AuthRouter.post('/reset-password',resetPassword);
 //refresh Token
 AuthRouter.post('/refresh-token',refreshToken);
 
+//fetch User data
+AuthRouter.post("/fetch-user",verifyToken,fetchUser);
 module.exports = AuthRouter

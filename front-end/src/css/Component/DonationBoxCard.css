@@ -1,0 +1,222 @@
+.donation-card {
+    display: flex;
+    flex-direction: row;
+    
+    padding: 2rem;
+    border-radius: 1rem;
+
+    
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+   
+    transition: 0.3s ease;
+  }
+  
+  .donation-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  
+  .donation-card img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius:0.5rem;
+    flex-shrink: 0;
+  }
+  
+  .card-content {
+    flex: 1;
+    display: flex
+;
+    min-width: 220px;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .card-content h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--black);
+  }
+  
+  .card-content p {
+    margin: 4px 0;
+    font-size: 0.95rem;
+    color: #444;
+    
+  }
+  
+  .card-content .status {
+    font-weight: bold;
+    text-transform: capitalize;
+    border: 2px solid black;
+    padding: 1rem;
+    border-radius: 1rem;
+    background-color: #444;
+    color: white;
+  }
+
+  .card-content .status .pending
+  {
+    background-color: var(--black);
+    color: white;
+  }
+  
+  .donation-card.accepted {
+    border: 0.5rem solid var(--primary2);
+    background-color: var(--primary1-30);
+  }
+  
+  .donation-card.pending {
+    border: 0.5rem solid var(--black);
+    background-color: var(--black10);
+  }
+  
+  .card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-left: auto;
+  }
+  
+  .card-actions button {
+    padding: 0.5rem 0.5rem;
+    font-size: 0.85rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: 0.2s ease;
+    box-shadow: 0px 4px 4px 0px var(--shadow);
+  }
+  
+  .card-actions .accept {
+    background-color: var(--primary2);
+    border: 2px solid black;
+    color: var(--black);
+    font-weight: bold;
+  }
+  
+  .card-actions .location {
+    background-color: var(--blue);
+    border: 2px solid black;
+    color: var(--black);
+    font-weight: bold;
+  }
+  
+  .card-actions .report {
+    background-color: var(--error);
+    border: 2px solid black;
+    color: var(--black);
+    font-weight: bold;
+  }
+  
+  .card-actions button:hover {
+    background-color: var(--secondary3);
+  }
+  
+
+  .column1 p
+  {
+    font-size: var(--font-h8);
+    font-weight: bold;
+    color: var(--black50);
+  }
+
+  .column2 p
+  {
+    font-size: var(--font-h8);
+    font-weight: bold;
+    color: var(--black50);
+  }
+  .column3 p
+  {
+    font-size: var(--font-h8);
+    font-weight: bold;
+    color: var(--black50);
+  }
+
+  .column5{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+
+  }
+  .column4
+  {
+    display: flex;
+    flex-direction: column;
+    gap:0.5rem;
+    width:6rem;
+  }
+
+  .value
+  {
+    font-size: var(--font-h7);
+    color: var(--black);
+  }
+
+  .column4 p
+  {
+    font-size: var(--font-h9);
+  }
+
+  .donor{
+    font-size: var(--font-h9);
+    justify-items: end;
+  }
+
+  .flex
+  {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .flex-inner
+  {
+    display: flex;
+    flex-direction: row;
+  }
+  /* 🔁 Responsive Styles */
+  
+  @media (max-width: 992px) {
+    .donation-card {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .card-actions {
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+  
+    .card-actions button {
+      flex: 1 1 30%;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .donation-card img {
+      width: 100%;
+      height: auto;
+    }
+  
+    .card-actions button {
+      font-size: 0.8rem;
+      padding: 5px 8px;
+    }
+  
+    .card-content p {
+      font-size: 0.85rem;
+    }
+  
+    .card-content h3 {
+      font-size: 1rem;
+    }
+  }
+  

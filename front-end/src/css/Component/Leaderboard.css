@@ -1,0 +1,44 @@
+.leaderboard-section {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .table-wrapper {
+    overflow-x: auto;
+    margin-top: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 6px rgba(0,0,0,0.2);
+  }
+  
+  .responsive-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #2c322d;
+    color: white;
+    min-width: 700px;
+  }
+  
+  .responsive-table th, .responsive-table td {
+    padding: 12px 15px;
+    text-align: center;
+    border-bottom: 1px solid #444;
+  }
+  
+  .responsive-table th {
+    background-color: #1e2421;
+    font-weight: bold;
+  }
+  
+  @media (max-width: 768px) {
+    .responsive-table th, .responsive-table td {
+      padding: 10px 8px;
+      font-size: 14px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .responsive-table {
+      min-width: 600px;
+    }
+  }
+  

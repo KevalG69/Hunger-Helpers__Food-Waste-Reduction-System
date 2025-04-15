@@ -1,0 +1,47 @@
+.problem-section {
+    padding: 1rem 7rem;
+    text-align: center;
+  }
+  
+  .problem-section h2 {
+    font-size: var(--font-h4);
+    margin-bottom: 0.5rem;
+  }
+  
+  .problem-section .subheading {
+    font-size: var(--font-h7);
+    color: var(--black75);
+    margin-bottom: 2.5rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .problem-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
+    justify-content: center;
+  }
+  
+  .problem-card {
+    background: var(--black10);
+    border-radius: 1rem;
+    box-shadow: 0 4px 4px 0px var(--shadow);
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.2s ease;
+  }
+  
+  .problem-card:hover {
+    transform: scale(1.03);
+  }
+  
+  .problem-card img {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+  }
+  

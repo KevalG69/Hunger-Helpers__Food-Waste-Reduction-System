@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 const leaderboardSchema = new mongoose.Schema({
     date: { type: Date, required:true},
-    ranking_type: { type: String, enum:['Top Donors','Top Volunteers','Top NOGs','Top Manager'],
+    ranking_type: { type: String, enum:['Top-Donors','Top-Volunteers','Top-Managers'],
         required:true
     },
     rankings:[{

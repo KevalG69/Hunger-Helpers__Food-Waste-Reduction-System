@@ -1,0 +1,29 @@
+.floating-leaderboard-btn {
+    position: fixed;
+    bottom: 5.5rem;
+    left: 7.5rem;
+    background-color: var(--black50);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-weight: bold;
+    box-shadow: 0 4px 4px 0px var(--shadow);
+    z-index: 9999;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    /* justify-self: anchor-center; */
+  }
+  
+  .floating-leaderboard-btn:hover {
+    background-color: #5548e0;
+    transform: scale(1.05);
+  }
+
+  .custom-line {
+    border: none;
+    height: 2px;
+    background-color: #ccc; /* or any color */
+    margin: 1rem auto;
+    width: 80%; /* adjust width as needed */
+  }
+  

@@ -1,0 +1,98 @@
+
+
+.settings-container {
+    display: flex;
+    gap: 1rem;
+    margin-top:2rem;
+    flex-wrap: wrap;
+    width: 60rem;
+    background-color: var(--primary1-15);
+    justify-self: center;
+  }
+  
+  .sidebar {
+    flex: 1;
+    min-width: 16rem;
+    max-width: 16rem;
+    background-color: var(--black10);
+    padding: 1rem;
+    border-radius: 1rem;
+  }
+  
+  .profile {
+    text-align: center;
+  }
+  
+  .not-verified {
+    color: var(--error);
+    font-size: var(--font-h7);
+  }
+  
+  .sidebar-menu {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar-menu li {
+    margin: 10px 0;
+    padding: 0.5rem;
+    font-weight: bold;
+    font-size: var(--font-h7);
+    color: var(--black);
+    cursor: pointer;
+    text-align: center;
+    background-color: rbga(250,250,250,0.30);
+    box-shadow: 0px 4px 4px 0px var(--shadow);
+  }
+  
+  .sidebar-menu .active {
+    background-color: var(--secondary3);
+    font-weight: bold;
+    color: white;
+    border-radius: 0.5rem;
+  }
+
+  .sidebar-menu :hover {
+    background-color: var(--secondary3);
+    font-weight: bold;
+    color: white;
+    border-radius: 0.5rem;
+  }
+  
+  .sidebar-menu #logout {
+    color: var(--error);
+    font-weight: bold;
+    border: 1px solid var(--secondary);
+    border-radius: 0.5rem;
+    padding-top: 0.7rem;
+  }
+
+  .profile-image-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1px;
+  }
+  
+  .profile-image {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #4caf50;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  .profile-image:hover {
+    transform: scale(1.05);
+  }
+  
+  .upload-hint {
+    
+    font-size: var(--font-h9);
+    color: #777;
+  }
+  
+  
+  

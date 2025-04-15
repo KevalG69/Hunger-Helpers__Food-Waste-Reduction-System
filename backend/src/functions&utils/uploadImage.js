@@ -9,7 +9,7 @@ const cloudinary = require("../config/cloudinaryConfig.js");
 const storage = new CloudinaryStorage({
     cloudinary:cloudinary,
     params:{
-        folder: "user_profile_photos",//folder name in cloudinary 
+        folder: "pfp",//folder name in cloudinary 
         format: async ()=> 'png',//convert formate into png
         public_id:(req,file) => file.originalname.split('.')[0]
     }

@@ -1,0 +1,73 @@
+.mission-section {
+    padding: 2.5rem 10rem;
+    text-align: center;
+    color: var(--black);
+  }
+  
+  .mission-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2rem;
+    margin: 1rem 0;
+  }
+  
+  .card {
+    background: var(--black10);
+    box-shadow: 0 4px 4px 0px var(--shadow);
+    border-radius: 1rem;
+    padding: 2rem;
+  }
+  
+  .stats-box {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    background: var(--black10);
+    border-radius: 3rem;
+    padding: 2rem 1rem;
+    margin: 2rem 0;
+    gap: 1rem;
+  }
+  
+  .stat {
+    flex: 1 1 11rem;
+    min-width: 9rem;
+    text-align: center;
+  }
+
+  .stat p{
+    font-size: var(--font-h6);
+  }
+  
+  .stat i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: block;
+    color: #b81c8e;
+  }
+  
+  .join-section {
+    background: var(--primary1);
+    color: white;
+    padding: 1rem;
+    border-radius: 3rem;
+    margin-top: 1rem;
+  }
+  
+  .join-section button {
+    margin-top: 0.7rem;
+    background: var(--secondary2);
+    color: #fff;
+    border: none;
+    padding: 0.7rem 2rem;
+    border-radius: 2rem;
+    cursor: pointer;
+    font-size: var(--font-h7);
+    font-weight: bold;
+  }
+  
+  a
+  {
+    text-decoration: none;
+    color:white;
+  }

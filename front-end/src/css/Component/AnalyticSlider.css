@@ -1,0 +1,92 @@
+.analytics-section {
+    padding: 2rem 1rem;
+    text-align: center;
+  }
+  
+  .analytics-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex-wrap: nowrap;
+  }
+  
+  .cards-wrapper {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 1rem;
+    padding: 1rem 0.5rem;
+    max-width: 50vw;
+  }
+  
+  .card {
+    min-width: 250px;
+    max-width: 300px;
+    background-color: var(--secondary3);
+    color: white;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    box-shadow: 0px 4px 4px 0px var(--shadow);
+    flex-shrink: 0;
+  }
+  
+  .card ul {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+    text-align: left;
+  }
+  
+  .card li {
+    margin: 1rem 1rem;
+    font-size: var(--font-h7);
+  }
+  
+  .arrow {
+    background: white;
+   
+    border-radius: 50%;
+    font-size: 3rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    cursor: pointer;
+    margin: 0 1rem;
+    z-index: 10;
+    box-shadow: 0px 4px 4px 0px var(--shadow);
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .cards-wrapper {
+      gap: 10px;
+    }
+  
+    .arrow {
+      font-size: 20px;
+      width: 35px;
+      height: 35px;
+    }
+  
+    .card {
+      min-width: 220px;
+      padding: 15px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .analytics-section h2 {
+      font-size: 20px;
+    }
+  
+    .arrow {
+      display: none; /* hide arrows on very small screens */
+    }
+  
+    .card {
+      min-width: 90%;
+      max-width: 90%;
+      margin: 0 auto;
+    }
+  }
+  

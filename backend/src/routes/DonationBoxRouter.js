@@ -13,6 +13,9 @@ const { createDonationBox, getAllDonations,
         markAsDelivered}
         = require("../controllers/DonationBoxController.js")
 
+const {updateVolunteerLocation }= require("../controllers/updateVolunteerLocation.js");
+
+
 //Middlewares
 const { verifyToken, isMangerOrSelf, notSelf, isSelf, isManager } = require("../middlewares/authValidator.js");
 const donationBoxValidator = require("../middlewares/donationBoxValidator.js");
@@ -20,7 +23,7 @@ const { canCreateDonation, canViewDonations, canClaimDonation, canDeleteDonation
         = require("../middlewares/rolePermValidator.js")
 
 //functions
-
+const upload = require("../functions&utils/uploadImage.js");
 
 //---------------------APIs
 
@@ -34,7 +37,8 @@ DonationBoxRouter.get("/id", verifyToken, canViewDonations, getDonationById);
 
 
 //- POST /api/donations/ → -->Create<--  a new donation
-DonationBoxRouter.post("/create", verifyToken, canCreateDonation, donationBoxValidator, createDonationBox);
+DonationBoxRouter.post("/create", verifyToken, canCreateDonation,upload.single("food_image"), donationBoxValidator,createDonationBox);
+
 
 //PUT /api/donations/accept -> accept donations
 DonationBoxRouter.post("/accept", verifyToken, notSelf, canClaimDonation, acceptDonationBox);
@@ -54,7 +58,7 @@ DonationBoxRouter.post("/claim-confirm",verifyToken,isSelf,claimConfirm);
 //POST /api/donations/claim-volunteer → Claim Confirm Denied (Donor)
 DonationBoxRouter.post("/claim-denied",verifyToken,isSelf,claimDenied);
 
-
+DonationBoxRouter.post('/update-location', verifyToken, updateVolunteerLocation);
 
 //PUT /api/donations/:id → Update donation details
 DonationBoxRouter.put("/update", verifyToken, isMangerOrSelf, donationBoxValidator, updateDonationBox);

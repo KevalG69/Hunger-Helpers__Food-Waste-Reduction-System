@@ -17,18 +17,18 @@ const updateUserProfile = async (req,res)=>{
     {
         //getting data
         console.log(req.params.id,req.query)
-        const {id} = req.query;
+        const {userId} = req.query;
         const updatedData = req.body;
 
         //checking if user exist
-        const user = await UserModel.findById(id);
+        const user = await UserModel.findById(userId);
 
         //if user does not exist
         if(!user)
         {
             return res.status(404)
                 .json({
-                    message:"User not Found",
+                    message:"User not Found At Profile Update",
                     success:false
                 })
         }
@@ -46,9 +46,20 @@ const updateUserProfile = async (req,res)=>{
 
         //restrcting fields
 
-        const restrictedFields = ['role','password','_id','createdAt','updatedAt','email','mobile'];
+        const restrictedFields = ['password','_id','createdAt','updatedAt','email','mobile'];
 
         restrictedFields.forEach(field => delete updatedData[field]);
+
+        const role = updatedData['role'];
+        console.log(role)
+        if(role=="Manger"||role=="Admin")
+        {
+            return res.status(403)
+                .json({
+                    message:"Access Denied",
+                    success:false
+                })
+        }
 
         //merging changes to user in database
 
@@ -56,7 +67,7 @@ const updateUserProfile = async (req,res)=>{
         user.updatedAt = Date.now();
 
         //saving user changes
-        await user.save();
+        const updatedUser = await user.save();
 
 
         //activityLogger
@@ -72,7 +83,8 @@ const updateUserProfile = async (req,res)=>{
         res.status(200)
             .json({
                 message:"User Profile Updated Successfully",
-                success:true
+                success:true,
+                data:updatedUser
             })
 
     }
@@ -110,7 +122,7 @@ const updateUserRole = async (req,res)=>{
         }
 
         //checking if role is admin or manager
-        if(user.role=="Admin")
+        if(role=="Admin")
         {
             return res.status(403)
                     .json({
@@ -118,6 +130,17 @@ const updateUserRole = async (req,res)=>{
                         success:false
                     })
         }
+
+        if(user.role=="Admin")
+            {
+                return res.status(403)
+                        .json({
+                            message:"Cannot Change Role of Admin",
+                            success:false
+                        })
+            }
+    
+            
 
         //making changes to user in database
 
