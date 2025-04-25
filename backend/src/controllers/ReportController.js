@@ -13,14 +13,15 @@ const createReport = async (req, res) => {
         const { reportedUserId,
             reportedDonationId,
             reportType,
-            desription,
+            description,
             evidence
         } = req.body;
 
+        console.log(req.body)
         if (!reportedDonationId) {
             return res.status(404)
                 .json({
-                    message:"Donation Box Not Found",
+                    message:"Donation Box ID Not Found",
                     success:false,
                     data:null
                 })
@@ -50,7 +51,7 @@ const createReport = async (req, res) => {
         })
 
         //checking if report already exist
-        if (!report) {
+        if (report) {
             return res.status(403)
                 .json({
                     message: "User Already Reported",
@@ -65,7 +66,7 @@ const createReport = async (req, res) => {
             reportedUserId: reportedUserId,
             reportedDonationId: reportedDonationId,
             reportType: reportType,
-            desription: desription,
+            description: description,
             evidence: evidence,
         })
 

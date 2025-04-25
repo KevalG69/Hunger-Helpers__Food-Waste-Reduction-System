@@ -1,18 +1,20 @@
 import React, { useContext, useEffect, useState } from 'react';
 import '../../css/Component/DonationBoxCard.css';
-import { contextAPI } from '../../services/RegistrationContext';
+import { contextAPI } from '../../services/Context';
 import { handleError, handleSuccess } from '../../utils/Toast';
 
 
 import { useNavigate } from 'react-router-dom';
-import DonationEdit from '../../components/ContainerComponents/DonationEdit.jsx'
 
-const DonationBoxCard = ({ data, renderFrom }) => {
+
+const DonationBoxCard = ({ data, renderFrom, change }) => {
 
   const navigate = useNavigate()
-  const { userData, report, updateReport,updateEditDonationData } = useContext(contextAPI);
-  const [Data,setData] = useState({});
+  const { userData, updateOpenBox } = useContext(contextAPI);
 
+
+
+  const [loading, setLoading] = useState(true)
 
 
 
@@ -26,11 +28,6 @@ const DonationBoxCard = ({ data, renderFrom }) => {
     return `${date} ${time}`
   }
 
-  const getUserName = (id) => {
-
-  }
-
-  
 
   const handleAccept = async (e) => {
     e.preventDefault();
@@ -66,119 +63,98 @@ const DonationBoxCard = ({ data, renderFrom }) => {
     }
   }
 
- 
 
   const handleTrackLocation = async (e) => {
     e.preventDefault();
     DonationTracking(data);
   }
 
-  
 
-  const handleDelete = async (e) => {
-    e.preventDefault();
-    try
-    {   
-        const token = localStorage.getItem("Token");
-        const userId = userData._id;
-        const donationBoxId= data._id;
+  const handleCancelDonor = async (e) => {
 
-        const url = `http://localhost:3000/donation-box/id/?donationBoxId=${donationBoxId}&userId=${userId}`
+    try {
+      const token = localStorage.getItem("Token");
+      const userId = userData._id;
+      const donationBoxId = data._id;
 
-        const res = await fetch(url,{
-          method:"DELETE",
-          headers:{
-            'Content-type':"application/json",
-            Authorization:`Bearer ${token}`
-          }
-        })
+      const url = `http://localhost:3000/donation-box/cancel-donor/?donationBoxId=${donationBoxId}&userId=${userId}`
 
-        const result = await res.json();
-
-        if(result.success)
-        {
-          handleSuccess(result.message);
-          console.log(result.message)
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          'Content-type': "application/json",
+          Authorization: `Bearer ${token}`
         }
-        else
-        {
-          console.log(result.message);
-        }
-    }
-    catch(error)
-    {
-        console.log(error);
-    }
-  }
-  
+      })
 
-const  handleCancelDonor = async(e)=>{
+      const result = await res.json();
 
-    try
-    {   
-        const token = localStorage.getItem("Token");
-        const userId = userData._id;
-        const donationBoxId= data._id;
-
-        const url = `http://localhost:3000/donation-box/cancel-donor/?donationBoxId=${donationBoxId}&userId=${userId}`
-
-        const res = await fetch(url,{
-          method:"POST",
-          headers:{
-            'Content-type':"application/json",
-            Authorization:`Bearer ${token}`
-          }
-        })
-
-        const result = await res.json();
-
-        if(result.success)
-        {
-          handleSuccess(result.message);
-          console.log(result.message)
-        }
-        else
-        {
-          console.log(result.message);
-        }
-    }
-    catch(error)
-    {
-        console.log(error);
-    }
-  }
-  const handleReport = async (e) => {
-    e.preventDefault();
-
-    // Get the correct user ID whether populated or not
-    const userId = data.user_id?._id || data.user_id;
-
-    if (!userId || !data._id) {
-      console.error("Missing IDs for report:", { userId, donationId: data._id });
-      handleError("Cannot create report - missing information");
-      return;
-    }
-
-    // Update the report state
-    await updateReport({
-      reportedUserId: userId,
-      reportedDonationId: data._id
-    });
-
-    // Navigate after state is updated
-    navigate("/Report", {
-      state: { // Pass as location state as backup
-        reportedUserId: userId,
-        reportedDonationId: data._id
+      if (result.success) {
+        handleSuccess(result.message);
+        console.log(result.message)
       }
-    });
+      else {
+        console.log(result.message);
+        handleError(result.message)
+      }
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
+
+  const handleReport = async (e) => {
+    localStorage.setItem("dId", data._id);
+    localStorage.setItem("uId", data.user_id);
+
+    await updateOpenBox("report-form")
+
   };
 
-const handleEdit = (e)=>{
-  e.preventDefault();
-  updateEditDonationData(data);
-  navigate("/DonationEdit");
-}
+
+  const handleEdit = async (e) => {
+    localStorage.setItem("dId", data._id);
+    localStorage.setItem("uId", data.user_id);
+    await updateOpenBox("donation-edit")
+  }
+
+  //Delete donation box
+  const handleDelete = async () => {
+
+    try {
+      const token = localStorage.getItem("Token");
+      const userId = userData._id;
+      const donationBoxId = data._id
+      const url = `http://localhost:3000/donation-box/id/?donationBoxId=${donationBoxId}&userId=${userId}`
+
+      setLoading(true);
+
+      const res = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          'Content-type': "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      })
+
+      const result = await res.json();
+      setLoading(false);
+
+      if (result.success) {
+        handleSuccess(result.message);
+        setDonations(prev => prev.filter(donation => donation._id !== donationBoxId));
+        change++;
+      }
+      else {
+        console.log(result.message);
+        handleError(result.message)
+      }
+    }
+    catch (error) {
+      console.log(error.message);
+
+    }
+  }
 
 
   return (
@@ -225,7 +201,7 @@ const handleEdit = (e)=>{
                 )
               }
 
-            
+
               {
                 (renderFrom == "MyDonations") &&
 
@@ -256,10 +232,10 @@ const handleEdit = (e)=>{
           </div>
         </div>
       </div>
-    
-   
 
-              </>
+
+
+    </>
   );
 };
 

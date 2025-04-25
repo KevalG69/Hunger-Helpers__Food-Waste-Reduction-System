@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "host":"vite --host"
   },
   "dependencies": {
     "@cloudinary/react": "^1.14.1",
@@ -24,6 +25,7 @@
     "react-dom": "^19.0.0",
     "react-geolocated": "^4.3.0",
     "react-router-dom": "^7.5.0",
+    "react-spinners": "^0.16.1",
     "react-toastify": "^11.0.5",
     "socket.io-client": "^4.8.1"
   },

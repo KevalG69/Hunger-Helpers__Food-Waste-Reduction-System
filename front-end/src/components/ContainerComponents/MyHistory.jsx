@@ -1,31 +1,35 @@
 //csss 
 import { useContext, useEffect, useState } from 'react';
+
 import '../../css/Component/MyHistory.css';
-import { contextAPI } from '../../services/RegistrationContext';
+
+import { contextAPI } from '../../services/Context';
 import DonationCard from '../SingleComponents/DonationCard';
 import { handleError, handleSuccess } from '../../utils/Toast';
-import { useNavigate } from 'react-router-dom';
+import Loading from '../../utils/Loading'
+
 
 const MyHistory = () => {
 
+    //States
     const { userData } = useContext(contextAPI);
+
+
     const [donations, setDonations] = useState([]);
     const [delivery, setDelivery] = useState([]);
 
-    const navigate = useNavigate();
-    let Total = 0;
+
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
     const fetchDonation = async () => {
 
         try {
 
             const userId = userData._id
             const token = localStorage.getItem("Token");
-            console.log(token)
-            if (!userId || !token) {
-                handleError("User ID Error")
-            }
 
-            console.log(userId)
+            setLoading(true)            
             const url = `http://localhost:3000/users/donations?userId=${userId}`;
             const response = await fetch(url, {
                 method: "GET",
@@ -36,28 +40,26 @@ const MyHistory = () => {
             })
 
             const result = await response.json();
+            setLoading(false);
 
-            const { message, success } = result;
-
-            if (success) {
+    
+            if (result.success) {
 
                 if (!result.data) {
                     return;
                 }
-                console.log(message);
-                Total = result.total
-                console.log("result Data = ", result.data[0])
+                console.log(result.message);
                 setDonations(result.data);
-                console.log("donation", donations, donations[0])
-
 
             }
             else {
-                console.log(message);
+                console.log(result.message);
+                setError(result.error)
             }
         }
         catch (error) {
             handleError(error);
+            setError(error)
         }
     }
 
@@ -67,12 +69,8 @@ const MyHistory = () => {
 
             const userId = userData._id
             const token = localStorage.getItem("Token");
-            console.log(token)
-            if (!userId || !token) {
-                handleError("User ID Error")
-            }
-
-            console.log(userId)
+    
+            setLoading(true)        ;
             const url = `http://localhost:3000/users/deliveries?userId=${userId}`;
             const response = await fetch(url, {
                 method: "GET",
@@ -83,28 +81,19 @@ const MyHistory = () => {
             })
 
             const result = await response.json();
+            setLoading(false);
 
-            const { message, success } = result;
-
-            if (success) {
-
-                if (!result.data) {
-                    return;
-                }
-                console.log(message);
-                Total = result.total
-                console.log("result Data = ", result.data[0])
+            if (result.success) {
+                console.log(result.message);
                 setDelivery(result.data);
-                console.log("donation", delivery, delivery[0])
-
 
             }
             else {
-                console.log(message);
+                console.log(result.error)
             }
         }
         catch (error) {
-            handleError(error);
+            console.log(error)
         }
     }
 
@@ -113,6 +102,27 @@ const MyHistory = () => {
         fetchDonation();
         fetchDelivery();
     }, []);
+
+
+    if(loading)
+        {
+          return (
+            <>
+            <Loading></Loading>
+            </>
+          );
+        }
+
+    if(error)
+    {
+        return (
+            <div>
+                <h1>
+                    {error.message}
+                </h1>
+            </div>
+        )
+    }
     return (
         <>
             <main className="content">
@@ -122,7 +132,7 @@ const MyHistory = () => {
                     <div style={{ maxHeight: '10rem', overflowY: 'auto' }}>
 
                         {donations.length === 0 ? (
-                            <p>No donations found.</p>
+                            <p>Empty</p>
                         ) : (
                             donations.map((donation) => (
                                 <DonationCard key={donation._id} donation={donation} />
@@ -135,7 +145,7 @@ const MyHistory = () => {
                     <div style={{ maxHeight: '10rem', overflowY: 'auto' }}>
 
                         {delivery.length === 0 ? (
-                            <p>No delivery found.</p>
+                            <p>Empty</p>
                         ) : (
                             delivery.map((delivery1) => (
                                 <DeiliveryCard key={delivery1._id} delivery={delivery1} />

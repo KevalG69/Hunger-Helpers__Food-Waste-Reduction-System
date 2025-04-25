@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import '../../css/Elements/Filters.css';
-import { contextAPI } from '../../services/RegistrationContext';
+import { contextAPI } from '../../services/Context';
 
 const Filters = () => {
   const { donationFilter, updateDonationFilter } = useContext(contextAPI);

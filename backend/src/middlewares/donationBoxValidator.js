@@ -8,7 +8,7 @@ const joi = require("joi");
 
 
 const donationBoxValidator = (req,res,next)=>{
-
+console.log(req.body)
     //creating schema
         const schema = joi.object({
             status: joi.string().allow(null).optional(),

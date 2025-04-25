@@ -34,6 +34,9 @@ DonationBoxRouter.get("/", verifyToken, canViewDonations, getAllDonations);
 //GET /api/donations/:id → Get donation by ID
 DonationBoxRouter.get("/id", verifyToken, canViewDonations, getDonationById);
 
+//GET /api/donations/:id → Get donation by ID
+DonationBoxRouter.get("/my-id", verifyToken, isSelf, getDonationById);
+
 
 
 //- POST /api/donations/ → -->Create<--  a new donation
@@ -61,7 +64,7 @@ DonationBoxRouter.post("/claim-denied",verifyToken,isSelf,claimDenied);
 DonationBoxRouter.post('/update-location', verifyToken, updateVolunteerLocation);
 
 //PUT /api/donations/:id → Update donation details
-DonationBoxRouter.put("/update", verifyToken, isMangerOrSelf, donationBoxValidator, updateDonationBox);
+DonationBoxRouter.put("/update", verifyToken, isMangerOrSelf,upload.single("food_image"),donationBoxValidator, updateDonationBox);
 
 //PUT /api/donations/manager-mark-delivered -> Manager confirm Delivery +update contribution_info
 //for volunteer and donors

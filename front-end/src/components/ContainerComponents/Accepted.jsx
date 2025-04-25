@@ -1,119 +1,99 @@
-import React, { useContext, useEffect ,useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 
 import DonationBoxCard2 from '../SingleComponents/DonationBoxCard2';
-import Filters from '../SingleComponents/Filters';
+
 
 import '../../css/Component/ActiveDonations.css';
-import { handleError } from '../../utils/Toast';
-import { contextAPI } from '../../services/RegistrationContext';
+
+import { contextAPI } from '../../services/Context';
+import Loading from '../../utils/Loading';
+import { handleSuccess } from '../../utils/Toast';
 
 const Accepted = () => {
 
-  const {userData} = useContext(contextAPI);
-  const [donations1,setDonations1] = useState([]);
-  
+  const { userData } = useContext(contextAPI);
+  const [donations, setDonations] = useState([]);
 
-  
-  
-  const fetchDonationBox1 = async ()=>{
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    try
-    {
+  const fetchDonationBox = async () => {
+
+    try {
       const token = localStorage.getItem("Token");
       const userId = userData._id;
-    
+
       const url = `http://localhost:3000/users/deliveries/?userId=${userId}`;
 
-      const res = await fetch(url,{
-        method:"GET",
-        headers:{
-          "Content-type":"application/json",
-          Authorization:`Bearer ${token}`
+      setLoading(true)
+      const res = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${token}`
         }
       })
 
       const result = await res.json();
+      setLoading(false)
 
-      if(result.success)
-      {
+      if (result.success) {
         console.log(result.message);
-       
-        console.log(result.data)
-        setDonations1(result.data);
+        setDonations(result.data);
       }
-      else
-      {
+      else {
         console.log(result.message);
+        setError(result.error);
       }
 
     }
-    catch(error)
-    {
+    catch (error) {
       console.log(error)
+      setError(error)
     }
   }
+
+
  
-  
-  const fetchDonationBox2 = async (donation)=>{
 
-    try
-    {
-      const donationBoxId = donation.donation_id;
-      const token = localStorage.getItem("Token");
-      const userId = userData._id;
-    
-      const url = `http://localhost:3000/donation-box/id/?donationBoxId=${donationBoxId}&userId=${userId}`;
+  useEffect(() => {
+    fetchDonationBox();
+  }, [])
 
-      const res = await fetch(url,{
-        method:"GET",
-        headers:{
-          "Content-type":"application/json",
-          Authorization:`Bearer ${token}`
-        }
-      })
 
-      const result = await res.json();
 
-      if(result.success)
-      {
-        console.log(result.message);
-       
-        console.log(result.data)
-        return result.data;
-      }
-      else
-      {
-        console.log(result.message);
-      }
-
-    }
-    catch(error)
-    {
-      console.log(error)
-    }
+  if (loading) {
+    return (
+      <>
+        <Loading></Loading>
+      </>
+    );
   }
- 
 
-  
-  useEffect(()=>{
-    fetchDonationBox1();
-   
+  if (error) {
+    return (
+      <div>
+        <h1>
+          {error.message}
+        </h1>
+      </div>
+    )
+  }
 
-  },[])
-  
+
   return (
     <div className="donation-layout">
-     
+
       <div className="donation-main">
         {/* <Filters /> */}
         <div className="donation-cards">
-          { donations1.length === 0 ? (
-          
-                <p>No data available</p>
-        
-            ) :(donations1.map((donation) => (
-            <DonationBoxCard2 key={donation._id} delivery={donation} renderFrom={"Accepted"}/>)
+          {donations.length === 0 ? (
+
+            <p>No data available</p>
+
+          ) : (donations.map((donation) => (
+            <DonationBoxCard2 key={donation._id} delivery={donation} renderFrom={"Accepted"} fetchDonationBox={fetchDonationBox} />)
           ))}
         </div>
       </div>

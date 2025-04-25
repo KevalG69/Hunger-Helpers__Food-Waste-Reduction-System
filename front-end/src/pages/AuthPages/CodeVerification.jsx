@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import '../../css/Pages/CodeVerification.css';
 
 //service 
-import { contextAPI } from '../../services/RegistrationContext';
+import { contextAPI } from '../../services/Context';
 
 //svg
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

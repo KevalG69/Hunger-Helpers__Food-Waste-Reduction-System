@@ -16,7 +16,7 @@ import { faXmark} from '@fortawesome/free-solid-svg-icons'
 
 //componets
 import AuthButton from '../../components/SingleComponents/AuthButton';
-import { contextAPI } from '../../services/RegistrationContext';
+import { contextAPI } from '../../services/Context';
 
 
 

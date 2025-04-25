@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import '../../css/Component/Logout.css';
 import { useNavigate } from 'react-router-dom';
-import { contextAPI } from '../../services/RegistrationContext';
+import { contextAPI } from '../../services/Context';
 
 
 const LogoutPopup = () => {

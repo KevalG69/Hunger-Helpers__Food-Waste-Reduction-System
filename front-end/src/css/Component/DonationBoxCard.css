@@ -74,6 +74,11 @@
     border: 0.5rem solid var(--black);
     background-color: var(--black10);
   }
+
+  .donation-card.cancelled {
+    border: 0.5rem solid var(--error);
+    background-color: var(--black10);
+  }
   
   .card-actions {
     display: flex;

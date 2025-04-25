@@ -1,20 +1,29 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import '../../css/Component/ReportFromModel.css'; // Make sure to style this
 import { handleError, handleSuccess } from "../../utils/Toast";
 import { useNavigate } from "react-router-dom";
+import { contextAPI } from "../../services/Context";
 
-const ReportFormModal = ({  reportedUserId, reportedDonationId }) => {
-  const navigate= useNavigate();
+const ReportFormModal = () => {
+
+  console.log("render")
+  
+  
+
   const fileInputRef = useRef();
+
+
+  const {updateOpenBox} = useContext(contextAPI);
+
   const [previewUrls, setPreviewUrls] = useState([]);
   const [imageFiles, setImageFiles] = useState([]);
   const [formData, setFormData] = useState({
     reportType: "",
-    desription: "",
+    description: "",
   });
 
   const onClose = ()=>{
-    navigate("/Donations")
+    updateOpenBox("active-donations")
   }
   const handleFileChange = async (e) => {
     const files = Array.from(e.target.files);
@@ -33,6 +42,8 @@ const ReportFormModal = ({  reportedUserId, reportedDonationId }) => {
   };
 
   const uploadToCloudinary = async (files) => {
+
+
     const uploadedUrls = [];
     for (let file of files) {
       const data = new FormData();
@@ -51,33 +62,46 @@ const ReportFormModal = ({  reportedUserId, reportedDonationId }) => {
     return uploadedUrls;
   };
 
+  
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const evidenceUrls = await uploadToCloudinary(imageFiles);
       const token = localStorage.getItem("Token");
+      console.log(token)
       const reportType = formData.reportType;
       const description = formData.description;
+      
+      const reportedUserId = localStorage.getItem("uId");
+  const reportedDonationId = localStorage.getItem("dId");
+  
+      const formDataToSend = {
 
+        reportType : reportType,
+        description: description,
+        reportedUserId :reportedUserId,
+        reportedDonationId:reportedDonationId,
+        evidence:evidenceUrls
+      };
+        
+      console.log(formDataToSend)
       const response = await fetch(`http://localhost:3000/report`, {
         method: "POST",
         headers: {
-          
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body:  {
-          reportType,
-          description,
-          reportedUserId,
-          reportedDonationId,
-          evidence: evidenceUrls}
+        body: JSON.stringify(formDataToSend)
       });
 
       const result = await response.json();
 
       if (result.success) {
         handleSuccess("Report submitted!");
+        localStorage.removeItem("dId");
+        localStorage.removeItem("uId");
         onClose();
       } else {
         handleError(result.message);
@@ -107,7 +131,7 @@ const ReportFormModal = ({  reportedUserId, reportedDonationId }) => {
 
           <label>Description</label>
           <textarea
-            name="desription"
+            name="description"
             rows="4"
             placeholder="Describe the issue"
             onChange={handleChange}

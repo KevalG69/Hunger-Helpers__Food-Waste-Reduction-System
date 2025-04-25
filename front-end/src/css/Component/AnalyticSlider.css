@@ -14,22 +14,18 @@
   .cards-wrapper {
     display: flex;
     overflow-x: auto;
-    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory; /* snap scrolling */
+    scroll-padding: 0 1rem;
     gap: 1rem;
     padding: 1rem 0.5rem;
-    max-width: 50vw;
+    max-width: 90vw;
   }
   
+  
   .card {
-    min-width: 250px;
-    max-width: 300px;
-    background-color: var(--secondary3);
-    color: white;
-    border-radius: 0.5rem;
-    padding: 1rem;
-    box-shadow: 0px 4px 4px 0px var(--shadow);
-    flex-shrink: 0;
+    scroll-snap-align: start;
   }
+  
   
   .card ul {
     list-style: none;
@@ -54,6 +50,14 @@
     margin: 0 1rem;
     z-index: 10;
     box-shadow: 0px 4px 4px 0px var(--shadow);
+  }
+  .cards-wrapper::-webkit-scrollbar {
+    height: 6px;
+  }
+  
+  .cards-wrapper::-webkit-scrollbar-thumb {
+    background: var(--black25);
+    border-radius: 3px;
   }
   
   /* Responsive adjustments */

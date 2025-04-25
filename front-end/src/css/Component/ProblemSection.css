@@ -45,3 +45,49 @@
     margin-bottom: 1rem;
   }
   
+  @media screen and (max-width: 768px) {
+    .problem-section {
+      padding: 1rem 2rem; /* Reduce side padding */
+    }
+  
+    .problem-section h2 {
+      font-size: 1.5rem; /* Adjust heading */
+    }
+  
+    .problem-section .subheading {
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
+  
+    .problem-cards {
+      gap: 1rem; /* Slightly smaller gap between cards */
+    }
+  
+    .problem-card {
+      padding: 1rem; /* Slightly tighter padding */
+    }
+  
+    .problem-card img {
+      width: 4rem;
+      height: 4rem;
+    }
+  }
+  
+  @media screen and (max-width: 480px) {
+    .problem-section {
+      padding: 1rem 1rem;
+    }
+  
+    .problem-section h2 {
+      font-size: 1.3rem;
+    }
+  
+    .problem-section .subheading {
+      font-size: 0.9rem;
+    }
+  
+    .problem-card {
+      font-size: 0.9rem;
+    }
+  }
+  

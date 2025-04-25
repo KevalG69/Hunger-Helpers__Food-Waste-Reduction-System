@@ -1,6 +1,6 @@
 // useFetchUser.js (or FetchUser.jsx)
 import { useContext } from "react";
-import { contextAPI } from "../services/RegistrationContext";
+import { contextAPI } from "../services/Context";
 import { handleError } from "./Toast";
 
 export const useFetchUser = () => {

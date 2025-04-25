@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom';
 
 //utils
 import { handleError, handleSuccess } from '../../utils/Toast';
-import { contextAPI } from '../../services/RegistrationContext';
+import { contextAPI } from '../../services/Context';
 import { useFetchUser } from '../../utils/FetchUser';
 
 //funcitons
@@ -96,7 +96,7 @@ function Login() {
         //try and catch block
 
         try {
-            const url = "http://localhost:3000/auth/login";
+            const url = "http://192.168.43.55:3000/auth/login";
             const { identifier, password } = loginInfo
             //fetching apis
             const response = await fetch(url, {

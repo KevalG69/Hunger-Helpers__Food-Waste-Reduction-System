@@ -3,7 +3,7 @@
 import { Route, BrowserRouter as Router, Routes, Navigate, useNavigate} from 'react-router-dom'
 import { useEffect, useContext, useState } from 'react';
 
-import { contextAPI } from "./services/RegistrationContext";
+
 
 
 import { ToastContainer } from 'react-toastify';
@@ -36,8 +36,6 @@ import RegistrationStep2 from './pages/AuthPages/RegistrationStep2';
 import CodeVerification from './pages/AuthPages/CodeVerification';
 import ForgotPassword from './pages/AuthPages/ForgotPassword';
 import CreateNewPassword from './pages/AuthPages/CreateNewPassword';
-import ReportFormModal from './components/ContainerComponents/ReportFormModel';
-import DonationEdit from './components/ContainerComponents/DonationEdit';
 
 
 
@@ -45,7 +43,6 @@ import DonationEdit from './components/ContainerComponents/DonationEdit';
 function App() {
 
  
- const {userData,report,editDonationData} = useContext(contextAPI);
 
     const fetchUser = useFetchUser();
 
@@ -83,9 +80,8 @@ function App() {
           <Route path='/ForgotPassword' element={<PublicElement><ForgotPassword /></PublicElement>} />
           <Route path='/CreateNewPassword' element={<PublicElement><CreateNewPassword /></PublicElement>} />
 
-          <Route path='/Report' element={<UserElement><ReportFormModal reportedUserId={report.reportedUserId} 
-          reportedDonationId={report.reportedDonationId} /></UserElement>} />
-          <Route path="/DonationEdit" element={<UserElement><DonationEdit data={editDonationData}/></UserElement>} />
+         
+         
 
         </Routes>
     

@@ -37,7 +37,6 @@ nav
 }
 
 
-
 /*  */
 .user-options
 {
@@ -60,16 +59,13 @@ nav
     transition-duration: 200ms;
 }
 
-
-
 .logo
 {
     height: 4.5rem;
     width: 4.5rem;
 }
 
-
-#joinUs_btn
+.joinUs_btn
 {
     height: 3rem;
     width: 8rem;
@@ -88,22 +84,21 @@ nav
     transition-duration: 200ms;
 }
 
-
 /* Actions */
 
-#joinUs_btn:hover
+.joinUs_btn:hover
 {
     transform: scale(109%);
     background-color: var(--secondary3);
     
 }
-
+/* 
 .link:hover
 {
     background-color: var(--secondary3);
     border-radius: 1rem;
     
-}
+} */
 
 .options li a:hover
 {
@@ -117,3 +112,55 @@ nav a.active
     border-radius: 1rem;
     
 }
+
+/* mobile navbar */
+/* Mobile navbar - hidden on desktop */
+.mobile-navbar {
+    display: none;
+  }
+  
+
+
+.mobile-icons
+{
+    width: 1.625rem;
+    height: 1.5rem;
+}
+
+
+.mobile-navbar .options li
+{
+    padding: 0;
+}
+
+
+.mobile-navbar a.active
+{
+    background-color: var(--secondary3);
+    border-radius: 1rem;
+    
+}
+/* Actions */
+
+  /* Mobile styles */
+  @media screen and (max-width: 768px) {
+    nav {
+      display: none; /* Hide full navbar */
+    }
+  
+    .mobile-navbar {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      height: 4rem;
+      background-color: var(--primary1);
+      box-shadow: 0 4px 4px 0px var(--shadow);
+      z-index: 1000;
+    }
+  
+ 
+  }
+  

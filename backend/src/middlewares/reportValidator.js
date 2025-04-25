@@ -30,7 +30,7 @@ const reportValidator = (req,res,next)=>{
             reportedUserId: joi.required(),
             reportedDonationId: joi.required(),
             reportType: joi.string().min(3).max(50).required(),
-            desription: joi.string().min(4).required(),
+            description: joi.string().min(4).required(),
             evidence: joi.allow(null).optional(),
         })
     

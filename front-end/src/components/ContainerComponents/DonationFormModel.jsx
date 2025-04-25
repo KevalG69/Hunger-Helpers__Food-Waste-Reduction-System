@@ -4,9 +4,12 @@ import React, { useState, useRef } from "react";
 //css
 import '../../css/Component/DonationFormModel.css';
 
-import { handleError} from "../../utils/Toast.jsx";
+//image
+import logo from '../../assets/image/HungerHelpersLogo.png'
 //service
 import getLocationAndSubmit from '../../services/getLocationAndSubmite.jsx'
+import { handleError,handleSuccess } from "../../utils/Toast.jsx";
+
 
 function DonationFormModal({onClose}) {
 
@@ -20,10 +23,10 @@ function DonationFormModal({onClose}) {
         pickup_time: "",
         pickup_location: "",
         food_image: null,
-        location:{
+
             lat:0,
             lng:0
-        }
+        
     });
 
     const fileInputRef = useRef();
@@ -49,8 +52,11 @@ function DonationFormModal({onClose}) {
         // Upload to server or Cloudinary
         
         uploadForm.append("food_image", file);
-
-
+        setFormData((prev) => ({
+          ...prev,
+          food_image: fileInputRef.current.files[0],
+        }));
+        
     };
 
     const handleLocation = async (e) => {
@@ -62,12 +68,17 @@ function DonationFormModal({onClose}) {
       
           setFormData((prev) => ({
             ...prev,
-            location: {
-              lat: latitude,
-              lng: longitude
-            }
+            
+              lat: latitude
+            
           }));
       
+          setFormData((prev) => ({
+            ...prev,
+            
+              lng: longitude
+            
+          }));
           console.log("Location updated:", latitude, longitude);
         } catch (err) {
           alert("Failed to get location: " + err);
@@ -84,20 +95,26 @@ function DonationFormModal({onClose}) {
         }
         const token = localStorage.getItem("Token");
       
+        
         const formDataToSend = new FormData();
         formDataToSend.append("food_name", formData.food_name);
         formDataToSend.append("food_type", formData.food_type);
+        formDataToSend.append("status", formData.status);
         formDataToSend.append("food_quantity", formData.food_quantity);
         formDataToSend.append("food_cookedAt", formData.food_cookedAt);
         formDataToSend.append("food_expireAt", formData.food_expireAt);
         formDataToSend.append("pickup_time", formData.pickup_time);
         formDataToSend.append("pickup_location", formData.pickup_location);
-        formDataToSend.append("lat", formData.location.lat);
-        formDataToSend.append("lng", formData.location.lng);
+        formDataToSend.append("lat", formData.lat);
+        formDataToSend.append("lng", formData.lng);
         
+        
+        console.log(formDataToSend)
+
         if (fileInputRef.current?.files[0]) {
           formDataToSend.append("food_image", fileInputRef.current.files[0]);
         }
+        
         else
         {
           formDataToSend.append("food_image",null);
@@ -116,10 +133,12 @@ function DonationFormModal({onClose}) {
       
           if (result.success) {
             console.log(result.message);
+            handleSuccess(result.message)
             onClose();
           } else {
          
             console.log(result.error.details);
+            handleError(result.error.details.message)
           }
         } catch (err) {
           console.log("Upload failed", err);
@@ -140,7 +159,7 @@ function DonationFormModal({onClose}) {
 
                     <div className="image-section" onClick={handleImageClick}>
                         <img
-                            src={formData.imageUrl || "/upload-placeholder.png"}
+                            src={formData.food_image || logo}
                             alt="Upload"
                             className="image-preview"
                         />

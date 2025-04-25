@@ -61,8 +61,7 @@ const AnalyticsSlider = () => {
         <section className="analytics-section">
             <h2>Analytic data</h2>
             <div className="analytics-container">
-                <button className="arrow left" onClick={() => scroll('left')}>
-                    <FontAwesomeIcon icon={faCircleChevronLeft} style={{ color: "#D13479", }} /></button>
+             
 
                 <div className="cards-wrapper" ref={scrollRef}>
                     {analytics.map((item, index) => (
@@ -84,8 +83,7 @@ const AnalyticsSlider = () => {
                     ))}
                 </div>
 
-                <button className="arrow right" onClick={() => scroll('right')}>
-                    <FontAwesomeIcon icon={faCircleChevronRight} style={{ color: "#D13479", }} /></button>
+                
             </div>
         </section>
     );

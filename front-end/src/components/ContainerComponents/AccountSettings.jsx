@@ -1,7 +1,7 @@
 //csss 
 import { useContext, useState } from 'react';
 import '../../css/Component/AccountSetting.css';
-import { contextAPI } from '../../services/RegistrationContext';
+import { contextAPI } from '../../services/Context';
 import ChangeRoleModal from '../SingleComponents/ChangeRolePopup';
 import GetVerified from "../SingleComponents/getVerified";
 import { useNavigate } from 'react-router-dom';

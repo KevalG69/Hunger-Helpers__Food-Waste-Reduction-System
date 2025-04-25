@@ -3,33 +3,17 @@ import React, { useState, useEffect, useContext } from 'react';
 //css
 import '../../css/Pages/Notifications.css';
 
-//import socket from '../../services/socket';
-import { contextAPI } from '../../services/RegistrationContext';
 
-const notifications = [
-  {
-    id: 1,
-    type: 'notification',
-    title: 'Donation Update',
-    message: 'Volunteer Has Accepted Your Donation Box',
-    time: '4:20 PM 12/03/2025'
-  },
-  {
-    id: 2,
-    type: 'request',
-    title: 'New Donation Request',
-    message: 'NGO has requested food donation pickup',
-    time: '3:45 PM 12/03/2025'
-  }
-];
-import socket from '../../services/socket'; // Uncomment this
+import { contextAPI } from '../../services/Context.jsx';
+import socket from '../../services/socket.jsx'; 
+
 
 const Notifications = () => {
 
   // const [notifications, setNotifications] = useState([]);
   const [data, setData] = useState([]);
-  const { userData } = useContext(contextAPI);
-  const { addNotification } = useContext(contextAPI);
+
+  const { userData, addNotification,notifications } = useContext(contextAPI);
 
   // Inside your component:
   useEffect(() => {
@@ -46,9 +30,10 @@ const Notifications = () => {
         type: 'Donation-Update', // or 'success', 'error', etc.
         title: data.message,
         message: JSON.stringify(data.metadata),
-        time: new Date().toLocaleTimeString()
+        createdAt: new Date().toLocaleTimeString()
       });
     })
+
     socket.on("Request-Update", (data) => {
       console.log("Notification received:", data);
       addNotification({
@@ -56,7 +41,7 @@ const Notifications = () => {
         type: 'Request-Update', // or 'success', 'error', etc.
         title: data.message,
         message: JSON.stringify(data.metadata),
-        time: new Date().toLocaleTimeString()
+        createdAt: new Date().toLocaleTimeString()
       });
 
       setData(prev => [...prev, data]);
@@ -64,6 +49,8 @@ const Notifications = () => {
 
     return () => {
       socket.off("Donation-Update");
+      socket.off("Request-Update");
+
     };
   }, [userData]);
 
@@ -88,7 +75,6 @@ const Notifications = () => {
       const res = await fetch(url, {
         method: "GET",
         headers: {
-          
           Authorization: `Bearer ${token}`
         }
       })
@@ -97,8 +83,8 @@ const Notifications = () => {
 
       if (result.success) {
         console.log(result.message);
-
-        setData(prev => [...prev, data]);
+        console.log(result.data)
+        setData(result.data);
       }
       else {
         console.log(result.message);
@@ -111,8 +97,9 @@ const Notifications = () => {
 
 
   useEffect(() => {
+    console.log(notifications)
     fetchNotifications();
-  }, [addNotification])
+  }, [notifications])
 
   return (
     <div className="notification-page">
@@ -129,7 +116,7 @@ const Notifications = () => {
                 <span className="notification-time">{item.createdAt}</span>
                 <span className="notification-title">{item.type}</span>
 
-                <button className="close-btn" onClick={() => removeNotification(item.id)}>×</button>
+                <button className="close-btn" onClick={() => removeNotification(item._id)}>×</button>
               </div>
               <div className="notification-message">{item.message}</div>
               <div className="notification-message">{item.metadata}</div>

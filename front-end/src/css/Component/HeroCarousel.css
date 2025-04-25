@@ -119,3 +119,43 @@
     }
   }
   
+  @media (max-width: 480px) {
+    .hero-carousel {
+      height: 75vh; /* Slightly less height for mobile */
+    }
+  
+    .hero-content {
+      margin-top: 0; /* Remove the negative margin on small screens */
+      padding: 0.5rem;
+      max-width: 90%; /* Reduce max-width for better spacing */
+      text-align: center; /* Optional: center text for mobile */
+      align-items: center; /* Center buttons too */
+    }
+  
+    .hero-content h1 {
+      font-size: 1.5rem;
+    }
+  
+    .hero-content h3 {
+      font-size: 1.1rem;
+    }
+  
+    .hero-content p {
+      font-size: 0.8rem;
+    }
+  
+    .donate-btn {
+      width: 100%;
+      max-width: 240px;
+      font-size: 0.85rem;
+    }
+  
+    .arrow.left {
+      left: 1rem;
+    }
+  
+    .arrow.right {
+      right: 1rem;
+    }
+  }
+  

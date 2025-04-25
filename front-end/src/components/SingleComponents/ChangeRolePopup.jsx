@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import '../../css/Component/ChangeRolePopup.css'
 import { useNavigate } from 'react-router-dom';
-import { contextAPI } from '../../services/RegistrationContext';
+import { contextAPI } from '../../services/Context';
 import { handleError,handleSuccess } from '../../utils/Toast';
 
 

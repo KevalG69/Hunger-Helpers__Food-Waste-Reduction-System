@@ -1,7 +1,7 @@
 //csss 
 import { useContext } from 'react';
 import '../../css/Component/Contribution.css';
-import { contextAPI } from '../../services/RegistrationContext';
+import { contextAPI } from '../../services/Context';
 import { handleError } from '../../utils/Toast';
 
 

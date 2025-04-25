@@ -19,29 +19,29 @@ const initSocket = (server) => {
       console.log(`User ${userId} joined room ${userId}`);
     });
 
-    socket.on("HouseHold-Donor", () => {
+    socket.on("HouseHold-Donor", (userId) => {
       socket.join("donor");
-      console.log(`User ${socket.id} joined the Donor Room`);
+      console.log(`User ${userId} joined the Donor Room`);
     });
 
-    socket.on("Restaurant-Donor", () => {
+    socket.on("Restaurant-Donor", (userId) => {
       socket.join("donor");
-      console.log(`User ${socket.id} joined the Donor Room`);
+      console.log(`User ${userId} joined the Donor Room`);
     });
 
-    socket.on("Volunteer", () => {
+    socket.on("Volunteer", (userId) => {
       socket.join("volunteer");
-      console.log(`User ${socket.id} joined volunteer Room`);
+      console.log(`User ${userId} joined volunteer Room`);
     });
 
-    socket.on("Manager", () => {
+    socket.on("Manager", (userId) => {
       socket.join("manager");
-      console.log(`User ${socket.id} joined Manager Room`);
+      console.log(`User ${userId} joined Manager Room`);
     });
 
-    socket.on("Admin", () => {
+    socket.on("Admin", (userId) => {
       socket.join("admin");
-      console.log(`User ${socket.id} joined admin Room`);
+      console.log(`User ${userId} joined admin Room`);
     });
 
     socket.on("notification", (message) => {
@@ -59,7 +59,7 @@ const initSocket = (server) => {
     });
 
     socket.on("disconnect", () => {
-      console.log(`User disconnected: ${socket.id}`);
+      console.log(`User disconnected: ${userId}`);
     });
   });
 };

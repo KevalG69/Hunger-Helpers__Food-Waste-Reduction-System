@@ -64,17 +64,13 @@ const createDonationBox = async (req, res) => {
             $push: { donations: sId }
         })
 
-        const notificationId = await sendNotification("volunteer","Donation-Update","New Donation Available",req.user.id,
+        const notificationId = await sendNotification("volunteer","Donation-Update","New Donation Available",null,
                 {Donation_Id:sId,
                 Donation_Name:donation_box.food_name,
                 Donation_Type:donation_box.food_type,
                 Donation_Quantity:donation_box.food_quantity}
         )
 
-        //pushing notification object id to in user
-        await UserModel.findByIdAndUpdate(req.user.id, {
-            $push: { notifications: notificationId }
-        });
 
         //activityLogger
         await activityLogger(req.user.id, "Created Donation Box", "post /donation-box/create", {
@@ -175,7 +171,7 @@ const getDonationById = async (req, res) => {
                 .json({
                     message: "No Donation Found",
                     success: false,
-                    data:[]
+                    data:null
                 })
         }
 
@@ -239,7 +235,7 @@ const updateDonationBox = async (req, res) => {
 
         if(donation_box.volunteer_id)
         {
-           const notificationId= sendNotification(donation_box.volunteer_id,"Donation-Update","Updated Donation Box",donation_box.volunteer_id,
+           const notificationId= await sendNotification(donation_box.volunteer_id,"Donation-Update","Updated Donation Box",donation_box.volunteer_id,
                 {Donation_Id:donationBoxId,
                 Donation_Name:donation_box.food_name,
                 Donation_Type:donation_box.food_type,
@@ -255,7 +251,7 @@ const updateDonationBox = async (req, res) => {
         }
         else
         {
-           const notificationId =  sendNotification("volunteer","Donation-Update","Updated Donation Box",
+           const notificationId = await sendNotification("volunteer","Donation-Update","Updated Donation Box",null,
                 {Donation_Id:donationBoxId,
                     Donation_Name:donation_box.food_name,
                     Donation_Type:donation_box.food_type,
@@ -424,7 +420,7 @@ const cancelDonationBox = async (req, res) => {
             //changing donation box status to cancelled
             donation_box.status = "Cancelled";
             donation_box.save();
-            const notificationId = sendNotification(donation_box.volunteer_id,"Donation-Update","Donor Cancelled Donation Box",donation_box.volunteer_id,
+            const notificationId = await sendNotification(donation_box.volunteer_id,"Donation-Update","Donor Cancelled Donation Box",donation_box.volunteer_id,
                 {Donation_Id:donationBoxId,
                 Donation_Name:donation_box.food_name,
                 Donation_Type:donation_box.food_type,
@@ -448,7 +444,7 @@ const cancelDonationBox = async (req, res) => {
             volunteerDDmodel.save();
             donation_box.save();
 
-            const notificationId = sendNotification(req.user.id,"Donation-Update","Volunteer Cancelled Donation Box",req.user.id,
+            const notificationId = await sendNotification(req.user.id,"Donation-Update","Volunteer Cancelled Donation Box",req.user.id,
                 {Donation_Id:donationBoxId,
                 Donation_Name:donation_box.food_name,
                 Donation_Type:donation_box.food_type,
@@ -514,7 +510,7 @@ const deleteDonationBox = async (req, res) => {
             return res.status(404)
                     .json({
                         message:"Donation Box NOT FOUND",
-                        success
+                        success:false
                     })
         }
 
@@ -532,10 +528,12 @@ const deleteDonationBox = async (req, res) => {
 
         //deleting donation Box
 
-        await DonationBoxModel.findByIdAndDelete(id);
+        await DonationBoxModel.findByIdAndDelete(donationBoxId);
 
 
-
+   
+        
+       
         //activityLogger
         await activityLogger(req.user.id, "DELETE Donation Box", "delete donation-box/id/:id", {
             Reason:reason,

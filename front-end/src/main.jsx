@@ -6,7 +6,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import './css/Global/Variables.css';
 import App from './App.jsx'
-import { ContextProvider } from './services/RegistrationContext.jsx';
+import { ContextProvider } from './services/Context.jsx';
 import { BrowserRouter } from 'react-router-dom'
 
 

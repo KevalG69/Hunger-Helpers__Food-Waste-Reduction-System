@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import '../../css/Pages/Donations.css';
-import { contextAPI } from '../../services/RegistrationContext';
+import { contextAPI } from '../../services/Context';
 import ActiveDonations from '../../components/ContainerComponents/ActiveDonations';
 import DonationFormModal from '../../components/ContainerComponents/DonationFormModel';
 import { useNavigate } from 'react-router-dom';
@@ -9,13 +9,14 @@ import Accepted from '../../components/ContainerComponents/Accepted';
 import MyDonations from '../../components/ContainerComponents/MyDonations';
 import History from '../../components/ContainerComponents/History';
 import ReportFormModal from '../../components/ContainerComponents/ReportFormModel';
+import DonationEdit from '../../components/ContainerComponents/DonationEdit';
 
 
 
 
 
 function DonationPage() {
-  const { userData, report } = useContext(contextAPI);
+  const { userData,openBox} = useContext(contextAPI);
 
   //User Roles
   const USER_ROLES = {
@@ -42,7 +43,7 @@ function DonationPage() {
 
 
   const navigate = useNavigate();
-  const [activeItem, setActiveItem] = useState("active-donations");
+  const [activeItem, setActiveItem] = useState("my-donations");
 
 
 
@@ -53,10 +54,18 @@ function DonationPage() {
   };
 
   const handleClose = () => {
-    setActiveItem("active-donations")
+    setActiveItem("my-donations")
   }
 
+  const handleOpen= ()=>{
+    setActiveItem(openBox)
 
+    console.log(openBox,activeItem)
+  }
+  useEffect(()=>{
+    handleOpen()
+    console.log("change")
+  },[openBox])
 
   return (
     <div className="donation-page">
@@ -134,11 +143,15 @@ function DonationPage() {
         (<DonationFormModal onClose={handleClose} />)
       }
 
-      {
-        (activeItem == "reportForm") &&
-        (<ReportFormModal onClose={handleClose} reportedUserId={report.reportedUserId} reportedDonationId={report.reportedDonationId} />)
-      }
 
+      {
+        (activeItem == "report-form") &&
+        (<ReportFormModal onClose={handleClose} />)
+      }
+       {
+        (activeItem == "donation-edit") &&
+        (<DonationEdit onClose={handleClose} />)
+      }
 
     </div>
 

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 import '../../css/Pages/CreateNewPassword.css';
 import { handleError, handleSuccess} from '../../utils/Toast';
 import AuthButton from '../../components/SingleComponents/AuthButton';
-import { contextAPI } from '../../services/RegistrationContext';
+import { contextAPI } from '../../services/Context';
 
 
 const CreateNewPassword = () => {

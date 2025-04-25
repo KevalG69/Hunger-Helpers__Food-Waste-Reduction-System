@@ -62,14 +62,15 @@ cron.schedule('0 0 * * *', async () => {
 
   
 
-//requests
-app.use("/",(req,res,next)=>{
-    console.log(`Request Url = "${req.url}",Request Method = "${req.method}",Request body = `,req.body)
-    next();
-})
+  
+  app.use(express.json());
 
-app.use(bodyParser.json());
-
+  
+  //requests
+  app.use("/",(req,res,next)=>{
+      console.log(`Request Url = "${req.url}",Request Method = "${req.method}",Request body = `,req.body)
+      next();
+  })
 //Router
 //--Register/login auth Router 1 
 
@@ -117,7 +118,15 @@ const PORT = process.env.PORT;
 
 
 //listening requests
-server.listen(PORT, () => {
+server.listen(PORT,() => {
     console.log(`Server Running on http://localhost:${PORT}`);
 });
 
+process.on('SIGTERM', () => {
+    server.close(() => {
+      console.log('Process terminated');
+    });
+  });
+
+
+  

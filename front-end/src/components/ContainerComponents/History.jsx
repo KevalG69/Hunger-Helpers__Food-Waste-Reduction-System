@@ -2,11 +2,12 @@ import React, { useContext, useEffect, useState } from 'react';
 
 
 import DonationBoxCard from '../SingleComponents/DonationBoxCard';
-import Filters from '../SingleComponents/Filters';
+
 
 import '../../css/Component/ActiveDonations.css';
-import { handleError } from '../../utils/Toast';
-import { contextAPI } from '../../services/RegistrationContext';
+
+import { contextAPI } from '../../services/Context';
+import Loading from '../../utils/Loading'
 
 const Accepted = () => {
 
@@ -15,11 +16,16 @@ const Accepted = () => {
   const [deliveries, setDeliveries] = useState([]);
 
 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const fetchDonationBox = async () => {
 
     try {
       const token = localStorage.getItem("Token");
       const userId = userData._id
+
+      setLoading(true)
       const url = `http://localhost:3000/users/donations/?userId=${userId}`;
 
       const res = await fetch(url, {
@@ -32,19 +38,21 @@ const Accepted = () => {
 
       const result = await res.json();
 
+      setLoading(false);
+
       if (result.success) {
         console.log(result.message);
-        console.log(result.data[0]);
-
         setDonations(result.data);
       }
       else {
         console.log(result.message);
+        setError(result.error)
       }
 
     }
     catch (error) {
       console.log(error)
+      setError(error)
     }
   }
   const fetchDelivery = async () => {
@@ -53,8 +61,10 @@ const Accepted = () => {
 
       const token = localStorage.getItem("Token");
       const userId = userData._id
+
       const url = `http://localhost:3000/users/deliveries/?userId=${userId}`;
 
+      setLoading(true)
       const res = await fetch(url, {
         method: "GET",
         headers: {
@@ -65,20 +75,23 @@ const Accepted = () => {
 
       const result = await res.json();
 
+      setLoading(false);
+
+
       if (result.success) {
         console.log(result.message);
-        console.log(result.data[0]);
-
-        const data = result.data;
         setDeliveries(result.data);
+
       }
       else {
         console.log(result.message);
+      
       }
 
     }
     catch (error) {
       console.log(error)
+
     }
   }
 
@@ -87,6 +100,25 @@ const Accepted = () => {
     fetchDelivery();
   }, [])
 
+  if(loading)
+        {
+          return (
+            <>
+            <Loading></Loading>
+            </>
+          );
+        }
+
+    if(error)
+    {
+        return (
+            <div>
+                <h1>
+                    {error.message}
+                </h1>
+            </div>
+        )
+    }
   return (
     <div className="donation-layout">
 
@@ -95,14 +127,14 @@ const Accepted = () => {
         <div className="donation-cards">
           {donations.length === 0 ? (
 
-            <p>No data available</p>
+            <p></p>
 
           ) : (donations.map((donation) => (
             <DonationBoxCard key={donation._id} data={donation} renderFrom={"History"} />)
           ))}
           {deliveries.length === 0 ? (
 
-            <p>No data available</p>
+            <p></p>
 
           ) : (deliveries.map((delivery) => (
             <DonationBoxCard key={delivery._id} data={delivery} renderFrom={"History"} />)

@@ -1,29 +1,41 @@
 .floating-leaderboard-btn {
-    position: fixed;
-    bottom: 5.5rem;
-    left: 7.5rem;
-    background-color: var(--black50);
-    color: white;
-    padding: 12px 20px;
-    border-radius: 30px;
-    font-weight: bold;
-    box-shadow: 0 4px 4px 0px var(--shadow);
-    z-index: 9999;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    /* justify-self: anchor-center; */
-  }
-  
-  .floating-leaderboard-btn:hover {
-    background-color: #5548e0;
-    transform: scale(1.05);
-  }
+  position: fixed;
+  bottom: 5.5rem;
+  left: 7.5rem;
+  background-color: var(--black50);
+  color: white;
+  padding: 0.75px 1.25px;
+  border-radius: 1.8rem;
+  font-weight: bold;
+  box-shadow: 0 4px 4px 0px var(--shadow);
+  z-index: 9999;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
 
-  .custom-line {
-    border: none;
-    height: 2px;
-    background-color: #ccc; /* or any color */
-    margin: 1rem auto;
-    width: 80%; /* adjust width as needed */
+/* Hover effect */
+.floating-leaderboard-btn:hover {
+  background-color: #5548e0;
+  transform: scale(1.05);
+}
+
+/* Responsive positioning for tablets and smaller */
+@media screen and (max-width: 1024px) {
+  .floating-leaderboard-btn {
+    left: 2rem;
+    bottom: 5rem;
+    font-size: 0.95rem;
+    padding: 10px 18px;
   }
-  
+}
+
+/* Extra responsive for mobile */
+@media screen and (max-width: 600px) {
+  .floating-leaderboard-btn {
+    left: 50%;
+    bottom: 4rem;
+    transform: translateX(-50%);
+    font-size: 0.9rem;
+    padding: 10px 16px;
+  }
+}

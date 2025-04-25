@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Navigate, useNavigate } from "react-router-dom"
 
 //service
-import { contextAPI } from './RegistrationContext';
+import { contextAPI } from './Context';
 
 //utils
 
